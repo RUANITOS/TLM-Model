@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import './IconButton.css';
-const IconButton = ({ parentIconSrc, hoverText, linkedIcons, href, className, onClick }) => {
+import './styles/IconButton.css';
+const IconButton = ({ parentIconSrc, hoverText, linkedIcons, href, className,onIconClick }) => {
     const [isHovered, setIsHovered] = useState(false);
-
     const handleMouseEnter = () => {
         setIsHovered(true);
     };
@@ -10,6 +9,11 @@ const IconButton = ({ parentIconSrc, hoverText, linkedIcons, href, className, on
     const handleMouseLeave = () => {
         setIsHovered(false);
     };
+    const handleClick = () => {
+        if (onIconClick) {
+          onIconClick(linkedIcons); // Chama a função onClick passando os ícones vinculados
+        }
+      };
 
     return (
         <div className="icon-container">
@@ -18,7 +22,7 @@ const IconButton = ({ parentIconSrc, hoverText, linkedIcons, href, className, on
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 href={href} // Usando o href aqui
-                onClick={onClick}
+                onClick={handleClick}
                 rel="noopener noreferrer" // Para segurança
             >
                 <img src={parentIconSrc} alt="Icon" className={`icon-image ${className}`} />
@@ -28,12 +32,7 @@ const IconButton = ({ parentIconSrc, hoverText, linkedIcons, href, className, on
                     {hoverText}
                 </div>
             )}
-            {/* Renderizando os ícones adicionais apenas se existirem */}
-            {isHovered && linkedIcons.length > 0 && linkedIcons.map((icon) => (
-                <button key={icon.id} className="icon-button">
-                    <img src={icon.iconSrc} alt="Icon" className="icon-image" />
-                </button>
-            ))}
+            
         </div>
     );
 };
