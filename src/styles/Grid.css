@@ -28,25 +28,7 @@ html, body {
   font-family: Arial, sans-serif;
 }
 
-.icon-container {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-}
 
-.icon {
-  cursor: pointer;
-  margin: 5px;
-  font-size: 18px;
-}
-
-.related-icons {
-  position: absolute;
-  top: 25px;
-  right: 5px;
-  display: flex;
-  flex-direction: column;
-}
 
 .related-icons .icon {
   margin-top: 5px;

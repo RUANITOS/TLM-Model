@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './styles/Grid.css';
 import IconButton from './IconButton'; // Importando o componente IconButton
 
@@ -8,6 +8,8 @@ const Grid = () => {
   const cols = 30;
   const squares = [];
 
+  const [activeLinkedIcons, setActiveLinkedIcons] = useState({});
+  
   const getLetter = (num) => {
     let letter = '';
     while (num >= 0) {
@@ -17,36 +19,35 @@ const Grid = () => {
     return letter;
   };
 
-  // IDs e URLs das imagens para os quadrados que terão ícones
-  const iconData = {
-    'square-M-7': {
+   // IDs e URLs das imagens para os quadrados que terão ícones
+   const iconData = {
+    'square-N-7': {
       parentIconSrc: process.env.PUBLIC_URL + '/assets/logo-tlm.png',
       hoverText: 'Site legado',
       href: 'https://www.tlm.net.br/',
       className: 'icon-legacy',
       linkedIcons: [
-        //{ id: 'square-A-2', iconSrc: 'https://example.com/icon2.png' },
+        //{ id: 'square-N-4', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
       ],
     },
-    'square-C-4': {
+    'square-B-2': {
       parentIconSrc: process.env.PUBLIC_URL + '/assets/icon2.png',
       hoverText: 'Sobre Nós',
       className: 'icon-about',
-      onClick: () => alert('Você clicou no ícone "Sobre Nós"!'),
-      linkedIcons: [],
-    },
-    'square-W-12': {
-      parentIconSrc: process.env.PUBLIC_URL + '/assets/icon3.png',
-      hoverText: 'Opções de Operação',
-      className: 'icon-about',
-      onClick: () => alert('Você clicou no ícone "Opções de Operação"!'),
       linkedIcons: [
-        //{ id: 'square-B-3', iconSrc: 'https://example.com/icon5.png' },
-        //{ id: 'square-B-4', iconSrc: 'https://example.com/icon6.png' },
+        { id: 'square-E-3', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
+        { id: 'square-B-5', iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png' },
       ],
     },
-  }
-  ;
+  };
+  const handleIconClick = (linkedIcons) => {
+    const updatedLinkedIcons = { ...activeLinkedIcons };
+    linkedIcons.forEach((icon) => {
+      updatedLinkedIcons[icon.id] = icon;
+    });
+    setActiveLinkedIcons(updatedLinkedIcons);
+  };
+
 
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
@@ -66,7 +67,14 @@ const Grid = () => {
               linkedIcons={iconData[id].linkedIcons}
               href={iconData[id].href} // Passando href
               className={iconData[id].className} // Passando a classe específica
-              onClick={iconData[id].onClick}  /* Passando a função onClick */
+              onIconClick={handleIconClick} // Função de clique para exibir mini ícones
+            />
+          )}
+          {activeLinkedIcons[id] && (
+            <img
+              src={activeLinkedIcons[id].iconSrc}
+              alt={`Linked Icon ${id}`}
+              className="mini-icon-image"
             />
           )}
         </div>
