@@ -35,8 +35,8 @@ const Grid = () => {
       hoverText: 'Sobre Nós',
       className: 'icon-about',
       linkedIcons: [
-        { id: 'square-E-5', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
-        { id: 'square-F-8', iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png' },
+        { id: 'square-K-5', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
+        { id: 'square-K-10', iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png' },
       ],
     },
     'square-V-7': {
@@ -44,17 +44,17 @@ const Grid = () => {
       hoverText: 'IoT',
       className: 'icon-about',
       linkedIcons: [
-        { id: 'square-V-5', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
-        { id: 'square-V-9', iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png' },
+        { id: 'square-U-5', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
+        { id: 'square-U-10', iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png' },
       ],
     },
-    'square-N-2': {
+    'square-P-2': {
       parentIconSrc: process.env.PUBLIC_URL + '/assets/icon2.png',
       hoverText: 'Modal 1',
       className: 'icon-about',
       linkedIcons: [],
     },
-    'square-N-11': {
+    'square-P-11': {
       parentIconSrc: process.env.PUBLIC_URL + '/assets/icon2.png',
       hoverText: 'Modal 2',
       className: 'icon-about',
