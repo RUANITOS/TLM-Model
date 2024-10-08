@@ -1,0 +1,45 @@
+.icon-container {
+    position: absolute;
+    z-index: 1; /* O ícone será sobreposto a outros elementos */
+  }
+  
+  .icon-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    z-index: 10; /* Garante que o ícone flutue acima de todos os quadrados */
+  }
+  
+  .icon-button:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
+  }
+  
+  .additional-icons {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: -70px; /* Ajusta a posição dos ícones adicionais */
+    left: 0;
+    z-index: 10; /* Garante que os ícones flutuantes também fiquem acima dos quadrados */
+  }
+  .icon-legacy {
+    width: 200px;
+    height: 100px;
+  }
+ 
+  .hover-text {
+    position: absolute;
+    bottom: 100%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 2000000;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
