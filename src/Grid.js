@@ -30,14 +30,35 @@ const Grid = () => {
         //{ id: 'square-N-4', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
       ],
     },
-    'square-B-2': {
+    'square-H-7': {
       parentIconSrc: process.env.PUBLIC_URL + '/assets/icon2.png',
       hoverText: 'Sobre Nós',
       className: 'icon-about',
       linkedIcons: [
-        { id: 'square-E-3', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
-        { id: 'square-B-5', iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png' },
+        { id: 'square-E-5', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
+        { id: 'square-F-8', iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png' },
       ],
+    },
+    'square-V-7': {
+      parentIconSrc: process.env.PUBLIC_URL + '/assets/icon4.png',
+      hoverText: 'IoT',
+      className: 'icon-about',
+      linkedIcons: [
+        { id: 'square-V-5', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
+        { id: 'square-V-9', iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png' },
+      ],
+    },
+    'square-N-2': {
+      parentIconSrc: process.env.PUBLIC_URL + '/assets/icon2.png',
+      hoverText: 'Operação',
+      className: 'icon-about',
+      linkedIcons: [],
+    },
+    'square-N-11': {
+      parentIconSrc: process.env.PUBLIC_URL + '/assets/icon2.png',
+      hoverText: 'Contato',
+      className: 'icon-about',
+      linkedIcons: [],
     },
   };
   const handleIconClick = (linkedIcons) => {
