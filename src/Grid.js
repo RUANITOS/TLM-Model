@@ -50,13 +50,13 @@ const Grid = () => {
     },
     'square-N-2': {
       parentIconSrc: process.env.PUBLIC_URL + '/assets/icon2.png',
-      hoverText: 'Operação',
+      hoverText: 'Modal 1',
       className: 'icon-about',
       linkedIcons: [],
     },
     'square-N-11': {
       parentIconSrc: process.env.PUBLIC_URL + '/assets/icon2.png',
-      hoverText: 'Contato',
+      hoverText: 'Modal 2',
       className: 'icon-about',
       linkedIcons: [],
     },
