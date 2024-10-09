@@ -19,7 +19,7 @@ const IconButton = ({ parentIconSrc, hoverText, linkedIcons, href, className, on
         }
 
         // Condicional para o ícone que deve abrir um iframe em um modal
-        if (hoverText === 'Sobre Nós') { // Verifica pelo texto de hover ou outro critério
+        if (hoverText === 'Opções de Operação') { // Verifica pelo texto de hover ou outro critério
             setIsModalOpen(true); // Abre o modal com iframe
         }
     };
