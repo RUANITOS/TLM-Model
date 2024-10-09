@@ -55,9 +55,9 @@ const IconButton = ({ parentIconSrc, hoverText, linkedIcons, href, className, on
                         <iframe
                             src="https://share.synthesia.io/embeds/videos/3a6d7751-1a3f-44c6-97ec-43ecfdd738e0" // Coloque a URL que deseja exibir
                             title="Iframe Example"
-                            width="400px"
-                            height="400px"
-                            style={{ border: 'none' }}
+                            width="75%"
+                            height="194px"
+                            style={{ border: 'none', zIndex:'100000' }}
                         ></iframe>
                         <button className="close-button" onClick={closeModal}>Fechar</button>
                     </div>
