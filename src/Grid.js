@@ -50,7 +50,7 @@ const Grid = () => {
     },
     'square-N-2': {
       parentIconSrc: process.env.PUBLIC_URL + '/assets/icon2.png',
-      hoverText: 'Modal 1',
+      hoverText: 'Sobre Nós',
       className: 'icon-about',
       linkedIcons: [],
     },

@@ -17,9 +17,9 @@ const IconButton = ({ parentIconSrc, hoverText, linkedIcons, href, className, on
         if (onIconClick) {
             onIconClick(linkedIcons); // Chama a função onClick passando os ícones vinculados
         }
-        
+
         // Condicional para o ícone que deve abrir um iframe em um modal
-        if (hoverText === 'Modal 1') { // Verifica pelo texto de hover ou outro critério
+        if (hoverText === 'Sobre Nós') { // Verifica pelo texto de hover ou outro critério
             setIsModalOpen(true); // Abre o modal com iframe
         }
     };
@@ -55,8 +55,8 @@ const IconButton = ({ parentIconSrc, hoverText, linkedIcons, href, className, on
                         <iframe
                             src="https://share.synthesia.io/embeds/videos/3a6d7751-1a3f-44c6-97ec-43ecfdd738e0" // Coloque a URL que deseja exibir
                             title="Iframe Example"
-                            width="75%"
-                            height="194px"
+                            width="85%"
+                            height="170px"
                             style={{ border: 'none', zIndex:'100000' }}
                         ></iframe>
                         <button className="close-button" onClick={closeModal}>Fechar</button>
