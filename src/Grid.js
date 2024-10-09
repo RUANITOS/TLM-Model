@@ -63,11 +63,20 @@ const Grid = () => {
   };
   const handleIconClick = (linkedIcons) => {
     const updatedLinkedIcons = { ...activeLinkedIcons };
+  
     linkedIcons.forEach((icon) => {
-      updatedLinkedIcons[icon.id] = icon;
+      // Se o ícone já estiver ativo, remova-o
+      if (updatedLinkedIcons[icon.id]) {
+        delete updatedLinkedIcons[icon.id];
+      } else {
+        // Se o ícone não estiver ativo, adicione-o
+        updatedLinkedIcons[icon.id] = icon;
+      }
     });
+  
     setActiveLinkedIcons(updatedLinkedIcons);
   };
+  
 
 
   for (let row = 0; row < rows; row++) {
