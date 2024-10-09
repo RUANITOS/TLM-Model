@@ -30,8 +30,8 @@ html, body {
 
 .icon-container {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: -1px;
+  right: 1px;
 }
 
 .related-icons .icon {
