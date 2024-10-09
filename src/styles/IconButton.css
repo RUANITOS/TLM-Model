@@ -7,19 +7,14 @@
     background-color: transparent;
     border: none;
     cursor: pointer;
-    position: absolute;
+    position: fixed;
     z-index: 10; /* Garante que o ícone flutue acima de todos os quadrados */
   }
-  
-  .icon-button:hover {
-    transform: scale(1.1);
-    transition: transform 0.2s ease;
-  }
-  
+
   .additional-icons {
     display: flex;
     flex-direction: column;
-    position: absolute;
+    position: fixed;
     top: 0px; /* Ajusta a posição dos ícones adicionais */
     left: 0;
     z-index: 10; /* Garante que os ícones flutuantes também fiquem acima dos quadrados */
@@ -30,7 +25,7 @@
   }
  
   .hover-text {
-    position: absolute;
+    position: fixed;
     bottom: 100%;
     transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.75);
@@ -39,16 +34,51 @@
     border-radius: 5px;
     font-size: 12px;
     white-space: nowrap;
-    z-index: 2000000;
+    z-index: 20000;
     opacity: 1;
     transition: opacity 0.3s ease;
   }
   .mini-icon-image {
     display: flex;
     flex-direction: column;
-    position: absolute;
+    position: fixed;
     top: 0px; /* Ajusta a posição dos ícones adicionais */
     left: 0;
     z-index: 1000; /* Garante que os ícones flutuantes também fiquem acima dos quadrados */
     cursor: pointer;
   }
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999; /* Valor alto para garantir que fique acima de tudo */
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  position: fixed;
+  width: 80%;
+  max-width: 600px;
+  z-index: 1000000; /* Também garantido no conteúdo do modal */
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5); /* Sombra para destaque */
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px 10px;
+  z-index: 1000001; /* Mantém o botão acima do conteúdo */
+}

@@ -18,7 +18,7 @@ html, body {
 }
 
 .square {
-
+  border: 1px solid #ccc;
   background-color: #f0f0f0;
   display: flex;
   justify-content: center;
@@ -28,7 +28,11 @@ html, body {
   font-family: Arial, sans-serif;
 }
 
-
+.icon-container {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
 
 .related-icons .icon {
   margin-top: 5px;
