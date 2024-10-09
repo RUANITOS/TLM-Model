@@ -22,7 +22,7 @@ const Grid = () => {
    // IDs e URLs das imagens para os quadrados que terão ícones
    const iconData = {
     'square-L-7': {
-      parentIconSrc: process.env.PUBLIC_URL + '/assets/logo-tlm.png',
+      parentIconSrc: process.env.PUBLIC_URL + '/assets/logonova.png',
       hoverText: 'Site legado',
       href: 'https://www.tlm.net.br/',
       className: 'icon-legacy',
@@ -54,7 +54,7 @@ const Grid = () => {
       className: 'icon-about',
       linkedIcons: [],
     },
-    'square-N-11': {
+    'square-N-13': {
       parentIconSrc: process.env.PUBLIC_URL + '/assets/icon2.png',
       hoverText: 'Modal 2',
       className: 'icon-about',
