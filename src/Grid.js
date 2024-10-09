@@ -30,13 +30,13 @@ const Grid = () => {
         //{ id: 'square-N-4', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
       ],
     },
-    'square-H-7': {
+    'square-F-7': {
       parentIconSrc: process.env.PUBLIC_URL + '/assets/icon2.png',
       hoverText: 'Sobre Nós',
       className: 'icon-about',
       linkedIcons: [
-        { id: 'square-E-5', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
-        { id: 'square-F-8', iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png' },
+        { id: 'square-I-5', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
+        { id: 'square-I-9', iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png' },
       ],
     },
     'square-V-7': {
