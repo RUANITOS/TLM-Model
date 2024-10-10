@@ -9,7 +9,7 @@ const Grid = () => {
   const squares = [];
 
   const [activeLinkedIcons, setActiveLinkedIcons] = useState({});
-  
+
   const getLetter = (num) => {
     let letter = '';
     while (num >= 0) {
@@ -19,8 +19,8 @@ const Grid = () => {
     return letter;
   };
 
-   // IDs e URLs das imagens para os quadrados que terão ícones
-   const iconData = {
+  // IDs e URLs das imagens para os quadrados que terão ícones
+  const iconData = {
     'square-L-7': {
       parentIconSrc: process.env.PUBLIC_URL + '/assets/logonova.png',
       hoverText: 'Site legado',
@@ -44,8 +44,15 @@ const Grid = () => {
       hoverText: 'IoT',
       className: 'icon-about',
       linkedIcons: [
-        { id: 'square-V-5', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
-        { id: 'square-V-9', iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png' },
+        { id: 'square-V-5', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png',
+          onClick: () => alert('Outro icone "IoT"')
+         },
+        
+        {
+          id: 'square-V-9',
+          iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png',
+          onClick: () => alert('Você clicou no ícone "IoT Subicon"!') // Adicionando o onClick no subícone
+        },
       ],
     },
     'square-N-2': {
@@ -63,7 +70,7 @@ const Grid = () => {
   };
   const handleIconClick = (linkedIcons) => {
     const updatedLinkedIcons = { ...activeLinkedIcons };
-  
+
     linkedIcons.forEach((icon) => {
       // Se o ícone já estiver ativo, remova-o
       if (updatedLinkedIcons[icon.id]) {
@@ -73,10 +80,10 @@ const Grid = () => {
         updatedLinkedIcons[icon.id] = icon;
       }
     });
-  
+
     setActiveLinkedIcons(updatedLinkedIcons);
   };
-  
+
 
 
   for (let row = 0; row < rows; row++) {
@@ -87,7 +94,7 @@ const Grid = () => {
 
       squares.push(
         <div key={id} id={id} className="square">
-          
+
           {/* Verifica se o quadrado deve ter um ícone */}
           {iconData[id] && (
             <IconButton
@@ -105,6 +112,13 @@ const Grid = () => {
               src={activeLinkedIcons[id].iconSrc}
               alt={`Linked Icon ${id}`}
               className="mini-icon-image"
+              id={`Linked Icon ${id}`}
+              onClick={() => {
+                // Verifica se o ícone ativo tem uma função onClick
+                if (activeLinkedIcons[id].onClick) {
+                  activeLinkedIcons[id].onClick();
+                }
+              }}
             />
           )}
         </div>

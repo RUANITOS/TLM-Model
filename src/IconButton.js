@@ -4,7 +4,7 @@ import './styles/IconButton.css';
 const IconButton = ({ parentIconSrc, hoverText, linkedIcons, href, className, onIconClick }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false); // Controla o estado do modal
-    
+    const [showLinkedIcons, setShowLinkedIcons] = useState(false);
     const handleMouseEnter = () => {
         setIsHovered(true);
     };
@@ -17,11 +17,12 @@ const IconButton = ({ parentIconSrc, hoverText, linkedIcons, href, className, on
         if (onIconClick) {
             onIconClick(linkedIcons); // Chama a função onClick passando os ícones vinculados
         }
-
+        setShowLinkedIcons(!showLinkedIcons);
         // Condicional para o ícone que deve abrir um iframe em um modal
         if (hoverText === 'Opções de Operação') { // Verifica pelo texto de hover ou outro critério
             setIsModalOpen(true); // Abre o modal com iframe
         }
+        
     };
 
     const closeModal = () => {
@@ -63,6 +64,8 @@ const IconButton = ({ parentIconSrc, hoverText, linkedIcons, href, className, on
                     </div>
                 </div>
             )}
+            
+       
         </div>
     );
 };
