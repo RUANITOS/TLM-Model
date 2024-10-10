@@ -36,3 +36,32 @@ html, body {
 .related-icons .icon {
   margin-top: 5px;
 }
+.card-overlay {
+  position: fixed;
+  top: 0;
+  left: -100px;
+  width: 10%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999999; /* Para garantir que o card fique acima de tudo */
+}
+
+.card-content {
+  background: #1a2a5d;
+  padding: 20px;
+  border-radius: 10px;
+  position: absolute;
+  width: 500px;
+  max-width: 1000px;
+  max-height: 70%; /* Limite de altura */
+  overflow-y: auto; /* Adiciona rolagem vertical */
+  left: 1000px;
+  top: 170px;
+  color: white;
+}
+
+.card-content p {
+  padding-top: "15px";
+}

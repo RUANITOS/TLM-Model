@@ -9,7 +9,7 @@ const Grid = () => {
   const squares = [];
 
   const [activeLinkedIcons, setActiveLinkedIcons] = useState({});
-
+  const [cardContent, setCardContent] = useState(null); // Estado para o card flutuante
   const getLetter = (num) => {
     let letter = '';
     while (num >= 0) {
@@ -51,7 +51,19 @@ const Grid = () => {
         {
           id: 'square-V-9',
           iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png',
-          onClick: () => alert('Você clicou no ícone "IoT Subicon"!') // Adicionando o onClick no subícone
+          onClick: () => setCardContent(`O Mosaico TLM Manager é uma ferramenta de software que introduz uma nova forma de visualização de navegação, ou estruturação de websites, e ainda de conteúdos que necessitem ser organizados, e acessados de forma intuitiva, como por exemplo as opções de funcionalidades de aplicações.
+          
+          É uma verdadeira plataforma visualização e desenvolvimento, permitindo como exemplo a formatação de um website, de modo totalmente parametrizado, particularizado, e ao mesmo tempo, com alto grau de automatismo, implicando em grande velocidade na sua implementação, bem como a organização de dados de qualquer natureza, com a mesma característica de visualização.
+          
+          Ao mesmo tempo, tem integrada uma ferramenta de geração de conteúdo, em especial de vídeos, criados à partir de textos descritivos, que lançam mão de recursos de inteligência artificial, que materializados através de avatares, traz muita vivacidade para a apresentação desejada, envolvendo custos mínimos de produção e com muita rapidez e objetividade.
+          
+          A TLM Technologies, através do Mosaico TLM Manager, cria não só uma estrutura flexível de acesso através de um uso muito dinâmico, como todo suporte para a geração e integração dos vídeos e estruturação para apresentação. Oferece ainda a necessária armazenamento e atualização de todo o conteúdo, com plena segurança global.
+          
+          Se o usuário já possui seu website tradicional, haverá “paralelismo” entre eles, de modo a não inviabilizar tal recurso ora em uso. Ou seja: coexistindo, agrega potencial.
+          
+          A infraestrutura de tecnologia e divulgação na Internet, é igualmente provida pela TLM, facilitando ainda mais a disponibilidade da solução toda.
+          
+          A seguir são apresentados dois exemplos, O primeiro, baseado no website convencional da TLM, para em seguida a nova estrutura, onde ficam evidentes a simplicidade de uso e objetividade na exposição e visualização do conteúdo.`), // Adicionando o onClick no subícone
         },
       ],
     },
@@ -84,7 +96,7 @@ const Grid = () => {
     setActiveLinkedIcons(updatedLinkedIcons);
   };
 
-
+  const closeCard = () => setCardContent(null); // Função para fechar o card
 
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
@@ -129,6 +141,14 @@ const Grid = () => {
   return (
     <div className="grid-container">
       {squares}
+      {cardContent && (
+        <div className="card-overlay">
+          <div className="card-content">
+            <button onClick={closeCard} className="close-button">X</button>
+            <p>{cardContent}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

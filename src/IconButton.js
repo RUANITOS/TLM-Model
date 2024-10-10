@@ -60,7 +60,7 @@ const IconButton = ({ parentIconSrc, hoverText, linkedIcons, href, className, on
                             height="170px"
                             style={{ border: 'none', zIndex:'100000' }}
                         ></iframe>
-                        <button className="close-button" onClick={closeModal}>Fechar</button>
+                        <button className="close-button" onClick={closeModal}>X</button>
                     </div>
                 </div>
             )}
