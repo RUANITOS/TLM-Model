@@ -5,7 +5,6 @@ import IconButton from './IconButton';
 const Grid = () => {
   const rows = 15;
   const cols = 30;
-  const squares = [];
   const iconData = {
     'square-L-7': {
       parentIconSrc: process.env.PUBLIC_URL + '/assets/logonova.png',
@@ -28,11 +27,7 @@ const Grid = () => {
       hoverText: 'IoT',
       className: 'icon-about',
       linkedIcons: [
-        { 
-          id: 'square-V-5', 
-          iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png',
-          onClick: () => alert('Outro ícone "IoT"'),
-        },
+        { id: 'square-V-5', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
         {
           id: 'square-V-9',
           iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png',
@@ -58,8 +53,8 @@ const Grid = () => {
   const [activeLinkedIcons, setActiveLinkedIcons] = useState({});
   const [cardContent, setCardContent] = useState(null);
   const [showIframe, setShowIframe] = useState(null);
-  const [centralIcon, setCentralIcon] = useState('square-L-7'); // Estado para o ícone central (começa com "site legado")
-  const [activeIcons, setActiveIcons] = useState(Object.keys(iconData)); // Inicia com todos os ícones visíveis
+  const [centralIcon, setCentralIcon] = useState('square-L-7');
+  const [activeIcons, setActiveIcons] = useState(Object.keys(iconData));
 
   const getLetter = (num) => {
     let letter = '';
@@ -71,59 +66,40 @@ const Grid = () => {
   };
 
   const handleIconClick = (parentId, linkedIcons) => {
-    if (parentId !== 'square-L-7') {
-      // Se o ícone "mãe" não for o "site legado"
-      if (centralIcon === 'square-L-7') {
-        // Mova o ícone "mãe" para o centro
-        setCentralIcon(parentId);
-        // Exiba apenas o ícone "mãe" e seus ícones vinculados
-        const iconsToShow = linkedIcons.map(icon => icon.id).concat(parentId);
-        setActiveIcons(iconsToShow); // Atualiza a lista de ícones visíveis
-      } else if (centralIcon === parentId) {
-        // Retorna o ícone central para o "site legado" e exibe todos os ícones
-        setCentralIcon('square-L-7');
-        setActiveIcons(Object.keys(iconData)); // Mostra todos os ícones novamente
-      }
-    }
+    const isLegacySite = parentId === 'square-L-7';
+    const isCentralIcon = centralIcon === parentId;
 
-    const updatedLinkedIcons = { ...activeLinkedIcons };
+    setCentralIcon(isLegacySite || isCentralIcon ? 'square-L-7' : parentId);
+    setActiveIcons(isLegacySite || isCentralIcon
+      ? Object.keys(iconData)
+      : linkedIcons.map(icon => icon.id).concat(parentId)
+    );
 
-    linkedIcons.forEach((icon) => {
-      if (updatedLinkedIcons[icon.id]) {
-        delete updatedLinkedIcons[icon.id];
-      } else {
-        updatedLinkedIcons[icon.id] = icon;
-      }
+    setActiveLinkedIcons(prev => {
+      const updated = { ...prev };
+      linkedIcons.forEach((icon) => {
+        updated[icon.id] = updated[icon.id] ? undefined : icon;
+      });
+      return updated;
     });
-
-    setActiveLinkedIcons(updatedLinkedIcons);
   };
 
   const closeCard = () => {
     setCardContent(null);
-    setShowIframe(null); // Fechar o iframe ao fechar o card
+    setShowIframe(null);
   };
 
   const openIframe = (url) => {
-    setCardContent(null); // Limpa o conteúdo do card
-    setShowIframe(url); // Abre o iframe com a URL
+    setCardContent(null);
+    setShowIframe(url);
   };
 
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      const xLabel = getLetter(col);
-      const yLabel = row + 1;
-      const id = `square-${xLabel}-${yLabel}`;
+  const squares = Array.from({ length: rows }, (_, row) =>
+    Array.from({ length: cols }, (_, col) => {
+      const id = `square-${getLetter(col)}-${row + 1}`;
+      const iconToRender = centralIcon === id ? iconData[centralIcon] : iconData[id];
 
-      let iconToRender = iconData[id];
-
-      // Se o ícone central não for o "site legado", renderize o ícone central
-      if (centralIcon === id) {
-        iconToRender = iconData[centralIcon]; // Exibir o ícone "mãe"
-      }
-
-      // Renderizar todos os quadrados, mas só exibir os ícones ativos
-      squares.push(
+      return (
         <div key={id} id={id} className="square">
           {iconToRender && activeIcons.includes(id) && (
             <IconButton
@@ -133,7 +109,7 @@ const Grid = () => {
               linkedIcons={iconToRender.linkedIcons}
               href={iconToRender.href}
               className={iconToRender.className}
-              onIconClick={() => handleIconClick(id, iconToRender.linkedIcons)} // Passa o ID e ícones vinculados
+              onIconClick={handleIconClick}
             />
           )}
           {activeLinkedIcons[id] && (
@@ -141,18 +117,13 @@ const Grid = () => {
               src={activeLinkedIcons[id].iconSrc}
               alt={`Linked Icon ${id}`}
               className="mini-icon-image"
-              id={`Linked Icon ${id}`}
-              onClick={() => {
-                if (activeLinkedIcons[id].onClick) {
-                  activeLinkedIcons[id].onClick();
-                }
-              }}
+              onClick={activeLinkedIcons[id].onClick}
             />
           )}
         </div>
       );
-    }
-  }
+    })
+  ).flat(); // Flatten the nested arrays
 
   return (
     <div className="grid-container">
@@ -163,7 +134,7 @@ const Grid = () => {
             src={showIframe}
             title="Iframe Example"
             className="iframe-content"
-            style={{ width: '100%', height: '100%' }} // Ajustar tamanho do iframe
+            style={{ width: '100%', height: '100%' }}
           />
           <button onClick={closeCard} className="close-button">X</button>
         </div>
