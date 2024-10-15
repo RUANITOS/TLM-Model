@@ -25,11 +25,11 @@ html, body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('/public/assets/17973908.jpg');
-  background-size: cover;
+  background-image: url('/public/assets/logonova.png');
+  background-size: 100px;
   background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0.5; /* Controla a opacidade da imagem */
+  background-repeat: repeat;
+  opacity: 0.1; /* Controla a opacidade da imagem */
   z-index: -1; /* Coloca a imagem atrás do conteúdo */
 }
 

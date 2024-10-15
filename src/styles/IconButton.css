@@ -47,6 +47,7 @@
     left: 0;
     z-index: 1; /* Garante que os ícones flutuantes também fiquem acima dos quadrados */
     cursor: pointer;
+    width: 60px;
   }
   .modal-overlay {
     position: fixed;

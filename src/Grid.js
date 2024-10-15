@@ -6,10 +6,60 @@ const Grid = () => {
   const rows = 15;
   const cols = 30;
   const squares = [];
+  const iconData = {
+    'square-L-7': {
+      parentIconSrc: process.env.PUBLIC_URL + '/assets/logonova.png',
+      hoverText: 'Site legado',
+      href: 'https://www.tlm.net.br/',
+      className: 'icon-legacy',
+      linkedIcons: [],
+    },
+    'square-F-7': {
+      parentIconSrc: process.env.PUBLIC_URL + '/assets/pasta.png',
+      hoverText: 'Sobre Nós',
+      className: 'icon-about',
+      linkedIcons: [
+        { id: 'square-I-5', iconSrc: process.env.PUBLIC_URL + '/assets/mais.png' },
+        { id: 'square-I-9', iconSrc: process.env.PUBLIC_URL + '/assets/sobre.png' },
+      ],
+    },
+    'square-V-7': {
+      parentIconSrc: process.env.PUBLIC_URL + '/assets/partilhar.png',
+      hoverText: 'IoT',
+      className: 'icon-about',
+      linkedIcons: [
+        { 
+          id: 'square-V-5', 
+          iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png',
+          onClick: () => alert('Outro ícone "IoT"'),
+        },
+        {
+          id: 'square-V-9',
+          iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png',
+          onClick: () => setCardContent(`...`), // Conteúdo do card
+        },
+      ],
+    },
+    'square-N-2': {
+      parentIconSrc: process.env.PUBLIC_URL + '/assets/video.png',
+      hoverText: 'Opções de Operação',
+      className: 'icon-about',
+      linkedIcons: [],
+    },
+    'square-N-13': {
+      parentIconSrc: process.env.PUBLIC_URL + '/assets/sobre.png',
+      hoverText: 'Modal 2',
+      className: 'icon-about',
+      linkedIcons: [],
+      onClick: () => openIframe('https://www.tlm.net.br/'), // Corrigido para onClick
+    },
+  };
 
   const [activeLinkedIcons, setActiveLinkedIcons] = useState({});
   const [cardContent, setCardContent] = useState(null);
-  const [showIframe, setShowIframe] = useState(null); // Estado para o iframe
+  const [showIframe, setShowIframe] = useState(null);
+  const [centralIcon, setCentralIcon] = useState('square-L-7'); // Estado para o ícone central (começa com "site legado")
+  const [activeIcons, setActiveIcons] = useState(Object.keys(iconData)); // Inicia com todos os ícones visíveis
 
   const getLetter = (num) => {
     let letter = '';
@@ -20,56 +70,22 @@ const Grid = () => {
     return letter;
   };
 
-  const iconData = {
-    'square-L-7': {
-      parentIconSrc: process.env.PUBLIC_URL + '/assets/logonova.png',
-      hoverText: 'Site legado',
-      href: 'https://www.tlm.net.br/',
-      className: 'icon-legacy',
-      linkedIcons: [],
-    },
-    'square-F-7': {
-      parentIconSrc: process.env.PUBLIC_URL + '/assets/iconexclamation.jpg',
-      hoverText: 'Sobre Nós',
-      className: 'icon-about',
-      linkedIcons: [
-        { id: 'square-I-5', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
-        { id: 'square-I-9', iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png' },
-      ],
-    },
-    'square-V-7': {
-      parentIconSrc: process.env.PUBLIC_URL + '/assets/iconquestion.jpg',
-      hoverText: 'IoT',
-      className: 'icon-about',
-      linkedIcons: [
-        { 
-          id: 'square-V-5', 
-          iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png',
-          onClick: () => alert('Outro icone "IoT"'),
-        },
-        {
-          id: 'square-V-9',
-          iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png',
-          onClick: () => setCardContent(`...`), // Conteúdo do card
-        },
-      ],
-    },
-    'square-N-2': {
-      parentIconSrc: process.env.PUBLIC_URL + '/assets/icon2.png',
-      hoverText: 'Opções de Operação',
-      className: 'icon-about',
-      linkedIcons: [],
-    },
-    'square-N-13': {
-      parentIconSrc: process.env.PUBLIC_URL + '/assets/icon2.png',
-      hoverText: 'Modal 2',
-      className: 'icon-about',
-      linkedIcons: [],
-      onClick: () => openIframe('https://www.tlm.net.br/'), // Corrigido para onClick
-    },
-  };
+  const handleIconClick = (parentId, linkedIcons) => {
+    if (parentId !== 'square-L-7') {
+      // Se o ícone "mãe" não for o "site legado"
+      if (centralIcon === 'square-L-7') {
+        // Mova o ícone "mãe" para o centro
+        setCentralIcon(parentId);
+        // Exiba apenas o ícone "mãe" e seus ícones vinculados
+        const iconsToShow = linkedIcons.map(icon => icon.id).concat(parentId);
+        setActiveIcons(iconsToShow); // Atualiza a lista de ícones visíveis
+      } else if (centralIcon === parentId) {
+        // Retorna o ícone central para o "site legado" e exibe todos os ícones
+        setCentralIcon('square-L-7');
+        setActiveIcons(Object.keys(iconData)); // Mostra todos os ícones novamente
+      }
+    }
 
-  const handleIconClick = (linkedIcons) => {
     const updatedLinkedIcons = { ...activeLinkedIcons };
 
     linkedIcons.forEach((icon) => {
@@ -99,20 +115,25 @@ const Grid = () => {
       const yLabel = row + 1;
       const id = `square-${xLabel}-${yLabel}`;
 
+      let iconToRender = iconData[id];
+
+      // Se o ícone central não for o "site legado", renderize o ícone central
+      if (centralIcon === id) {
+        iconToRender = iconData[centralIcon]; // Exibir o ícone "mãe"
+      }
+
+      // Renderizar todos os quadrados, mas só exibir os ícones ativos
       squares.push(
         <div key={id} id={id} className="square">
-          {iconData[id] && (
+          {iconToRender && activeIcons.includes(id) && (
             <IconButton
               parentId={id}
-              parentIconSrc={iconData[id].parentIconSrc}
-              hoverText={iconData[id].hoverText}
-              linkedIcons={iconData[id].linkedIcons}
-              href={iconData[id].href}
-              className={iconData[id].className}
-              onIconClick={() => {
-                handleIconClick(iconData[id].linkedIcons);
-                if (iconData[id].href) openIframe(iconData[id].href); // Passando a função para abrir o iframe
-              }}
+              parentIconSrc={iconToRender.parentIconSrc}
+              hoverText={iconToRender.hoverText}
+              linkedIcons={iconToRender.linkedIcons}
+              href={iconToRender.href}
+              className={iconToRender.className}
+              onIconClick={() => handleIconClick(id, iconToRender.linkedIcons)} // Passa o ID e ícones vinculados
             />
           )}
           {activeLinkedIcons[id] && (
