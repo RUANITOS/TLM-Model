@@ -29,7 +29,7 @@ const Grid = () => {
       linkedIcons: [],
     },
     'square-F-7': {
-      parentIconSrc: process.env.PUBLIC_URL + '/assets/icon2.png',
+      parentIconSrc: process.env.PUBLIC_URL + '/assets/iconexclamation.jpg',
       hoverText: 'Sobre Nós',
       className: 'icon-about',
       linkedIcons: [
@@ -38,7 +38,7 @@ const Grid = () => {
       ],
     },
     'square-V-7': {
-      parentIconSrc: process.env.PUBLIC_URL + '/assets/icon4.png',
+      parentIconSrc: process.env.PUBLIC_URL + '/assets/iconquestion.jpg',
       hoverText: 'IoT',
       className: 'icon-about',
       linkedIcons: [
