@@ -57,6 +57,7 @@ const Grid = () => {
   const [showIframe, setShowIframe] = useState(null);
   const [activeIcons, setActiveIcons] = useState(Object.keys(iconData));
   const [dynamicSquareL7Data, setDynamicSquareL7Data] = useState(null);
+  const [clickedIcon, setClickedIcon] = useState(null); // Novo estado para rastrear o ícone clicado
 
   const getLetter = (num) => {
     let letter = '';
@@ -74,18 +75,22 @@ const Grid = () => {
     if (isLegacySite && dynamicSquareL7Data) {
       setDynamicSquareL7Data(null); // Retorna para o conteúdo padrão
       setActiveIcons(Object.keys(iconData)); // Ativa todos os ícones
-    } else if (!isLegacySite) {
+      setClickedIcon(null); // Reseta o ícone clicado
+    } else {
       // Atualiza o conteúdo do square-L-7 com as informações do ícone clicado
-      setDynamicSquareL7Data({
-        parentIconSrc: iconData[parentId].parentIconSrc,
-        hoverText: iconData[parentId].hoverText,
-        href: iconData[parentId].href,
-        className: iconData[parentId].className,
-        linkedIcons: iconData[parentId].linkedIcons,
-      });
+      if (!isLegacySite) {
+        setDynamicSquareL7Data({
+          parentIconSrc: iconData[parentId].parentIconSrc,
+          hoverText: iconData[parentId].hoverText,
+          href: iconData[parentId].href,
+          className: iconData[parentId].className,
+          linkedIcons: iconData[parentId].linkedIcons,
+        });
 
-      // Atualiza quais ícones devem estar ativos
-      setActiveIcons(linkedIcons.map(icon => icon.id).concat('square-L-7'));
+        // Atualiza quais ícones devem estar ativos
+        setActiveIcons(linkedIcons.map(icon => icon.id).concat('square-L-7'));
+        setClickedIcon(parentId); // Armazena o ícone que foi clicado
+      }
     }
   };
 
@@ -108,7 +113,7 @@ const Grid = () => {
         // Renderiza o conteúdo dinâmico ou padrão para square-L-7
         iconToRender = dynamicSquareL7Data || defaultSquareL7Data;
       } else {
-        iconToRender = iconData[id];
+        iconToRender = iconData[id] || {}; // Usa um objeto vazio se não houver dados
       }
 
       return (
@@ -125,10 +130,10 @@ const Grid = () => {
             />
           )}
 
-          {/* Renderiza os linkedIcons se existirem */}
-          {id === 'square-L-7' && dynamicSquareL7Data?.linkedIcons.length > 0 && (
+          {/* Renderiza os linkedIcons se existirem e se o ícone correspondente foi clicado */}
+          {clickedIcon === id && iconToRender.linkedIcons.length > 0 && (
             <div className="linked-icons">
-              {dynamicSquareL7Data.linkedIcons.map((icon) => (
+              {iconToRender.linkedIcons.map((icon) => (
                 <img
                   key={icon.id}
                   src={icon.iconSrc}
@@ -171,4 +176,3 @@ const Grid = () => {
 };
 
 export default Grid;
-
