@@ -5,14 +5,17 @@ import IconButton from './IconButton';
 const Grid = () => {
   const rows = 15;
   const cols = 30;
+
+  const defaultSquareL7Data = {
+    parentIconSrc: process.env.PUBLIC_URL + '/assets/logonova.png',
+    hoverText: 'Site legado',
+    href: '',
+    className: 'icon-legacy',
+    linkedIcons: [],
+  };
+
   const iconData = {
-    'square-L-7': {
-      parentIconSrc: process.env.PUBLIC_URL + '/assets/logonova.png',
-      hoverText: 'Site legado',
-      href: 'https://www.tlm.net.br/',
-      className: 'icon-legacy',
-      linkedIcons: [],
-    },
+    'square-L-7': defaultSquareL7Data,
     'square-F-7': {
       parentIconSrc: process.env.PUBLIC_URL + '/assets/pasta.png',
       hoverText: 'Sobre Nós',
@@ -50,11 +53,10 @@ const Grid = () => {
     },
   };
 
-  const [activeLinkedIcons, setActiveLinkedIcons] = useState({});
   const [cardContent, setCardContent] = useState(null);
   const [showIframe, setShowIframe] = useState(null);
-  const [centralIcon, setCentralIcon] = useState('square-L-7');
   const [activeIcons, setActiveIcons] = useState(Object.keys(iconData));
+  const [dynamicSquareL7Data, setDynamicSquareL7Data] = useState(null);
 
   const getLetter = (num) => {
     let letter = '';
@@ -67,21 +69,24 @@ const Grid = () => {
 
   const handleIconClick = (parentId, linkedIcons) => {
     const isLegacySite = parentId === 'square-L-7';
-    const isCentralIcon = centralIcon === parentId;
 
-    setCentralIcon(isLegacySite || isCentralIcon ? 'square-L-7' : parentId);
-    setActiveIcons(isLegacySite || isCentralIcon
-      ? Object.keys(iconData)
-      : linkedIcons.map(icon => icon.id).concat(parentId)
-    );
-
-    setActiveLinkedIcons(prev => {
-      const updated = { ...prev };
-      linkedIcons.forEach((icon) => {
-        updated[icon.id] = updated[icon.id] ? undefined : icon;
+    // Se clicou no square-L-7 e já tem dados dinâmicos, retorna ao padrão
+    if (isLegacySite && dynamicSquareL7Data) {
+      setDynamicSquareL7Data(null); // Retorna para o conteúdo padrão
+      setActiveIcons(Object.keys(iconData)); // Ativa todos os ícones
+    } else if (!isLegacySite) {
+      // Atualiza o conteúdo do square-L-7 com as informações do ícone clicado
+      setDynamicSquareL7Data({
+        parentIconSrc: iconData[parentId].parentIconSrc,
+        hoverText: iconData[parentId].hoverText,
+        href: iconData[parentId].href,
+        className: iconData[parentId].className,
+        linkedIcons: iconData[parentId].linkedIcons,
       });
-      return updated;
-    });
+
+      // Atualiza quais ícones devem estar ativos
+      setActiveIcons(linkedIcons.map(icon => icon.id).concat('square-L-7'));
+    }
   };
 
   const closeCard = () => {
@@ -97,7 +102,14 @@ const Grid = () => {
   const squares = Array.from({ length: rows }, (_, row) =>
     Array.from({ length: cols }, (_, col) => {
       const id = `square-${getLetter(col)}-${row + 1}`;
-      const iconToRender = centralIcon === id ? iconData[centralIcon] : iconData[id];
+      let iconToRender;
+
+      if (id === 'square-L-7') {
+        // Renderiza o conteúdo dinâmico ou padrão para square-L-7
+        iconToRender = dynamicSquareL7Data || defaultSquareL7Data;
+      } else {
+        iconToRender = iconData[id];
+      }
 
       return (
         <div key={id} id={id} className="square">
@@ -112,18 +124,25 @@ const Grid = () => {
               onIconClick={handleIconClick}
             />
           )}
-          {activeLinkedIcons[id] && (
-            <img
-              src={activeLinkedIcons[id].iconSrc}
-              alt={`Linked Icon ${id}`}
-              className="mini-icon-image"
-              onClick={activeLinkedIcons[id].onClick}
-            />
+
+          {/* Renderiza os linkedIcons se existirem */}
+          {id === 'square-L-7' && dynamicSquareL7Data?.linkedIcons.length > 0 && (
+            <div className="linked-icons">
+              {dynamicSquareL7Data.linkedIcons.map((icon) => (
+                <img
+                  key={icon.id}
+                  src={icon.iconSrc}
+                  alt={`Linked Icon ${icon.id}`}
+                  className="mini-icon-image"
+                  onClick={icon.onClick} // Se houver um onClick definido
+                />
+              ))}
+            </div>
           )}
         </div>
       );
     })
-  ).flat(); // Flatten the nested arrays
+  ).flat();
 
   return (
     <div className="grid-container">
@@ -152,3 +171,4 @@ const Grid = () => {
 };
 
 export default Grid;
+
