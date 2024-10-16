@@ -1,63 +1,65 @@
 import React, { useState } from 'react';
 import './styles/Grid.css';
-import IconButton from './IconButton';
+
+const mockData = [
+  {
+    id: 'icon-1',
+    src: process.env.PUBLIC_URL + '/assets/caixa.png',
+    placement: 'square-F-7', // Posição na grade
+    associatedIcons: [
+      {
+        id: 'icon-1-1',
+        src: process.env.PUBLIC_URL + '/assets/caixa.png',
+        placement: 'square-D-9',
+        associatedIcons: [
+          {
+            id: 'icon-1-1-1',
+            src: process.env.PUBLIC_URL + '/assets/caixa.png',
+            placement: 'square-C-1',
+            associatedIcons: [],
+          },
+          {
+            id: 'icon-1-1-2',
+            src: process.env.PUBLIC_URL + '/assets/caixa.png',
+            placement: 'square-H-9',
+            associatedIcons: [],
+          },
+        ],
+      },
+      {
+        id: 'icon-1-2',
+        src: 'path/to/icon1-2.png',
+        placement: 'square-J-8',
+        associatedIcons: [],
+      },
+    ],
+  },
+  {
+    id: 'icon-2',
+    src: process.env.PUBLIC_URL + '/assets/partilhar.png',
+    placement: 'square-B-7',
+    associatedIcons: [
+      {
+        id: 'icon-2-1',
+        src: process.env.PUBLIC_URL + '/assets/mais.png',
+        placement: 'square-G-2',
+        associatedIcons: [],
+      },
+    ],
+  },
+  {
+    id: 'icon-3',
+    src: process.env.PUBLIC_URL + '/assets/logonova.png',
+    placement: 'square-N-7',
+    associatedIcons: [],
+  },
+];
 
 const Grid = () => {
   const rows = 15;
   const cols = 30;
 
-  const defaultSquareL7Data = {
-    parentIconSrc: process.env.PUBLIC_URL + '/assets/logonova.png',
-    hoverText: 'Site legado',
-    href: '',
-    className: 'icon-legacy',
-    linkedIcons: [],
-  };
-
-  const iconData = {
-    'square-L-7': defaultSquareL7Data,
-    'square-F-7': {
-      parentIconSrc: process.env.PUBLIC_URL + '/assets/pasta.png',
-      hoverText: 'Sobre Nós',
-      className: 'icon-about',
-      linkedIcons: [
-        { id: 'square-I-5', iconSrc: process.env.PUBLIC_URL + '/assets/mais.png' },
-        { id: 'square-I-9', iconSrc: process.env.PUBLIC_URL + '/assets/sobre.png' },
-      ],
-    },
-    'square-V-7': {
-      parentIconSrc: process.env.PUBLIC_URL + '/assets/partilhar.png',
-      hoverText: 'IoT',
-      className: 'icon-about',
-      linkedIcons: [
-        { id: 'square-V-5', iconSrc: process.env.PUBLIC_URL + '/assets/icon4.png' },
-        {
-          id: 'square-V-9',
-          iconSrc: process.env.PUBLIC_URL + '/assets/icon3.png',
-          onClick: () => setCardContent(`...`), // Conteúdo do card
-        },
-      ],
-    },
-    'square-N-2': {
-      parentIconSrc: process.env.PUBLIC_URL + '/assets/video.png',
-      hoverText: 'Opções de Operação',
-      className: 'icon-about',
-      linkedIcons: [],
-    },
-    'square-N-13': {
-      parentIconSrc: process.env.PUBLIC_URL + '/assets/sobre.png',
-      hoverText: 'Modal 2',
-      className: 'icon-about',
-      linkedIcons: [],
-      onClick: () => openIframe('https://www.tlm.net.br/'), // Corrigido para onClick
-    },
-  };
-
-  const [cardContent, setCardContent] = useState(null);
-  const [showIframe, setShowIframe] = useState(null);
-  const [activeIcons, setActiveIcons] = useState(Object.keys(iconData));
-  const [dynamicSquareL7Data, setDynamicSquareL7Data] = useState(null);
-  const [clickedIcon, setClickedIcon] = useState(null); // Novo estado para rastrear o ícone clicado
+  const [openIcons, setOpenIcons] = useState({}); // Estado para controle dos ícones abertos
 
   const getLetter = (num) => {
     let letter = '';
@@ -68,82 +70,57 @@ const Grid = () => {
     return letter;
   };
 
-  const handleIconClick = (parentId, linkedIcons) => {
-    const isLegacySite = parentId === 'square-L-7';
+  const toggleIcon = (id) => {
+    setOpenIcons((prev) => ({
+      ...prev,
+      [id]: !prev[id], // Alterna o estado do ícone clicado
+    }));
+  };
+  
 
-    // Se clicou no square-L-7 e já tem dados dinâmicos, retorna ao padrão
-    if (isLegacySite && dynamicSquareL7Data) {
-      setDynamicSquareL7Data(null); // Retorna para o conteúdo padrão
-      setActiveIcons(Object.keys(iconData)); // Ativa todos os ícones
-      setClickedIcon(null); // Reseta o ícone clicado
-    } else {
-      // Atualiza o conteúdo do square-L-7 com as informações do ícone clicado
-      if (!isLegacySite) {
-        setDynamicSquareL7Data({
-          parentIconSrc: iconData[parentId].parentIconSrc,
-          hoverText: iconData[parentId].hoverText,
-          href: iconData[parentId].href,
-          className: iconData[parentId].className,
-          linkedIcons: iconData[parentId].linkedIcons,
-        });
+  const renderIcon = (icon) => {
+    const isSpecialIcon = icon.id === 'icon-3'; // Verifica se é o ícone específico
+  
+    return (
+      <div key={icon.id} className="icon-container">
+        <img 
+          src={icon.src} 
+          alt={icon.id} 
+          className={`icon ${isSpecialIcon ? 'special-icon' : ''}`} // Adiciona a classe especial se for o 'icon-3'
+          onClick={() => toggleIcon(icon.id)} 
+        />
+      </div>
+    );
+  };
+  
 
-        // Atualiza quais ícones devem estar ativos
-        setActiveIcons(linkedIcons.map(icon => icon.id).concat('square-L-7'));
-        setClickedIcon(parentId); // Armazena o ícone que foi clicado
+  // Função para mapear todos os ícones com seus placements
+  const mapIconsToPlacement = () => {
+    const iconMap = {};
+    
+    const mapIcon = (icon) => {
+      iconMap[icon.placement] = renderIcon(icon);
+      
+      // Mapear ícones associados se o ícone estiver aberto
+      if (openIcons[icon.id]) {
+        icon.associatedIcons.forEach(mapIcon);
       }
-    }
+    };
+
+    mockData.forEach(mapIcon);
+    return iconMap;
   };
 
-  const closeCard = () => {
-    setCardContent(null);
-    setShowIframe(null);
-  };
-
-  const openIframe = (url) => {
-    setCardContent(null);
-    setShowIframe(url);
-  };
+  // Cria um mapa dos ícones e suas posições na grade
+  const iconMap = mapIconsToPlacement();
 
   const squares = Array.from({ length: rows }, (_, row) =>
     Array.from({ length: cols }, (_, col) => {
       const id = `square-${getLetter(col)}-${row + 1}`;
-      let iconToRender;
-
-      if (id === 'square-L-7') {
-        // Renderiza o conteúdo dinâmico ou padrão para square-L-7
-        iconToRender = dynamicSquareL7Data || defaultSquareL7Data;
-      } else {
-        iconToRender = iconData[id] || {}; // Usa um objeto vazio se não houver dados
-      }
-
       return (
         <div key={id} id={id} className="square">
-          {iconToRender && activeIcons.includes(id) && (
-            <IconButton
-              parentId={id}
-              parentIconSrc={iconToRender.parentIconSrc}
-              hoverText={iconToRender.hoverText}
-              linkedIcons={iconToRender.linkedIcons}
-              href={iconToRender.href}
-              className={iconToRender.className}
-              onIconClick={handleIconClick}
-            />
-          )}
-
-          {/* Renderiza os linkedIcons se existirem e se o ícone correspondente foi clicado */}
-          {clickedIcon === id && iconToRender.linkedIcons.length > 0 && (
-            <div className="linked-icons">
-              {iconToRender.linkedIcons.map((icon) => (
-                <img
-                  key={icon.id}
-                  src={icon.iconSrc}
-                  alt={`Linked Icon ${icon.id}`}
-                  className="mini-icon-image"
-                  onClick={icon.onClick} // Se houver um onClick definido
-                />
-              ))}
-            </div>
-          )}
+          {/* Renderiza o ícone correspondente ao placement se existir */}
+          {iconMap[id] || null}
         </div>
       );
     })
@@ -152,25 +129,6 @@ const Grid = () => {
   return (
     <div className="grid-container">
       {squares}
-      {showIframe && (
-        <div className="iframe-overlay">
-          <iframe
-            src={showIframe}
-            title="Iframe Example"
-            className="iframe-content"
-            style={{ width: '100%', height: '100%' }}
-          />
-          <button onClick={closeCard} className="close-button">X</button>
-        </div>
-      )}
-      {cardContent && (
-        <div className="card-overlay">
-          <div className="card-content">
-            <button onClick={closeCard} className="close-button">X</button>
-            <p>{cardContent}</p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
