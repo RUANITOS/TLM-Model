@@ -9,13 +9,15 @@ const mockData = [
     associatedIcons: [
       {
         id: 'icon-1-1',
-        src: process.env.PUBLIC_URL + '/assets/caixa.png',
+        src: process.env.PUBLIC_URL + '/assets/lixo.png',
         placement: 'square-D-9',
+        isMiddle: false,
         associatedIcons: [
           {
             id: 'icon-1-1-1',
-            src: process.env.PUBLIC_URL + '/assets/caixa.png',
-            placement: 'square-C-1',
+            src: process.env.PUBLIC_URL + '/assets/linkExterno.png',
+            placement: 'square-C-4',
+            isMiddle: false,
             associatedIcons: [],
           },
           {
@@ -28,7 +30,7 @@ const mockData = [
       },
       {
         id: 'icon-1-2',
-        src: 'path/to/icon1-2.png',
+        src: process.env.PUBLIC_URL + '/assets/sobre.png',
         placement: 'square-J-8',
         associatedIcons: [],
       },
@@ -62,7 +64,7 @@ const Grid = () => {
 
   const [openIcons, setOpenIcons] = useState({});
   const [centralIcon, setCentralIcon] = useState(null);
-  const [displayIcons, setDisplayIcons] = useState(mockData); 
+  const [displayIcons, setDisplayIcons] = useState(mockData);
 
   const getLetter = (num) => {
     let letter = '';
@@ -74,6 +76,11 @@ const Grid = () => {
   };
 
   const handleIconClick = (icon) => {
+    if (icon.isMiddle === false) {
+      // Não faz nada se o ícone não pode ir para o meio
+      return;
+    }
+
     if (centralIcon === icon.id) {
       // Clica no centro para voltar ao estado inicial
       setCentralIcon(null);
@@ -85,16 +92,20 @@ const Grid = () => {
     }
   };
 
-  const renderIcon = (icon, position) => (
-    <div key={icon.id} className="icon-container">
-      <img
-        src={icon.src}
-        alt={icon.id}
-        className="icon"
-        onClick={() => handleIconClick(icon)}
-      />
-    </div>
-  );
+  const renderIcon = (icon) => {
+    const isSpecialIcon = icon.id === 'icon-3'; // Verifica se é o ícone específico
+  
+    return (
+      <div key={icon.id} className={`icon-container ${isSpecialIcon ? 'special' : ''}`}>
+        <img
+          src={icon.src}
+          alt={icon.id}
+          className={`icon ${isSpecialIcon ? 'special-icon' : ''}`}
+          onClick={() => handleIconClick(icon)}
+        />
+      </div>
+    );
+  };
 
   const mapIconsToPlacement = () => {
     const iconMap = {};
@@ -102,7 +113,7 @@ const Grid = () => {
     // Renderiza os ícones associados na posição especificada
     displayIcons.forEach(icon => {
       const position = centralIcon === icon.id ? centerSquare : icon.placement;
-      iconMap[position] = renderIcon(icon, position);
+      iconMap[position] = renderIcon(icon);
     });
 
     return iconMap;
