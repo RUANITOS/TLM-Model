@@ -60,7 +60,7 @@ const mockData = [
 const Grid = () => {
   const rows = 15;
   const cols = 30;
-  const centerSquare = 'square-L-7';
+  const centerSquare = 'square-N-7';
 
   const [openIcons, setOpenIcons] = useState({});
   const [centralIcon, setCentralIcon] = useState(null);
