@@ -5,7 +5,7 @@ const mockData = [
   {
     id: 'icon-1',
     src: process.env.PUBLIC_URL + '/assets/caixa.png',
-    placement: 'square-F-7', // Posição na grade
+    placement: 'square-F-7',
     associatedIcons: [
       {
         id: 'icon-1-1',
@@ -58,8 +58,11 @@ const mockData = [
 const Grid = () => {
   const rows = 15;
   const cols = 30;
+  const centerSquare = 'square-L-7';
 
-  const [openIcons, setOpenIcons] = useState({}); // Estado para controle dos ícones abertos
+  const [openIcons, setOpenIcons] = useState({});
+  const [centralIcon, setCentralIcon] = useState(null);
+  const [displayIcons, setDisplayIcons] = useState(mockData); 
 
   const getLetter = (num) => {
     let letter = '';
@@ -70,48 +73,41 @@ const Grid = () => {
     return letter;
   };
 
-  const toggleIcon = (id) => {
-    setOpenIcons((prev) => ({
-      ...prev,
-      [id]: !prev[id], // Alterna o estado do ícone clicado
-    }));
+  const handleIconClick = (icon) => {
+    if (centralIcon === icon.id) {
+      // Clica no centro para voltar ao estado inicial
+      setCentralIcon(null);
+      setDisplayIcons(mockData);
+    } else {
+      // Mostra o ícone clicado no centro e apenas seus filhos
+      setCentralIcon(icon.id);
+      setDisplayIcons([icon, ...icon.associatedIcons]);
+    }
   };
-  
 
-  const renderIcon = (icon) => {
-    const isSpecialIcon = icon.id === 'icon-3'; // Verifica se é o ícone específico
-  
-    return (
-      <div key={icon.id} className="icon-container">
-        <img 
-          src={icon.src} 
-          alt={icon.id} 
-          className={`icon ${isSpecialIcon ? 'special-icon' : ''}`} // Adiciona a classe especial se for o 'icon-3'
-          onClick={() => toggleIcon(icon.id)} 
-        />
-      </div>
-    );
-  };
-  
+  const renderIcon = (icon, position) => (
+    <div key={icon.id} className="icon-container">
+      <img
+        src={icon.src}
+        alt={icon.id}
+        className="icon"
+        onClick={() => handleIconClick(icon)}
+      />
+    </div>
+  );
 
-  // Função para mapear todos os ícones com seus placements
   const mapIconsToPlacement = () => {
     const iconMap = {};
     
-    const mapIcon = (icon) => {
-      iconMap[icon.placement] = renderIcon(icon);
-      
-      // Mapear ícones associados se o ícone estiver aberto
-      if (openIcons[icon.id]) {
-        icon.associatedIcons.forEach(mapIcon);
-      }
-    };
+    // Renderiza os ícones associados na posição especificada
+    displayIcons.forEach(icon => {
+      const position = centralIcon === icon.id ? centerSquare : icon.placement;
+      iconMap[position] = renderIcon(icon, position);
+    });
 
-    mockData.forEach(mapIcon);
     return iconMap;
   };
 
-  // Cria um mapa dos ícones e suas posições na grade
   const iconMap = mapIconsToPlacement();
 
   const squares = Array.from({ length: rows }, (_, row) =>
