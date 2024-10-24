@@ -10,7 +10,7 @@ const Login = ({ onLogin }) => {
     e.preventDefault();
 
     // Simulação de autenticação simples
-    if (username === 'admin' && password === '1234') {
+    if (username === '' && password === '') {
       onLogin(); // Chama a função de login bem-sucedido
     } else {
       setError('Credenciais inválidas. Tente novamente.');
