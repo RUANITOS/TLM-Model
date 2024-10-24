@@ -2,9 +2,9 @@
   display: grid;
   grid-template-columns: repeat(30, 1fr);
   grid-template-rows: repeat(15, 1fr);
+  position: relative;
   height: 100vh;
   width: 100vw;
-  position: relative; /* Necessário para a pseudo-classe ::before */
 }
 .grid-container::before {
   content: '';
@@ -34,9 +34,12 @@
   transform: translateX(-50%); /* Ajusta a posição para que fique centralizado */
 }
 .icon {
-  width: 60px; /* Largura do ícone */
+  width: 80px; /* Largura do ícone */
   cursor: pointer;
-
+  transition: transform 0.3s ease;
+}
+.icon:hover {
+  transform: scale(1.1);
 }
 .associated-icons {
   position: absolute; /* Para posicionar ícones associados em relação ao ícone pai */
@@ -47,8 +50,8 @@
 }
 /* Estilos específicos para o 'icon-3' */
 .special-icon {
-  width: 200px;  /* Largura maior para 'icon-3' */
-  height: 100px; /* Altura maior para 'icon-3' */
+  width: 260px;  /* Largura maior para 'icon-3' */
+  height: 130px; /* Altura maior para 'icon-3' */
 }
 .modal-overlay {
   position: fixed;
@@ -71,4 +74,24 @@
 
 .modal-content button {
   margin-top: 10px;
+}
+.hover-text {
+  position: absolute;
+  top: -30px; /* Ajusta a posição do texto acima do ícone */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.icon-container:hover .hover-text {
+  opacity: 1;
+  visibility: visible;
 }

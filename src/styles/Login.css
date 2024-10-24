@@ -1,0 +1,67 @@
+/* Login.css */
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url('/public/assets/background.png');
+  background-size: cover;
+  background-position: center;
+}
+
+form {
+  background-color: rgba(255, 255, 255, 0.8); /* Fundo semi-transparente para o formulário */
+  padding: 50px 30px 20px 30px;
+  border-radius: 2px;
+  border: solid 2px;
+  width: 450px;
+  height: 450px;
+  
+}
+
+.logosss {
+  margin-bottom: 20px;
+  width: 320px;
+}
+
+.input-group {
+  margin-top: 30px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.input-group input {
+  border: 1px solid #d4d4d4;
+    border-radius: 4px;
+    font-size: 14px;
+    height: 50px;
+    line-height: 50px;
+}
+
+.login-button {
+  background: #202959 none repeat scroll 0 0;
+  border-color: #202959;
+  color: #ffffff;
+  font-size: 14px;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  padding: 0;
+  margin-bottom: 65px;
+}
+
+.login-button:hover {
+  background-color: #1a2a5d;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}

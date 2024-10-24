@@ -5,25 +5,29 @@ const mockData = [
   {
     id: 'icon-1',
     src: process.env.PUBLIC_URL + '/assets/caixa.png',
-    placement: 'square-F-7',
+    placement: 'square-6-7',
+    hovertext: 'Caixa de informações',
     associatedIcons: [
       {
         id: 'icon-1-1',
         src: process.env.PUBLIC_URL + '/assets/lixo.png',
-        placement: 'square-D-9',
+        placement: 'square-4-9',
+        hovertext: 'Lixeira',
         isMiddle: false,
         associatedIcons: [
           {
             id: 'icon-1-1-1',
             src: process.env.PUBLIC_URL + '/assets/linkExterno.png',
-            placement: 'square-C-4',
+            placement: 'square-3-4',
+            hovertext: 'Link Externo',
             isMiddle: false,
             associatedIcons: [],
           },
           {
             id: 'icon-1-1-2',
             src: process.env.PUBLIC_URL + '/assets/caixa.png',
-            placement: 'square-H-9',
+            placement: 'square-8-9',
+            hovertext: 'Caixa',
             associatedIcons: [],
           },
         ],
@@ -31,7 +35,8 @@ const mockData = [
       {
         id: 'icon-1-2',
         src: process.env.PUBLIC_URL + '/assets/sobre.png',
-        placement: 'square-J-8',
+        placement: 'square-10-8',
+        hovertext: 'Sobre nós',
         associatedIcons: [],
       },
     ],
@@ -39,12 +44,14 @@ const mockData = [
   {
     id: 'icon-2',
     src: process.env.PUBLIC_URL + '/assets/partilhar.png',
-    placement: 'square-T-6',
+    placement: 'square-25-6',
+    hovertext: 'Compartilhar',
     associatedIcons: [
       {
         id: 'icon-2-1',
         src: process.env.PUBLIC_URL + '/assets/mais.png',
-        placement: 'square-G-2',
+        placement: 'square-7-2',
+        hovertext: 'Mais opções',
         associatedIcons: [],
       },
     ],
@@ -52,13 +59,15 @@ const mockData = [
   {
     id: 'icon-3',
     src: process.env.PUBLIC_URL + '/assets/logonova.png',
-    placement: 'square-N-7',
+    placement: 'square-14-7',
+    hovertext: 'Logo',
     associatedIcons: [],
   },
   {
     id: 'icon-4',
     src: process.env.PUBLIC_URL + '/assets/documento.png',
-    placement: 'square-G-11',
+    placement: 'square-7-11',
+    hovertext: 'Documento',
     associatedIcons: [],
     isMiddle: false,
     modalTitle: "Informações sobre o Icone 4",
@@ -67,7 +76,8 @@ const mockData = [
   {
     id: 'icon-5',
     src: process.env.PUBLIC_URL + '/assets/video.png',
-    placement: 'square-N-3',
+    placement: 'square-13-3',
+    hovertext: 'Vídeo',
     associatedIcons: [],
     isMiddle: false,
     modalTitle: "Atuação Nacional",
@@ -76,12 +86,14 @@ const mockData = [
   {
     id: 'icon-6', // Novo ícone
     src: process.env.PUBLIC_URL + '/assets/informacoes.png',
-    placement: 'square-N-13',
+    placement: 'square-5-13',
+    hovertext: 'Informações adicionais',
     associatedIcons: [],
     isMiddle: false,
     alertContent: "Este é um alerta do ícone 6!" // Mensagem do alerta
   }
 ];
+
 
 const Modal = ({ isOpen, onClose, title, content }) => {
   if (!isOpen) return null;
@@ -100,35 +112,26 @@ const Modal = ({ isOpen, onClose, title, content }) => {
 const Grid = () => {
   const rows = 15;
   const cols = 30;
-  const centerSquare = 'square-L-7';
+  const centerSquare = 'square-12-7'; // Exemplo de ícone central ajustado
 
   const [openIcons, setOpenIcons] = useState({});
   const [centralIcon, setCentralIcon] = useState(null);
   const [displayIcons, setDisplayIcons] = useState(mockData);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Estado do modal
-  const [modalContent, setModalContent] = useState(''); // Conteúdo do modal
-  const [modalTitle, setModalTitle] = useState(''); // Para armazenar o título do modal
-
-  const getLetter = (num) => {
-    let letter = '';
-    while (num >= 0) {
-      letter = String.fromCharCode((num % 26) + 65) + letter;
-      num = Math.floor(num / 26) - 1;
-    }
-    return letter;
-  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState('');
+  const [modalTitle, setModalTitle] = useState('');
+  const [hoverText, setHoverText] = useState(''); // Estado para armazenar o texto de hover
+  const [hoverPosition, setHoverPosition] = useState(null); // Posição do hover
 
   const handleIconClick = (icon) => {
     if (icon.id === 'icon-4') {
-      // Abre o modal ao clicar no icon-4
-      setModalContent(icon.modalContent); // Usa o conteúdo do ícone
-      setModalTitle(icon.modalTitle); // Usa o título do ícone
+      setModalContent(icon.modalContent);
+      setModalTitle(icon.modalTitle);
       setIsModalOpen(true);
       return;
     }
-  
+
     if (icon.id === 'icon-5') {
-      // Abre o modal com o iframe ao clicar no icon-5
       setModalContent(
         <iframe 
           width="560" 
@@ -138,43 +141,53 @@ const Grid = () => {
           allowFullScreen 
         />
       );
-      setModalTitle(icon.modalTitle); // Usa o título do ícone
+      setModalTitle(icon.modalTitle);
       setIsModalOpen(true);
       return;
     }
     if (icon.id === 'icon-6') {
-      // Alerta ao clicar no icon-6
-      alert(icon.alertContent); // Exibe o alerta
+      alert(icon.alertContent);
       return;
     }
-  
+
     if (icon.isMiddle === false) {
-      // Não faz nada se o ícone não pode ir para o meio
       return;
     }
-  
+
     if (centralIcon === icon.id) {
-      // Clica no centro para voltar ao estado inicial
       setCentralIcon(null);
       setDisplayIcons(mockData);
     } else {
-      // Mostra o ícone clicado no centro e apenas seus filhos
       setCentralIcon(icon.id);
       setDisplayIcons([icon, ...icon.associatedIcons]);
     }
   };
-  
+
   const renderIcon = (icon) => {
-    const isSpecialIcon = icon.id === 'icon-3'; // Verifica se é o ícone específico
-  
+    const isSpecialIcon = icon.id === 'icon-3';
+
     return (
-      <div key={icon.id} className={`icon-container ${isSpecialIcon ? 'special' : ''}`}>
+      <div
+        key={icon.id}
+        className={`icon-container ${isSpecialIcon ? 'special' : ''}`}
+        onMouseEnter={() => {
+          setHoverText(icon.hovertext); // Define o texto de hover
+          setHoverPosition(icon.placement); // Define a posição para exibir o hover
+        }}
+        onMouseLeave={() => {
+          setHoverText(''); // Limpa o texto de hover
+          setHoverPosition(null); // Limpa a posição
+        }}
+      >
         <img
           src={icon.src}
           alt={icon.id}
           className={`icon ${isSpecialIcon ? 'special-icon' : ''}`}
           onClick={() => handleIconClick(icon)}
         />
+        <div className="hover-text">
+          {icon.hovertext}
+        </div>
       </div>
     );
   };
@@ -182,7 +195,6 @@ const Grid = () => {
   const mapIconsToPlacement = () => {
     const iconMap = {};
     
-    // Renderiza os ícones associados na posição especificada
     displayIcons.forEach(icon => {
       const position = centralIcon === icon.id ? centerSquare : icon.placement;
       iconMap[position] = renderIcon(icon);
@@ -195,10 +207,9 @@ const Grid = () => {
 
   const squares = Array.from({ length: rows }, (_, row) =>
     Array.from({ length: cols }, (_, col) => {
-      const id = `square-${getLetter(col)}-${row + 1}`;
+      const id = `square-${col + 1}-${row + 1}`; // Alterado para usar apenas números
       return (
         <div key={id} id={id} className="square">
-          {/* Renderiza o ícone correspondente ao placement se existir */}
           {iconMap[id] || null}
         </div>
       );
@@ -208,10 +219,15 @@ const Grid = () => {
   return (
     <div className="grid-container">
       {squares}
+      {hoverText && hoverPosition && (
+        <div className="hover-text" style={{ position: 'absolute', top: `calc(${hoverPosition}%)`, left: `calc(${hoverPosition}%)` }}>
+          {hoverText}
+        </div>
+      )}
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title={modalTitle} // Passando o título do modal
+        title={modalTitle}
         content={modalContent} 
       />
     </div>
