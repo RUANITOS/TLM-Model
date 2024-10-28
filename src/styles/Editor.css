@@ -66,3 +66,20 @@ body{
     width: 100%;
     box-shadow: 0px 2px 11px 2px #00368285 !important;
 }
+.icon-editor-dropdown {
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  position: absolute; /* Para sobrepor outros elementos */
+  background-color: white; /* Para que o dropdown tenha um fundo */
+  z-index: 10; /* Para ficar acima de outros elementos */
+}
+
+.icon-editor-dropdown-item {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.icon-editor-dropdown-item:hover {
+  background-color: #f0f0f0; /* Realça o item ao passar o mouse */
+}
