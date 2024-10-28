@@ -1,100 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './styles/Grid.css';
 
-const mockData = [
-  {
-    id: 'icon-1',
-    src: process.env.PUBLIC_URL + '/assets/caixa.png',
-    placement: 'square-6-7',
-    hovertext: 'ID:11 - Caixa de informações',
-    associatedIcons: [
-      {
-        id: 'icon-1-1',
-        src: process.env.PUBLIC_URL + '/assets/lixo.png',
-        placement: 'square-4-9',
-        hovertext: 'ID:01 - Lixeira',
-        isMiddle: false,
-        associatedIcons: [
-          {
-            id: 'icon-1-1-1',
-            src: process.env.PUBLIC_URL + '/assets/linkExterno.png',
-            placement: 'square-3-4',
-            hovertext: 'ID:02 - Link Externo',
-            isMiddle: false,
-            associatedIcons: [],
-          },
-          {
-            id: 'icon-1-1-2',
-            src: process.env.PUBLIC_URL + '/assets/caixa.png',
-            placement: 'square-8-9',
-            hovertext: 'ID:03 - Caixa',
-            associatedIcons: [],
-          },
-        ],
-      },
-      {
-        id: 'icon-1-2',
-        src: process.env.PUBLIC_URL + '/assets/sobre.png',
-        placement: 'square-10-8',
-        hovertext: 'ID:04 - Sobre nós',
-        associatedIcons: [],
-      },
-    ],
-  },
-  {
-    id: 'icon-2',
-    src: process.env.PUBLIC_URL + '/assets/partilhar.png',
-    placement: 'square-25-6',
-    hovertext: 'ID:05 - Compartilhar',
-    associatedIcons: [
-      {
-        id: 'icon-2-1',
-        src: process.env.PUBLIC_URL + '/assets/mais.png',
-        placement: 'square-7-2',
-        hovertext: 'ID:06 - Mais opções',
-        associatedIcons: [],
-      },
-    ],
-  },
-  {
-    id: 'icon-3',
-    src: process.env.PUBLIC_URL + '/assets/logonova.png',
-    placement: 'square-14-7',
-    hovertext: 'ID:07 - Logo',
-    associatedIcons: [],
-  },
-  {
-    id: 'icon-4',
-    src: process.env.PUBLIC_URL + '/assets/documento.png',
-    placement: 'square-7-11',
-    hovertext: 'ID:08 - Documento',
-    associatedIcons: [],
-    isMiddle: false,
-    modalTitle: "Informações sobre o Icone 4",
-    modalContent: "Aqui estão algumas informações sobre o ícone 4."
-  },
-  {
-    id: 'icon-5',
-    src: process.env.PUBLIC_URL + '/assets/video.png',
-    placement: 'square-13-3',
-    hovertext: 'ID:09 - Vídeo',
-    associatedIcons: [],
-    isMiddle: false,
-    modalTitle: "Atuação Nacional",
-    modalContent: "Assista ao vídeo a seguir para obter mais informações."
-  },
-  {
-    id: 'icon-6', // Novo ícone
-    src: process.env.PUBLIC_URL + '/assets/informacoes.png',
-    placement: 'square-5-13',
-    hovertext: 'ID:10 - Informações adicionais',
-    associatedIcons: [],
-    isMiddle: false,
-    alertContent: "Este é um alerta do ícone 6!" // Mensagem do alerta
-  }
-];
-
-
 const Modal = ({ isOpen, onClose, title, content }) => {
   if (!isOpen) return null;
 
@@ -122,24 +28,30 @@ const Grid = () => {
   const [hoverText, setHoverText] = useState(''); // Estado para armazenar o texto de hover
   const [hoverPosition, setHoverPosition] = useState(null); // Posição do hover
 
-  // Função para buscar os dados do backend
   const fetchIcons = async () => {
     try {
       const response = await fetch('http://localhost:5000/api/icons');
       const data = await response.json();
-      
-      // Transformar associatedIcons de JSON para objeto e atualizar o ID para icon_id
-      const iconsWithAssociated = data.map(icon => ({
-        ...icon,
-        id: icon.icon_id, // Altera o ID para usar o icon_id do banco
-        associatedIcons: typeof icon.associated_icons === 'string' ? JSON.parse(icon.associated_icons) : icon.associated_icons,
+  
+      const iconsWithAssociated = await Promise.all(data.map(async (icon) => {
+        const imgBlob = icon.src ? new Blob([new Uint8Array(icon.src.data)]) : null; // Converte o buffer do BLOB
+        const imgUrl = imgBlob ? URL.createObjectURL(imgBlob) : ''; // Cria a URL a partir do BLOB
+  
+        return {
+          ...icon,
+          id: icon.icon_id, // Altera o ID para usar o icon_id do banco
+          associatedIcons: typeof icon.associated_icons === 'string' ? JSON.parse(icon.associated_icons) : icon.associated_icons,
+          src: imgUrl, // Usa a URL gerada
+        };
       }));
-
+  
       setDisplayIcons(iconsWithAssociated); // Atualiza o estado com os ícones convertidos
     } catch (error) {
       console.error('Erro ao buscar ícones:', error);
     }
   };
+  
+  
 
   useEffect(() => {
     fetchIcons(); // Chama a função ao montar o componente
@@ -187,10 +99,9 @@ const Grid = () => {
       setDisplayIcons([icon, ...icon.associatedIcons]);
     }
   };
-
   const renderIcon = (icon) => {
     const isSpecialIcon = icon.id === 'icon-3';
-
+  
     return (
       <div
         key={icon.id}
@@ -205,7 +116,7 @@ const Grid = () => {
         }}
       >
         <img
-          src={icon.src}
+          src={icon.src} // Aqui é onde a URL gerada a partir do BLOB é usada
           alt={icon.id}
           className={`icon ${isSpecialIcon ? 'special-icon' : ''}`}
           onClick={() => handleIconClick(icon)}

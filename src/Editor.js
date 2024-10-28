@@ -1,72 +1,133 @@
-import React, { useState } from 'react';
-import './styles/Editor.css'; // Novo nome para o arquivo de estilo
+// backend/components/IconEditor.js
+import React, { useState, useEffect } from 'react';
+import './styles/Editor.css';
 
 const IconEditor = () => {
   const [formData, setFormData] = useState({
     id: '',
-    src: null, // Imagem como BLOB
-    placement: '',
-    hovertext: '',
-    associatedIcons: false, // Checkbox
-    modalTitle: '',
-    modalContent: ''
+    src: null,
   });
+  const [iconIds, setIconIds] = useState([]); // IDs já cadastrados
+
+  useEffect(() => {
+    fetchIconIds(); // Chama ao montar o componente
+  }, []);
+
+  const fetchIconIds = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/icons/ids');
+      const data = await response.json();
+      setIconIds(data);
+    } catch (error) {
+      console.error('Erro ao buscar IDs:', error);
+    }
+  };
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    if (type === 'checkbox') {
-      setFormData({ ...formData, [name]: checked });
-    } else if (type === 'file') {
-      setFormData({ ...formData, src: e.target.files[0] });
+    const { name, value, type } = e.target;
+    if (type === 'file') {
+      setFormData({ ...formData, src: e.target.files[0] }); // Armazena o arquivo selecionado
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Preparando os dados para enviar ao backend
+  const handleSave = async () => {
+    if (!formData.id || !formData.src) {
+      alert("Por favor, preencha o ID do ícone e faça o upload de uma imagem.");
+      return;
+    }
     const formDataToSend = new FormData();
     formDataToSend.append('icon_id', formData.id);
-    formDataToSend.append('src', formData.src); // Certifique-se de que formData.src seja um arquivo
-    formDataToSend.append('placement', formData.placement);
-    formDataToSend.append('hovertext', formData.hovertext);
-    formDataToSend.append('associated_icons', formData.associatedIcons); // Envie como booleano
-    formDataToSend.append('modal_title', formData.modalTitle || '');
-    formDataToSend.append('modal_content', formData.modalContent || '');
+    formDataToSend.append('src', formData.src); // Adiciona o arquivo à requisição
 
     try {
-      // Enviando os dados ao backend via POST
-      const response = await fetch('http://localhost:5000/api/icons', {
+      const response = await fetch('http://localhost:5000/api/icons/add', {
         method: 'POST',
         body: formDataToSend,
       });
-
-      // Tratamento da resposta do backend
       if (response.ok) {
-        const result = await response.json();
-        console.log('Ícone adicionado com sucesso:', result);
+        alert('Ícone adicionado com sucesso!');
+        setFormData({ id: '', src: null }); // Reseta o formulário após a adição
+        fetchIconIds(); // Atualiza a lista de IDs
       } else {
-        const error = await response.text(); // Capture o texto do erro
-        console.error('Erro ao enviar os dados:', error);
+        alert('Erro ao adicionar ícone.'); // Mensagem de erro
       }
     } catch (error) {
-      console.error('Erro ao conectar com o backend:', error);
+      console.error('Erro ao adicionar ícone:', error);
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!formData.id) {
+      alert("Por favor, selecione um ID de ícone para atualizar.");
+      return;
+    }
+    const formDataToSend = new FormData();
+    formDataToSend.append('icon_id', formData.id);
+    if (formData.src) formDataToSend.append('src', formData.src); // Adiciona o arquivo à requisição, se existir
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/icons/update/${formData.id}`, {
+        method: 'PUT',
+        body: formDataToSend,
+      });
+      if (response.ok) {
+        alert('Ícone atualizado com sucesso!');
+        setFormData({ id: '', src: null }); // Reseta o formulário após a atualização
+        fetchIconIds(); // Atualiza a lista de IDs
+      } else {
+        alert('Erro ao atualizar ícone.'); // Mensagem de erro
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar ícone:', error);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!formData.id) {
+      alert("Por favor, selecione um ID de ícone para deletar.");
+      return;
+    }
+    try {
+      const response = await fetch(`http://localhost:5000/api/icons/delete/${formData.id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        alert('Ícone deletado com sucesso!');
+        setFormData({ id: '', src: null }); // Reseta o formulário após a deleção
+        fetchIconIds(); // Atualiza a lista de IDs
+      } else {
+        alert('Erro ao deletar ícone.'); // Mensagem de erro
+      }
+    } catch (error) {
+      console.error('Erro ao deletar ícone:', error);
     }
   };
 
   return (
     <div className="icon-editor-container">
-      <h2 className="icon-editor-title">Icon Editor</h2>
-      <form className="icon-editor-form" onSubmit={handleSubmit}>
+      <h2 className="icon-editor-title">Criador de Ícones</h2>
+
+      <form className="icon-editor-form" onSubmit={(e) => e.preventDefault()}>
         <label className="icon-editor-label">ID do Ícone:</label>
+        <select
+          name="id"
+          value={formData.id}
+          onChange={handleChange}
+          className="icon-editor-input"
+        >
+          <option value="">Selecione um ID existente</option>
+          {iconIds.map(id => (
+            <option key={id} value={id}>{id}</option>
+          ))}
+        </select>
         <input
           type="text"
           name="id"
           value={formData.id}
           onChange={handleChange}
-          placeholder="Digite o ID do ícone"
+          placeholder="Ou insira um novo ID"
           className="icon-editor-input"
         />
 
@@ -79,57 +140,9 @@ const IconEditor = () => {
           className="icon-editor-input-file"
         />
 
-        <label className="icon-editor-label">Posição:</label>
-        <input
-          type="text"
-          name="placement"
-          value={formData.placement}
-          onChange={handleChange}
-          placeholder="Posição (e.g., square-1-1)"
-          className="icon-editor-input"
-        />
-
-        <label className="icon-editor-label">Texto de Hover:</label>
-        <input
-          type="text"
-          name="hovertext"
-          value={formData.hovertext}
-          onChange={handleChange}
-          placeholder="Texto exibido ao passar o mouse"
-          className="icon-editor-input"
-        />
-
-        <label className="icon-editor-checkbox-label">
-          <input
-            type="checkbox"
-            name="associatedIcons"
-            checked={formData.associatedIcons}
-            onChange={handleChange}
-            className="icon-editor-checkbox"
-          />
-          Ícone Associado
-        </label>
-
-        <label className="icon-editor-label">Título do Modal:</label>
-        <input
-          type="text"
-          name="modalTitle"
-          value={formData.modalTitle}
-          onChange={handleChange}
-          placeholder="Título do Modal"
-          className="icon-editor-input"
-        />
-
-        <label className="icon-editor-label">Conteúdo do Modal:</label>
-        <textarea
-          name="modalContent"
-          value={formData.modalContent}
-          onChange={handleChange}
-          placeholder="Conteúdo do Modal"
-          className="icon-editor-textarea"
-        />
-
-        <button type="submit" className="icon-editor-button">Salvar Ícone</button>
+        <button type="button" className="icon-editor-button" onClick={handleSave}>Salvar Ícone</button>
+        <button type="button" className="icon-editor-button" onClick={handleUpdate}>Atualizar Ícone</button>
+        <button type="button" className="icon-editor-button" onClick={handleDelete}>Deletar Ícone</button>
       </form>
     </div>
   );

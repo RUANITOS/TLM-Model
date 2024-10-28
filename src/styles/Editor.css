@@ -1,11 +1,8 @@
 /* Estilos gerais */
-.icon-editor-container {
-    
+.icon-editor-container { 
     border-radius: 8px;
-    padding-left:100px ;
     width: 100%;
-    max-width: 600px;
-    margin: 1%;
+    padding-left: 1%;
   }
   
   .icon-editor-title {
@@ -59,4 +56,13 @@
   .icon-editor-button:hover {
     background-color: #202959;
   }
-  
+body{
+    background:#DADADA;
+    padding-right: 2%;
+}
+.icon-editor-label-title{
+    background-color: rgba(255, 255, 255, 0.8); /* Fundo semi-transparente para o formulário */
+    border-radius: 2px;
+    width: 100%;
+    box-shadow: 0px 2px 11px 2px #00368285 !important;
+}
