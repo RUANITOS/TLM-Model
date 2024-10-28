@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import './styles/Editor.css'; // Novo nome para o arquivo de estilo
+import './styles/Editor.css';
 
 const IconEditor = () => {
   const [formData, setFormData] = useState({
     id: '',
     src: null, // Imagem como BLOB
+    newId: '', // Novo ID para modificar
   });
 
   const [iconIds, setIconIds] = useState([]); // Para armazenar os IDs de ícones
@@ -27,26 +28,41 @@ const IconEditor = () => {
     }
   };
 
-  // Função para buscar a imagem correspondente ao ID selecionado
-  const fetchIconById = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/icons/${id}`);
-      if (response.ok) {
-        const { src } = await response.json(); // Assume que o endpoint retorna um objeto com a propriedade 'src'
-        const blob = new Blob([new Uint8Array(src.data)], { type: src.mimetype }); // Cria um Blob a partir dos dados
-        const imageUrl = URL.createObjectURL(blob); // Gera uma URL a partir do Blob
-        setImagePreview(imageUrl); // Atualiza o estado da visualização da imagem
-      } else {
-        console.error('Erro ao buscar o ícone:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Erro ao conectar com o backend:', error);
-    }
-  };
+// Função para buscar a imagem correspondente ao ID selecionado
+const fetchIconById = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/icons/${id}`);
+    if (response.ok) {
+      const { src } = await response.json();
 
-  useEffect(() => {
-    fetchIconIds(); // Busca os IDs ao montar o componente
-  }, []);
+      // Verifica se src.data e src.type estão presentes e são válidos
+      if (src && Array.isArray(src.data) && src.type) {
+        
+        // Converte o array `src.data` em Uint8Array e cria um Blob com o tipo correto
+        const blob = new Blob([Uint8Array.from(src.data)], { type: src.type });
+        const imageUrl = URL.createObjectURL(blob);
+        
+        // Define a pré-visualização da imagem
+        setImagePreview(imageUrl);
+        
+      } else {
+        console.error('Formato de dados da imagem inválido ou incompleto');
+      }
+    } else {
+      console.error('Erro ao buscar o ícone:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Erro ao conectar com o backend:', error);
+  }
+};
+
+// Carrega os IDs de ícones ao montar o componente
+useEffect(() => {
+  fetchIconIds();
+}, []);
+
+
+
 
   useEffect(() => {
     if (action === 'delete' && selectedId) {
@@ -69,35 +85,37 @@ const IconEditor = () => {
     setAction(e.target.value);
     setSelectedId(''); // Reseta a seleção ao mudar a ação
     setImagePreview(null); // Limpa a visualização da imagem ao mudar a ação
-    setFormData({ id: '', src: null }); // Limpa o formulário ao mudar a ação
+    setFormData({ id: '', src: null, newId: '' }); // Limpa o formulário ao mudar a ação
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formDataToSend = new FormData();
-    
+
     if (action === 'add') {
       formDataToSend.append('icon_id', formData.id);
       formDataToSend.append('src', formData.src); // Somente para adicionar
+    } else if (action === 'modify') {
+      formDataToSend.append('icon_id', selectedId); // ID existente para modificar
+      formDataToSend.append('src', formData.src); // Nova imagem
     } else {
-      formDataToSend.append('icon_id', selectedId); // Para modificar ou deletar
+      formDataToSend.append('icon_id', selectedId); // Para deletar
     }
-  
+
     try {
-      // Use a rota correta para cada ação
       const url = `http://localhost:5000/api/icons/${action === 'delete' ? `delete/${selectedId}` : (action === 'add' ? 'add' : 'modify')}`;
       const method = action === 'delete' ? 'DELETE' : (action === 'add' ? 'POST' : 'PUT');
-  
+
       const response = await fetch(url, {
         method,
         body: formDataToSend,
       });
-  
+
       if (response.ok) {
         alert(`Ícone ${action === 'delete' ? 'deletado' : action === 'modify' ? 'modificado' : 'adicionado'} com sucesso!`);
         fetchIconIds(); // Atualiza a lista de IDs após a ação
         setImagePreview(null); // Limpa a visualização após a ação
-        setFormData({ id: '', src: null }); // Limpa o formulário após a ação
+        setFormData({ id: '', src: null, newId: '' }); // Limpa o formulário após a ação
         setSelectedId(''); // Reseta a seleção do dropdown
       } else {
         const error = await response.text();
@@ -107,7 +125,7 @@ const IconEditor = () => {
       console.error('Erro ao conectar com o backend:', error);
     }
   };
-  
+
   return (
     <div className="icon-editor-container">
       <div className='icon-editor-label-title'>
@@ -133,7 +151,7 @@ const IconEditor = () => {
               className="icon-editor-input"
               required // Adicionado para garantir que o ID é fornecido
             />
-            <label className="icon-editor-label">Upload de Imagem (BLOB):</label>
+            <label className="icon-editor-label">Carregar Imagem:</label>
             <input
               type="file"
               name="src"
@@ -145,22 +163,44 @@ const IconEditor = () => {
           </>
         )}
 
-        {action === 'delete' && imagePreview && (
-          <div className="image-preview-container">
-            <h3>Imagem a ser deletada:</h3>
-            <img src={imagePreview} alt="Preview" className="image-preview" />
-          </div>
-        )}
-
-        {action !== 'add' && (
+        {action === 'delete' && (
           <>
             <label className="icon-editor-label">Selecionar ID do Ícone:</label>
             <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} required>
               <option value="">Selecione um ID</option>
-              {iconIds.map((id) => (
-                <option key={id} value={id}>{id}</option>
+              {iconIds.map((icon) => (
+                <option key={icon.id} value={icon.id}>{icon.id}</option>
               ))}
+
             </select>
+            {selectedId && (
+              <div className="image-preview-container">
+                <h3>Imagem a ser deletada:</h3>
+                {imagePreview && <img src={imagePreview} alt="Preview" className="image-preview" />}
+              </div>
+            )}
+          </>
+        )}
+
+        {action === 'modify' && (
+          <>
+            <label className="icon-editor-label">Selecionar ID do Ícone:</label>
+            <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} required>
+              <option value="">Selecione um ID</option>
+              {iconIds.map((icon) => (
+                <option key={icon.id} value={icon.id}>{icon.id}</option>
+              ))}
+
+            </select>
+
+            <label className="icon-editor-label">Upload da Nova Imagem:</label>
+            <input
+              type="file"
+              name="src"
+              onChange={handleChange}
+              accept="image/*"
+              className="icon-editor-input-file"
+            />
           </>
         )}
 
