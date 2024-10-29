@@ -113,6 +113,9 @@
   /* Alinha o texto verticalmente no botão */
   padding: 0;
   margin-top: 10px;
+  
+  margin-right: -1250px;
+
   /* Margem acima do botão */
   transition: background-color 0.3s ease;
   cursor: pointer;
