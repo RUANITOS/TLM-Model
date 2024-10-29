@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './styles/Editor.css';
+import Header from './components/Header';
 
 const IconEditor = () => {
   const [formData, setFormData] = useState({
@@ -28,41 +29,36 @@ const IconEditor = () => {
     }
   };
 
-// Função para buscar a imagem correspondente ao ID selecionado
-const fetchIconById = async (id) => {
-  try {
-    const response = await fetch(`http://localhost:5000/api/icons/${id}`);
-    if (response.ok) {
-      const { src } = await response.json();
+  // Função para buscar a imagem correspondente ao ID selecionado
+  const fetchIconById = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/icons/${id}`);
+      if (response.ok) {
+        const { src } = await response.json();
 
-      // Verifica se src.data e src.type estão presentes e são válidos
-      if (src && Array.isArray(src.data) && src.type) {
-        
-        // Converte o array `src.data` em Uint8Array e cria um Blob com o tipo correto
-        const blob = new Blob([Uint8Array.from(src.data)], { type: src.type });
-        const imageUrl = URL.createObjectURL(blob);
-        
-        // Define a pré-visualização da imagem
-        setImagePreview(imageUrl);
-        
+        // Verifica se src.data e src.type estão presentes e são válidos
+        if (src && Array.isArray(src.data) && src.type) {
+          // Converte o array `src.data` em Uint8Array e cria um Blob com o tipo correto
+          const blob = new Blob([Uint8Array.from(src.data)], { type: src.type });
+          const imageUrl = URL.createObjectURL(blob);
+          
+          // Define a pré-visualização da imagem
+          setImagePreview(imageUrl);
+        } else {
+          console.error('Formato de dados da imagem inválido ou incompleto');
+        }
       } else {
-        console.error('Formato de dados da imagem inválido ou incompleto');
+        console.error('Erro ao buscar o ícone:', response.statusText);
       }
-    } else {
-      console.error('Erro ao buscar o ícone:', response.statusText);
+    } catch (error) {
+      console.error('Erro ao conectar com o backend:', error);
     }
-  } catch (error) {
-    console.error('Erro ao conectar com o backend:', error);
-  }
-};
+  };
 
-// Carrega os IDs de ícones ao montar o componente
-useEffect(() => {
-  fetchIconIds();
-}, []);
-
-
-
+  // Carrega os IDs de ícones ao montar o componente
+  useEffect(() => {
+    fetchIconIds();
+  }, []);
 
   useEffect(() => {
     if (action === 'delete' && selectedId) {
@@ -128,8 +124,9 @@ useEffect(() => {
 
   return (
     <div className="icon-editor-container">
+      <Header />
       <div className='icon-editor-label-title'>
-        <h2 className="icon-editor-title">Icon Editor</h2>
+        <h2 className="icon-editor-title">Editor de icones</h2>
       </div>
 
       <select onChange={handleActionChange} value={action}>
@@ -141,38 +138,43 @@ useEffect(() => {
       <form className="icon-editor-form" onSubmit={handleSubmit}>
         {action === 'add' && (
           <>
-            <label className="icon-editor-label">ID do Ícone:</label>
-            <input
-              type="text"
-              name="id"
-              value={formData.id}
-              onChange={handleChange}
-              placeholder="Digite o ID do ícone"
-              className="icon-editor-input"
-              required // Adicionado para garantir que o ID é fornecido
-            />
-            <label className="icon-editor-label">Carregar Imagem:</label>
-            <input
-              type="file"
-              name="src"
-              onChange={handleChange}
-              accept="image/*"
-              className="icon-editor-input-file"
-              required // Adicionado para garantir que a imagem é fornecida
-            />
+            <div className="form-group">
+              <label className="icon-editor-label">ID do Ícone:</label>
+              <input
+                type="text"
+                name="id"
+                value={formData.id}
+                onChange={handleChange}
+                placeholder="Digite o ID do ícone"
+                className="icon-editor-input"
+                required // Adicionado para garantir que o ID é fornecido
+              />
+            </div>
+            <div className="form-group">
+              <label className="icon-editor-label">Carregar Imagem:</label>
+              <input
+                type="file"
+                name="src"
+                onChange={handleChange}
+                accept="image/*"
+                className="icon-editor-input-file"
+                required // Adicionado para garantir que a imagem é fornecida
+              />
+            </div>
           </>
         )}
 
         {action === 'delete' && (
           <>
-            <label className="icon-editor-label">Selecionar ID do Ícone:</label>
-            <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} required>
-              <option value="">Selecione um ID</option>
-              {iconIds.map((icon) => (
-                <option key={icon.id} value={icon.id}>{icon.id}</option>
-              ))}
-
-            </select>
+            <div className="form-group">
+              <label className="icon-editor-label">Selecionar ID do Ícone:</label>
+              <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} required>
+                <option value="">Selecione um ID</option>
+                {iconIds.map((icon) => (
+                  <option key={icon.id} value={icon.id}>{icon.id}</option>
+                ))}
+              </select>
+            </div>
             {selectedId && (
               <div className="image-preview-container">
                 <h3>Imagem a ser deletada:</h3>
@@ -184,27 +186,30 @@ useEffect(() => {
 
         {action === 'modify' && (
           <>
-            <label className="icon-editor-label">Selecionar ID do Ícone:</label>
-            <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} required>
-              <option value="">Selecione um ID</option>
-              {iconIds.map((icon) => (
-                <option key={icon.id} value={icon.id}>{icon.id}</option>
-              ))}
+            <div className="form-group">
+              <label className="icon-editor-label">Selecionar ID do Ícone:</label>
+              <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} required>
+                <option value="">Selecione um ID</option>
+                {iconIds.map((icon) => (
+                  <option key={icon.id} value={icon.id}>{icon.id}</option>
+                ))}
+              </select>
+            </div>
 
-            </select>
-
-            <label className="icon-editor-label">Upload da Nova Imagem:</label>
-            <input
-              type="file"
-              name="src"
-              onChange={handleChange}
-              accept="image/*"
-              className="icon-editor-input-file"
-            />
+            <div className="form-group">
+              <label className="icon-editor-label">Upload da Nova Imagem:</label>
+              <input
+                type="file"
+                name="src"
+                onChange={handleChange}
+                accept="image/*"
+                className="icon-editor-input-file"
+              />
+            </div>
           </>
         )}
 
-        <button type="submit" className="icon-editor-button">{action === 'delete' ? 'Deletar Ícone' : 'Salvar Ícone'}</button>
+        <button type="submit" className="icon-editor-button">{action === 'delete' ? 'Deletar' : 'Salvar'}</button>
       </form>
     </div>
   );

@@ -1,71 +1,110 @@
 /* Estilos gerais */
 .icon-editor-container { 
-    border-radius: 8px;
-    width: 100%;
-    padding-left: 1%;
-  }
   
-  .icon-editor-title {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  /* Estilo do formulário */
-  .icon-editor-form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .icon-editor-label {
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #555;
-  }
-  
-  .icon-editor-input-file {
-    padding: 5px;
-  }
+  border-radius: 8px;
+  width: 100%;
+  padding-left: 1%;
+}
 
-  
-  /* Checkbox */
-  .icon-editor-checkbox-label {
-    margin-bottom: 15px;
-    color: #555;
-  }
-  
-  .icon-editor-checkbox {
-    margin-right: 8px;
-  }
-  
-  /* Botão */
-  .icon-editor-button {
-    background: #202959 none repeat scroll 0 0;
-    border-color: #202959;
-    color: #ffffff;
-    font-size: 14px;
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    padding: 0;
-    margin-top: 10px;
-    transition: background-color 0.3s ease;
-    cursor: pointer;
-  }
-  
-  .icon-editor-button:hover {
-    background-color: #202959;
-  }
-body{
-    background:#DADADA;
-    padding-right: 2%;
+.icon-editor-title {
+  text-align: left;
+  color: #373e4a; /* Mantido o valor único */
+  margin: 20px 0 20px 5px; /* Simplificado para margem superior e inferior */
+  font-size: 25px;
+  font-weight: 500;
+  line-height: 1.1;
+  font-family: inherit;
 }
-.icon-editor-label-title{
-    background-color: rgba(255, 255, 255, 0.8); /* Fundo semi-transparente para o formulário */
-    border-radius: 2px;
-    width: 100%;
-    box-shadow: 0px 2px 11px 2px #00368285 !important;
+
+.icon-editor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Mantido o espaço entre os elementos */
+  position: relative; /* Necessário para o posicionamento absoluto dos underlines */
+  align-items: center;
 }
+
+/* Adiciona um underline suave entre os elementos */
+.icon-editor-form > * {
+  position: relative; /* Necessário para o pseudo-elemento */
+}
+
+.icon-editor-form > *:not(:last-child)::after {
+  content: ""; /* Cria um pseudo-elemento vazio */
+  position: absolute;
+  left: 0; /* Alinha à esquerda */
+  right: 0; /* Alinha à direita */
+  bottom: -5px; /* Posiciona o underline abaixo do elemento */
+  height: 1px; /* Espessura do underline */
+  background-color: rgba(0, 0, 0, 0.1); /* Cor suave para o underline */
+  transition: background-color 0.3s; /* Suaviza a transição ao passar o mouse */
+}
+
+/* Opção para aumentar a intensidade do underline ao passar o mouse */
+.icon-editor-form > *:not(:last-child):hover::after {
+  background-color: rgba(0, 0, 0, 0.3); /* Escurece o underline ao passar o mouse */
+}
+
+
+.icon-editor-label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #555;
+}
+.icon-editor-input{
+  margin-left: 8px;
+  width: 313px;
+}
+
+.icon-editor-input-file {
+  padding: 5px;
+}
+
+/* Checkbox */
+.icon-editor-checkbox-label {
+  margin-bottom: 15px;
+  color: #555;
+}
+
+.icon-editor-checkbox {
+  margin-right: 8px;
+}
+
+/* Botão */
+.icon-editor-button {
+  background: #202959;
+  border: none; /* Remove a borda para evitar inconsistências */
+  color: #ffffff;
+  font-size: 14px;
+  width: 5%; /* Mantém o tamanho do botão */
+  height: 50px; /* Mantém a altura do botão */
+  line-height: 50px; /* Alinha o texto verticalmente no botão */
+  padding: 0;
+  margin-top: 10px; /* Margem acima do botão */
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.icon-editor-button:hover {
+  background-color: #1a1f3c; /* Sombra mais clara ao passar o mouse */
+}
+
+body {
+  background: #DADADA;
+  padding-right: 2%;
+}
+
+.icon-editor-label-title {
+  background-color: rgba(255, 255, 255, 0.8); /* Fundo semi-transparente para o formulário */
+  border-radius: 2px;
+  width: 100%;
+  box-shadow: 0px 2px 11px 2px rgba(0, 54, 130, 0.53) !important; /* Usar rgba para maior clareza */
+  padding-bottom: 1px; /* Corrigido para lowercase */
+  text-align: center;
+  margin-top: 10px;
+  padding-top: 1px;
+}
+
 .icon-editor-dropdown {
   border: 1px solid #ccc;
   max-height: 150px;
