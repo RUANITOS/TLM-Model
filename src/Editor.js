@@ -129,7 +129,7 @@ const IconEditor = () => {
         <h2 className="icon-editor-title">Editor de icones</h2>
       </div>
 
-      <select onChange={handleActionChange} value={action}>
+      <select className='select'onChange={handleActionChange} value={action}>
         <option value="add">Adicionar Ícone</option>
         <option value="modify">Modificar Ícone</option>
         <option value="delete">Deletar Ícone</option>
@@ -168,7 +168,7 @@ const IconEditor = () => {
           <>
             <div className="form-group">
               <label className="icon-editor-label">Selecionar ID do Ícone:</label>
-              <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} required>
+              <select className='select-icon'value={selectedId} onChange={(e) => setSelectedId(e.target.value)} required>
                 <option value="">Selecione um ID</option>
                 {iconIds.map((icon) => (
                   <option key={icon.id} value={icon.id}>{icon.id}</option>
@@ -188,7 +188,7 @@ const IconEditor = () => {
           <>
             <div className="form-group">
               <label className="icon-editor-label">Selecionar ID do Ícone:</label>
-              <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} required>
+              <select className='select-icon-modify'value={selectedId} onChange={(e) => setSelectedId(e.target.value)} required>
                 <option value="">Selecione um ID</option>
                 {iconIds.map((icon) => (
                   <option key={icon.id} value={icon.id}>{icon.id}</option>
