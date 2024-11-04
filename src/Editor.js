@@ -242,7 +242,9 @@ const IconEditor = () => {
               {imagePreview && (
                 <div className="form-group">
                   <label className="icon-editor-label">Imagem Atual:</label>
-                  <img src={imagePreview} alt="Preview" className="icon-preview" />
+                  <div className="icon-preview-container">
+                    <img src={imagePreview} alt="Preview" className="icon-preview" />
+                  </div>
                 </div>
               )}
             </div>
@@ -272,12 +274,8 @@ const IconEditor = () => {
                 />
               </div>
 
-              
-              <button type="button" className="icon-editor-button-atualizar-deletar delete-button" onClick={handleDelete}>
-                Deletar
-              </button>
               <button type="submit" className="icon-editor-button-atualizar-deletar">Atualizar</button>
-              
+              <button type="button" className="icon-editor-button-atualizar-deletar" onClick={handleDelete}>Deletar</button>
             </div>
           </>
         )}
