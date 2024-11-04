@@ -4,8 +4,13 @@ import Header from './components/Header';
 
 const MosaicEditor = () => {
   const [formData, setFormData] = useState({
-    id: '',
-    descricao: '',
+    id_implem: '',
+    descricao_completa: '',
+    descricao_resumida: '',
+    posicao_linha: '',
+    posicao_coluna: '',
+    codigo_id_icone: '',
+    conteudo_efetivo: '',
     src: null,
     newId: '',
   });
@@ -36,7 +41,7 @@ const MosaicEditor = () => {
     try {
       const response = await fetch(`http://localhost:5000/api/mosaics/${id}`);
       if (response.ok) {
-        const { src, descricao, dt_criacao, dt_modificacao } = await response.json();
+        const { src, descricao_completa, descricao_resumida, dt_criacao, dt_ultima_atualizacao, posicao_linha, posicao_coluna, codigo_id_icone } = await response.json();
 
         if (src && Array.isArray(src.data) && src.type) {
           const blob = new Blob([Uint8Array.from(src.data)], { type: src.type });
@@ -45,8 +50,15 @@ const MosaicEditor = () => {
         }
 
         setCreationDate(dt_criacao);
-        setModificationDate(dt_modificacao);
-        setFormData({ ...formData, descricao });
+        setModificationDate(dt_ultima_atualizacao);
+        setFormData({ 
+          ...formData, 
+          descricao_completa, 
+          descricao_resumida, 
+          posicao_linha, 
+          posicao_coluna, 
+          codigo_id_icone 
+        });
       } else {
         console.error('Erro ao buscar o mosaico:', response.statusText);
       }
@@ -72,7 +84,17 @@ const MosaicEditor = () => {
     setAction(e.target.value);
     setSelectedId('');
     setImagePreview(null);
-    setFormData({ id: '', descricao: '', src: null, newId: '' });
+    setFormData({ 
+      id_implem: '', 
+      descricao_completa: '', 
+      descricao_resumida: '', 
+      posicao_linha: '', 
+      posicao_coluna: '', 
+      codigo_id_icone: '', 
+      conteudo_efetivo: '', 
+      src: null, 
+      newId: '' 
+    });
     setCreationDate(null);
     setModificationDate(null);
   };
@@ -87,7 +109,17 @@ const MosaicEditor = () => {
         alert('Mosaico deletado com sucesso!');
         fetchMosaicIds();
         setImagePreview(null);
-        setFormData({ id: '', descricao: '', src: null, newId: '' });
+        setFormData({ 
+          id_implem: '', 
+          descricao_completa: '', 
+          descricao_resumida: '', 
+          posicao_linha: '', 
+          posicao_coluna: '', 
+          codigo_id_icone: '', 
+          conteudo_efetivo: '', 
+          src: null, 
+          newId: '' 
+        });
         setSelectedId('');
       } else {
         const error = await response.text();
@@ -103,15 +135,25 @@ const MosaicEditor = () => {
     const formDataToSend = new FormData();
 
     if (action === 'add') {
-      formDataToSend.append('id_implem', formData.id);
-      formDataToSend.append('descricao', formData.descricao);
+      formDataToSend.append('id_implem', formData.id_implem);
+      formDataToSend.append('descricao_completa', formData.descricao_completa);
+      formDataToSend.append('descricao_resumida', formData.descricao_resumida);
+      formDataToSend.append('posicao_linha', formData.posicao_linha);
+      formDataToSend.append('posicao_coluna', formData.posicao_coluna);
+      formDataToSend.append('codigo_id_icone', formData.codigo_id_icone);
+      formDataToSend.append('conteudo_efetivo', formData.conteudo_efetivo);
       formDataToSend.append('src', formData.src);
       formDataToSend.append('dt_criacao', new Date().toISOString());
     } else if (action === 'modify') {
       formDataToSend.append('id_implem', selectedId);
-      formDataToSend.append('descricao', formData.descricao);
+      formDataToSend.append('descricao_completa', formData.descricao_completa);
+      formDataToSend.append('descricao_resumida', formData.descricao_resumida);
+      formDataToSend.append('posicao_linha', formData.posicao_linha);
+      formDataToSend.append('posicao_coluna', formData.posicao_coluna);
+      formDataToSend.append('codigo_id_icone', formData.codigo_id_icone);
+      formDataToSend.append('conteudo_efetivo', formData.conteudo_efetivo);
       formDataToSend.append('src', formData.src);
-      formDataToSend.append('dt_modificacao', new Date().toISOString());
+      formDataToSend.append('dt_ultima_atualizacao', new Date().toISOString());
     }
 
     try {
@@ -127,7 +169,17 @@ const MosaicEditor = () => {
         alert(`Mosaico ${action === 'add' ? 'adicionado' : 'modificado'} com sucesso!`);
         fetchMosaicIds();
         setImagePreview(null);
-        setFormData({ id: '', descricao: '', src: null, newId: '' });
+        setFormData({ 
+          id_implem: '', 
+          descricao_completa: '', 
+          descricao_resumida: '', 
+          posicao_linha: '', 
+          posicao_coluna: '', 
+          codigo_id_icone: '', 
+          conteudo_efetivo: '', 
+          src: null, 
+          newId: '' 
+        });
         setSelectedId('');
       } else {
         const error = await response.text();
@@ -156,9 +208,9 @@ const MosaicEditor = () => {
             <div className="form-group">
               <label className="mosaic-editor-label">ID do Mosaico:</label>
               <input
-                type="text"
-                name="id"
-                value={formData.id}
+                type="number"
+                name="id_implem"
+                value={formData.id_implem}
                 onChange={handleChange}
                 placeholder="Digite o ID do mosaico"
                 className="mosaic-editor-input"
@@ -167,118 +219,230 @@ const MosaicEditor = () => {
             </div>
 
             <div className="form-group">
-              <label className="mosaic-editor-label">Descrição:</label>
+              <label className="mosaic-editor-label">Descrição Completa:</label>
               <input
                 type="text"
-                name="descricao"
-                value={formData.descricao}
+                name="descricao_completa"
+                value={formData.descricao_completa}
                 onChange={handleChange}
-                placeholder="Digite a descrição do mosaico"
+                placeholder="Digite a descrição completa do mosaico"
                 className="mosaic-editor-input"
                 required
               />
             </div>
 
             <div className="form-group">
-              <label className="mosaic-editor-label">Carregar Imagem:</label>
+              <label className="mosaic-editor-label">Descrição Resumida:</label>
+              <input
+                type="text"
+                name="descricao_resumida"
+                value={formData.descricao_resumida}
+                onChange={handleChange}
+                placeholder="Digite a descrição resumida do mosaico"
+                className="mosaic-editor-input"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="mosaic-editor-label">Linha:</label>
+              <input
+                type="number"
+                name="posicao_linha"
+                value={formData.posicao_linha}
+                onChange={handleChange}
+                placeholder="Digite a posição da linha"
+                className="mosaic-editor-input"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="mosaic-editor-label">Coluna:</label>
+              <input
+                type="number"
+                name="posicao_coluna"
+                value={formData.posicao_coluna}
+                onChange={handleChange}
+                placeholder="Digite a posição da coluna"
+                className="mosaic-editor-input"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="mosaic-editor-label">Código do Ícone:</label>
+              <input
+                type="number"
+                name="codigo_id_icone"
+                value={formData.codigo_id_icone}
+                onChange={handleChange}
+                placeholder="Digite o código do ícone"
+                className="mosaic-editor-input"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="mosaic-editor-label">Conteúdo Efetivo:</label>
+              <input
+                type="text"
+                name="conteudo_efetivo"
+                value={formData.conteudo_efetivo}
+                onChange={handleChange}
+                placeholder="Digite o conteúdo efetivo do mosaico"
+                className="mosaic-editor-input"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="mosaic-editor-label">Imagem:</label>
               <input
                 type="file"
                 name="src"
                 onChange={handleChange}
-                accept="image/*"
-                className="mosaic-editor-input-file"
+                className="mosaic-editor-input"
                 required
               />
+              {imagePreview && <img src={imagePreview} alt="Preview" className="image-preview" />}
             </div>
-
-            <button type="submit" className="mosaic-editor-button">Salvar</button>
           </>
         )}
 
         {action === 'modify' && (
-          <>
-            <div className="form-group">
-              <label className="mosaic-editor-label">Digite o ID do Mosaico:</label>
-              <input
-                type="text"
-                value={selectedId}
-                onChange={(e) => {
-                  setSelectedId(e.target.value);
-                  if (e.target.value) {
-                    fetchMosaicById(e.target.value);
-                  }
-                }}
-                placeholder="Digite o ID do mosaico"
-                className="mosaic-editor-input"
-                required
-              />
-            </div>
+          <div className="form-group">
+            <label className="mosaic-editor-label">Selecione o ID do Mosaico:</label>
+            <select
+              className="select"
+              onChange={(e) => {
+                setSelectedId(e.target.value);
+                fetchMosaicById(e.target.value);
+              }}
+              value={selectedId}
+              required
+            >
+              <option value="">Selecione um ID</option>
+              {mosaicIds.map((id) => (
+                <option key={id} value={id}>
+                  {id}
+                </option>
+              ))}
+            </select>
 
-            <div className="visualization-section">
-              {creationDate && (
+            {selectedId && (
+              <>
                 <div className="form-group">
-                  <label className="mosaic-editor-label">Data de Criação:</label>
+                  <label className="mosaic-editor-label">Descrição Completa:</label>
                   <input
                     type="text"
-                    value={new Date(creationDate).toLocaleString()}
-                    readOnly
+                    name="descricao_completa"
+                    value={formData.descricao_completa}
+                    onChange={handleChange}
+                    placeholder="Digite a descrição completa do mosaico"
                     className="mosaic-editor-input"
+                    required
                   />
                 </div>
-              )}
 
-              {modificationDate && (
                 <div className="form-group">
-                  <label className="mosaic-editor-label">Última Modificação:</label>
+                  <label className="mosaic-editor-label">Descrição Resumida:</label>
                   <input
                     type="text"
-                    value={new Date(modificationDate).toLocaleString()}
-                    readOnly
+                    name="descricao_resumida"
+                    value={formData.descricao_resumida}
+                    onChange={handleChange}
+                    placeholder="Digite a descrição resumida do mosaico"
                     className="mosaic-editor-input"
+                    required
                   />
                 </div>
-              )}
 
-              {imagePreview && (
                 <div className="form-group">
-                  <label className="mosaic-editor-label">Imagem Atual:</label>
-                  <img src={imagePreview} alt="Preview" className="mosaic-preview" />
+                  <label className="mosaic-editor-label">Linha:</label>
+                  <input
+                    type="number"
+                    name="posicao_linha"
+                    value={formData.posicao_linha}
+                    onChange={handleChange}
+                    placeholder="Digite a posição da linha"
+                    className="mosaic-editor-input"
+                    required
+                  />
                 </div>
-              )}
-            </div>
 
-            <div className="modification-section">
-              <div className="form-group">
-                <label className="mosaic-editor-label">Descrição:</label>
-                <input
-                  type="text"
-                  name="descricao"
-                  value={formData.descricao}
-                  onChange={handleChange}
-                  placeholder="Digite a nova descrição"
-                  className="mosaic-editor-input"
-                />
-              </div>
+                <div className="form-group">
+                  <label className="mosaic-editor-label">Coluna:</label>
+                  <input
+                    type="number"
+                    name="posicao_coluna"
+                    value={formData.posicao_coluna}
+                    onChange={handleChange}
+                    placeholder="Digite a posição da coluna"
+                    className="mosaic-editor-input"
+                    required
+                  />
+                </div>
 
-              <div className="form-group">
-                <label className="mosaic-editor-label">Carregar Nova Imagem:</label>
-                <input
-                  type="file"
-                  name="src"
-                  onChange={handleChange}
-                  accept="image/*"
-                  className="mosaic-editor-input-file"
-                />
-              </div>
+                <div className="form-group">
+                  <label className="mosaic-editor-label">Código do Ícone:</label>
+                  <input
+                    type="number"
+                    name="codigo_id_icone"
+                    value={formData.codigo_id_icone}
+                    onChange={handleChange}
+                    placeholder="Digite o código do ícone"
+                    className="mosaic-editor-input"
+                    required
+                  />
+                </div>
 
-              <button type="submit" className="mosaic-editor-button">Modificar</button>
-              <button type="button" className="mosaic-editor-delete-button" onClick={handleDelete}>
-                Deletar
-              </button>
-            </div>
-          </>
+                <div className="form-group">
+                  <label className="mosaic-editor-label">Conteúdo Efetivo:</label>
+                  <input
+                    type="text"
+                    name="conteudo_efetivo"
+                    value={formData.conteudo_efetivo}
+                    onChange={handleChange}
+                    placeholder="Digite o conteúdo efetivo do mosaico"
+                    className="mosaic-editor-input"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="mosaic-editor-label">Imagem:</label>
+                  <input
+                    type="file"
+                    name="src"
+                    onChange={handleChange}
+                    className="mosaic-editor-input"
+                  />
+                  {imagePreview && <img src={imagePreview} alt="Preview" className="image-preview" />}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        <button type="submit" className="mosaic-editor-button">Salvar</button>
+        {action === 'modify' && (
+          <button type="button" className="mosaic-editor-button" onClick={handleDelete}>
+            Deletar Mosaico
+          </button>
         )}
       </form>
+
+      {creationDate && (
+        <div className="mosaic-editor-date">
+          <p>Data de Criação: {new Date(creationDate).toLocaleDateString()}</p>
+        </div>
+      )}
+      {modificationDate && (
+        <div className="mosaic-editor-date">
+          <p>Data da Última Atualização: {new Date(modificationDate).toLocaleDateString()}</p>
+        </div>
+      )}
     </div>
   );
 };
