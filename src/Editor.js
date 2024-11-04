@@ -142,15 +142,14 @@ const IconEditor = () => {
       <div className='icon-editor-label-title'>
         <h2 className="icon-editor-title">Editor de ícones</h2>
       </div>
-
-      <select className='select' onChange={handleActionChange} value={action}>
-        <option value="add">Adicionar Ícone</option>
-        <option value="modify">Modificar Ícone</option>
-      </select>
-
       <form className="icon-editor-form" onSubmit={handleSubmit}>
         {action === 'add' && (
           <>
+          <select className='select' onChange={handleActionChange} value={action}>
+            <option value="add">Adicionar Ícone</option>
+            <option value="modify">Modificar Ícone</option>
+          </select>
+
             <div className="form-group">
               <label className="icon-editor-label">ID do Ícone:</label>
               <input
@@ -195,18 +194,18 @@ const IconEditor = () => {
 
         {action === 'modify' && (
           <>
-            <div className="form-group">
-              <label className="icon-editor-label">Digite o ID do Ícone (1-3 dígitos):</label>
+
+              <select className='select' onChange={handleActionChange} value={action}>
+                <option value="add">Adicionar Ícone</option>
+                <option value="modify">Modificar Ícone</option>
+              </select>
+              <div className="form-group">
+              <label className="icon-editor-label">ID do Ícone:</label>
               <input
-                type="number"
-                maxLength="3"
-                value={selectedId}
-                onChange={(e) => {
-                  setSelectedId(e.target.value);
-                  if (e.target.value.length <= 3) {
-                    fetchIconById(e.target.value);
-                  }
-                }}
+                type="text"
+                name="id"
+                value={formData.id}
+                onChange={handleChange}
                 placeholder="Digite o ID do ícone"
                 className="icon-editor-input"
                 required
