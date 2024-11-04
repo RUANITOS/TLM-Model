@@ -189,14 +189,14 @@ const IconEditor = () => {
               />
             </div>
 
-            <button type="submit" className="icon-editor-button">Salvar</button>
+            <button type="submit" className="icon-editor-button-salvar">Salvar</button>
           </>
         )}
 
         {action === 'modify' && (
           <>
             <div className="form-group">
-              <label className="icon-editor-label">Digite o ID do Ícone (1-3 dígitos):</label>
+              <label className="icon-editor-label">ID do Ícone:</label>
               <input
                 type="number"
                 maxLength="3"
@@ -272,8 +272,8 @@ const IconEditor = () => {
                 />
               </div>
 
-              <button type="submit" className="icon-editor-button">Atualizar</button>
-              <button type="button" className="icon-editor-button delete-button" onClick={handleDelete}>
+              <button type="submit" className="icon-editor-button-atualizar-deletar">Atualizar</button>
+              <button type="button" className="icon-editor-button-atualizar-deletar delete-button" onClick={handleDelete}>
                 Deletar
               </button>
             </div>
