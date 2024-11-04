@@ -143,14 +143,15 @@ const IconEditor = () => {
         <h2 className="icon-editor-title">Editor de ícones</h2>
       </div>
 
-      <select className='select' onChange={handleActionChange} value={action}>
-        <option value="add">Adicionar Ícone</option>
-        <option value="modify">Modificar Ícone</option>
-      </select>
-
       <form className="icon-editor-form" onSubmit={handleSubmit}>
         {action === 'add' && (
           <>
+
+            <select className='select' onChange={handleActionChange} value={action}>
+              <option value="add">Adicionar Ícone</option>
+              <option value="modify">Modificar Ícone</option>
+            </select>
+
             <div className="form-group">
               <label className="icon-editor-label">ID do Ícone:</label>
               <input
@@ -192,9 +193,13 @@ const IconEditor = () => {
             <button type="submit" className="icon-editor-button-salvar">Salvar</button>
           </>
         )}
-
+          
         {action === 'modify' && (
           <>
+              <select className='select' onChange={handleActionChange} value={action}>
+                <option value="add">Adicionar Ícone</option>
+                <option value="modify">Modificar Ícone</option>
+              </select>
             <div className="form-group">
               <label className="icon-editor-label">ID do Ícone:</label>
               <input
