@@ -31,6 +31,7 @@
 
 .icon-editor-label {
 <<<<<<< HEAD
+<<<<<<< HEAD
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
@@ -62,6 +63,11 @@
   margin-left: 8px;
   width: 313px;
 >>>>>>> 92bb52c ('botão arredondados no formato redondo')
+=======
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+>>>>>>> a5dad26 ("Componente de mosaico iniciado")
 }
 
 .icon-editor-input, 
@@ -76,6 +82,7 @@
   background-color: #007bff;
   color: white;
   border: none;
+<<<<<<< HEAD
 <<<<<<< HEAD
   padding: 10px 15px;
   border-radius: 5px;
@@ -97,6 +104,10 @@
   /* Margem acima do botão */
   transition: background-color 0.3s ease;
 >>>>>>> 92bb52c ('botão arredondados no formato redondo')
+=======
+  padding: 10px 15px;
+  border-radius: 5px;
+>>>>>>> a5dad26 ("Componente de mosaico iniciado")
   cursor: pointer;
   margin-right: 10px;
 }
