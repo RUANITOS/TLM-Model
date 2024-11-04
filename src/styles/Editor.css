@@ -89,13 +89,13 @@
 
 
 /* Botão */
-.icon-editor-button {
+.icon-editor-button-salvar {
   background: #202959;
   border: none;
   /* Remove a borda para evitar inconsistências */
   color: #ffffff;
   font-size: 14px;
-  width: 5%;
+  width: 7%;
   
   /* Mantém o tamanho do botão */
   height: 40px;
@@ -105,7 +105,30 @@
   padding: 0;
   margin-top: 10px;
   border-radius: 25px;
-  margin-right: -97%;
+  margin-right: 0%;
+
+  /* Margem acima do botão */
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.icon-editor-button-atualizar-deletar {
+  background: #202959;
+  border: none;
+  /* Remove a borda para evitar inconsistências */
+  color: #ffffff;
+  font-size: 14px;
+  width: 20%;
+  
+  /* Mantém o tamanho do botão */
+  height: 40px;
+  /* Mantém a altura do botão */
+  line-height: 40px;
+  /* Alinha o texto verticalmente no botão */
+  padding: 0;
+  margin-top: 10px;
+  border-radius: 25px;
+  margin-left: 180%;
 
   /* Margem acima do botão */
   transition: background-color 0.3s ease;
