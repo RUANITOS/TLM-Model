@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './styles/Editor.css';
 import Header from './components/Header';
 
-const IconEditor = () => {
+const EditorMosaic = () => {
   const [formData, setFormData] = useState({
     id: '',
     src: null, // Imagem como BLOB
@@ -215,4 +215,4 @@ const IconEditor = () => {
   );
 };
 
-export default IconEditor;
+export default EditorMosaic;

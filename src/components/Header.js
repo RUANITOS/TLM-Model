@@ -8,7 +8,7 @@ const Header = () => {
   // Função para buscar a imagem do logo com icon_id "logo"
   const fetchLogoImage = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/icons/logo');
+      const response = await fetch('http://localhost:5000/api/icons/1');
       if (response.ok) {
         const { src, mimetype } = await response.json();
         const blob = new Blob([Uint8Array.from(src.data)], { type: mimetype });
@@ -35,7 +35,7 @@ const Header = () => {
       )}
       <nav>
         <ul className="header-nav">
-          <li><a href="/TLM-Producao">Voltar</a></li>
+          
         </ul>
       </nav>
     </header>
