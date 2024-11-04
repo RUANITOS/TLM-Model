@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import Grid from './Grid';
 import Login from './Login';
 import Editor from './Editor';
-import EditorMosaico from '.EditorMosaico';
+import EditorMosaic from '.EditorMosaic';
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
