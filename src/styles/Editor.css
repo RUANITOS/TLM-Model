@@ -22,21 +22,6 @@
   align-items: center;
 }
 
-.icon-editor-form>* {
-  position: relative;
-}
-
-.icon-editor-form>*:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -5px;
-  height: 1px;
-  background-color: rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s;
-}
-
 .icon-editor-label {
   font-weight: 600;
   margin-bottom: 8px;
@@ -51,15 +36,6 @@
   box-shadow: 0px 2px 11px 2px rgba(0, 54, 130, 0.53) !important;
 }
 
-.select-icon {
-  width: 313px;
-}
-
-.select-icon-modify {
-  width: 300px;
-  margin-left: 5px;
-}
-
 .icon-editor-input {
   margin-left: 8px;
   width: 313px;
@@ -67,6 +43,22 @@
 
 .icon-editor-input-file {
   padding: 5px;
+}
+
+.icon-preview-container {
+  width: 60px;
+  height: 60px;
+  overflow: hidden; /* Esconde o que ultrapassar */
+  border: 1px solid #ccc; /* Opcional: borda para visualização */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-preview {
+  width: 100%;
+  height: auto;
+  object-fit: cover; /* Mantém a proporção da imagem */
 }
 
 /* Botão */
@@ -85,19 +77,20 @@
   cursor: pointer;
 }
 
+
 .icon-editor-button-atualizar-deletar {
   background: #202959;
   border: none;
   color: #ffffff;
   font-size: 14px;
-  width: 20%;
+  width: 40%;
   height: 40px;
   line-height: 40px;
   padding: 0;
   margin-top: 10px;
   border-radius: 25px;
-  margin-left: 20%;
   transition: background-color 0.3s ease;
+  margin-right: 10%;
   cursor: pointer;
 }
 
@@ -119,21 +112,4 @@ body {
   text-align: center;
   margin-top: 10px;
   padding-top: 1px;
-}
-
-/* Novo estilo para o contêiner da imagem */
-.icon-preview-container {
-  width: 60px;
-  height: 60px;
-  overflow: hidden; /* Garante que a imagem não saia do contêiner */
-  border: 1px solid #ccc; /* Opcional: adicione uma borda para destacar o contêiner */
-  border-radius: 4px; /* Opcional: bordas arredondadas */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon-preview {
-  width: 100%;
-  height: auto; /* Mantém a proporção da imagem */
 }

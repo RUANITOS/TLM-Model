@@ -274,8 +274,10 @@ const IconEditor = () => {
                 />
               </div>
 
+              <button type="button" className="icon-editor-button-atualizar-deletar delete-button" onClick={handleDelete}>
+                Deletar
+              </button>
               <button type="submit" className="icon-editor-button-atualizar-deletar">Atualizar</button>
-              <button type="button" className="icon-editor-button-atualizar-deletar" onClick={handleDelete}>Deletar</button>
             </div>
           </>
         )}
