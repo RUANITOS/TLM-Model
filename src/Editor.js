@@ -143,15 +143,14 @@ const IconEditor = () => {
         <h2 className="icon-editor-title">Editor de ícones</h2>
       </div>
 
+      <select className='select' onChange={handleActionChange} value={action}>
+        <option value="add">Adicionar Ícone</option>
+        <option value="modify">Modificar Ícone</option>
+      </select>
+
       <form className="icon-editor-form" onSubmit={handleSubmit}>
         {action === 'add' && (
           <>
-
-            <select className='select' onChange={handleActionChange} value={action}>
-              <option value="add">Adicionar Ícone</option>
-              <option value="modify">Modificar Ícone</option>
-            </select>
-
             <div className="form-group">
               <label className="icon-editor-label">ID do Ícone:</label>
               <input
@@ -190,18 +189,14 @@ const IconEditor = () => {
               />
             </div>
 
-            <button type="submit" className="icon-editor-button-salvar">Salvar</button>
+            <button type="submit" className="icon-editor-button">Salvar</button>
           </>
         )}
-          
+
         {action === 'modify' && (
           <>
-              <select className='select' onChange={handleActionChange} value={action}>
-                <option value="add">Adicionar Ícone</option>
-                <option value="modify">Modificar Ícone</option>
-              </select>
             <div className="form-group">
-              <label className="icon-editor-label">ID do Ícone:</label>
+              <label className="icon-editor-label">Digite o ID do Ícone (1-3 dígitos):</label>
               <input
                 type="number"
                 maxLength="3"
@@ -277,8 +272,8 @@ const IconEditor = () => {
                 />
               </div>
 
-              <button type="submit" className="icon-editor-button-atualizar-deletar">Atualizar</button>
-              <button type="button" className="icon-editor-button-atualizar-deletar delete-button" onClick={handleDelete}>
+              <button type="submit" className="icon-editor-button">Atualizar</button>
+              <button type="button" className="icon-editor-button delete-button" onClick={handleDelete}>
                 Deletar
               </button>
             </div>
