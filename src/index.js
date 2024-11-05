@@ -6,7 +6,6 @@ import reportWebVitals from './reportWebVitals';
 import Grid from './Grid';
 import Login from './Login';
 import Editor from './Editor';
-import MosaicEditor from './MosaicEditor';
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,7 +19,6 @@ const App = () => {
       <Routes>
         <Route path="/TLM-Producao" element={isLoggedIn ? <Grid /> : <Login onLogin={handleLogin} />} />
         <Route path="/TLM-Producao/Editor" element={<Editor />} />
-        <Route path="/TLM-Producao/MosaicEditor" element={<MosaicEditor />} />
       </Routes>
     </Router>
   );
