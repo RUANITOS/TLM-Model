@@ -8,7 +8,6 @@ const IconEditor = () => {
     id: '',
     src: null,
     descricao: '',
-    newId: '',
   });
   const [iconIds, setIconIds] = useState([]);
   const [selectedId, setSelectedId] = useState('');
@@ -46,14 +45,15 @@ const IconEditor = () => {
         setModificationDate(dt_modificacao);
         setFormData((prevFormData) => ({
           ...prevFormData,
-          id, // Mantém o ID no campo, essencial para "modificar"
+          id, // Mantém o ID no campo
           descricao,
         }));
       } else {
-        console.error('Erro ao buscar o ícone:', response.statusText);
+        resetForm(); // Limpa o formulário caso o ID não exista
       }
     } catch (error) {
       console.error('Erro ao conectar com o backend:', error);
+      resetForm();
     }
   };
 
@@ -67,6 +67,18 @@ const IconEditor = () => {
       setFormData({ ...formData, src: e.target.files[0] });
     } else {
       setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  const handleIdChange = (e) => {
+    const id = e.target.value;
+    setFormData({ ...formData, id });
+
+    // Se o ID tiver 3 caracteres, realiza a busca
+    if (id.length === 4 && !isNaN(id)) {
+      fetchIconById(id);
+    } else if (id.length === 0) {
+      resetForm(); // Reseta o formulário caso o campo ID esteja vazio
     }
   };
 
@@ -122,7 +134,7 @@ const IconEditor = () => {
   };
 
   const resetForm = () => {
-    setFormData({ id: '', src: null, descricao: '', newId: '' });
+    setFormData({ id: '', src: null, descricao: '' });
     setSelectedId('');
     setImagePreview(null);
     setCreationDate(null);
@@ -143,12 +155,7 @@ const IconEditor = () => {
             type="text"
             name="id"
             value={formData.id}
-            onChange={(e) => {
-              const id = e.target.value;
-              setFormData({ ...formData, id });
-              setSelectedId(id);
-              if (id.length <= 3) fetchIconById(id);
-            }}
+            onChange={handleIdChange}
             placeholder="Digite o ID do ícone"
             className="icon-editor-input"
             required
