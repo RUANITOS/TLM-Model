@@ -68,12 +68,17 @@ const Grid = () => {
     }
   };
 
-  const handleClickPosition = (row, col) => {
-    const positionText = `Posição: Linha ${row}, Coluna ${col}`;
+  const copyPositionToCookies = (row, col) => {
+    // Salva a linha e a coluna nos cookies separados
+    document.cookie = `position_row=${row}; path=/; max-age=${60 * 60 * 24 * 7}`; // Salva por 7 dias
+    document.cookie = `position_col=${col}; path=/; max-age=${60 * 60 * 24 * 7}`; // Salva por 7 dias
+
+    // Também copia o texto para a área de transferência
+    const positionText = `Linha ${row}, Coluna ${col}`;
     navigator.clipboard.writeText(positionText).then(() => {
-      alert(`Posição copiada: ${positionText}`);
-    }).catch(err => {
-      console.error('Erro ao copiar para a área de transferência:', err);
+      console.log('Texto copiado para a área de transferência!');
+    }).catch((err) => {
+      console.error('Erro ao copiar o texto:', err);
     });
   };
 
@@ -101,7 +106,11 @@ const Grid = () => {
           id={id}
           className="square"
           onMouseOver={() => handleMouseOver(row + 1, col + 1)}
-          onClick={() => handleClickPosition(row + 1, col + 1)} // Evento de clique para copiar posição
+          onClick={() => {
+            if (hoveredPosition) {
+              copyPositionToCookies(hoveredPosition.row, hoveredPosition.col); // Salva linha e coluna nos cookies
+            }
+          }}
         >
           {iconInSquare ? renderIcon(iconInSquare) : null}
         </div>
