@@ -44,7 +44,11 @@ const IconEditor = () => {
 
         setCreationDate(dt_criacao);
         setModificationDate(dt_modificacao);
-        setFormData({ ...formData, descricao });
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          id, // Mantém o ID no campo, essencial para "modificar"
+          descricao,
+        }));
       } else {
         console.error('Erro ao buscar o ícone:', response.statusText);
       }
@@ -88,19 +92,12 @@ const IconEditor = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formDataToSend = new FormData();
-    const isAdding = !selectedId;
+    const isAdding = formData.id && !selectedId;
 
-    if (isAdding) {
-      formDataToSend.append('icon_id', formData.id);
-      formDataToSend.append('src', formData.src);
-      formDataToSend.append('descricao', formData.descricao);
-      formDataToSend.append('dt_criacao', new Date().toISOString());
-    } else {
-      formDataToSend.append('icon_id', selectedId);
-      formDataToSend.append('src', formData.src);
-      formDataToSend.append('descricao', formData.descricao);
-      formDataToSend.append('dt_modificacao', new Date().toISOString());
-    }
+    formDataToSend.append('icon_id', formData.id || selectedId);
+    formDataToSend.append('src', formData.src);
+    formDataToSend.append('descricao', formData.descricao);
+    formDataToSend.append(isAdding ? 'dt_criacao' : 'dt_modificacao', new Date().toISOString());
 
     try {
       const url = `http://localhost:5000/api/icons/${isAdding ? 'add' : 'modify'}`;
@@ -148,8 +145,8 @@ const IconEditor = () => {
             value={formData.id}
             onChange={(e) => {
               const id = e.target.value;
-              setSelectedId(id);
               setFormData({ ...formData, id });
+              setSelectedId(id);
               if (id.length <= 3) fetchIconById(id);
             }}
             placeholder="Digite o ID do ícone"
@@ -215,7 +212,7 @@ const IconEditor = () => {
         </div>
 
         <button type="submit" className="icon-editor-button-salvar">
-          {selectedId ? 'Atualizar' : 'Salvar'}
+          {formData.id && !selectedId ? 'Salvar' : 'Atualizar'}
         </button>
         {selectedId && (
           <button type="button" className="icon-editor-button-deletar delete-button" onClick={handleDelete}>
