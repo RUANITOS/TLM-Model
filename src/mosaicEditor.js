@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './styles/Editor.css';
 import Header from './components/Header';
@@ -16,6 +16,34 @@ function MosaicForm() {
   });
   const [mosaicId, setMosaicId] = useState('');
   const [action, setAction] = useState('add');
+
+  // Função para obter o valor de um cookie
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  };
+
+  useEffect(() => {
+    // Verificar e popular os campos com os valores dos cookies
+    const positionRow = getCookie('position_row');
+    const positionCol = getCookie('position_col');
+
+    if (positionRow) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        posicao_linha: positionRow,
+      }));
+    }
+
+    if (positionCol) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        posicao_coluna: positionCol,
+      }));
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

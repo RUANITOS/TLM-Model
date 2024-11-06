@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './styles/Grid.css';
 
 const Grid = () => {
@@ -129,6 +130,9 @@ const Grid = () => {
             Posição: Linha {hoveredPosition.row}, Coluna {hoveredPosition.col}
           </div>
         )}
+         <Link to="/MosaicEditor">
+          <button className="icon-editor-button">Editar Mosaico</button>
+        </Link>
       </div>
       {squares}
       {isModalOpen && (
