@@ -201,7 +201,7 @@ const IconEditor = () => {
         <option value="modify">Modificar Ícone</option>
       </select>
             <div className="form-group">
-              <label className="icon-editor-label">Digite o ID do Ícone (1-3 dígitos):</label>
+              <label className="icon-editor-label">ID do Ícone:</label>
               <input
                 type="number"
                 maxLength="3"
@@ -253,7 +253,7 @@ const IconEditor = () => {
             </div>
 
             {/* Seção de Alteração */}
-            <div className="modification-section">
+            
               <div className="form-group">
                 <label className="icon-editor-label">Descrição:</label>
                 <input
@@ -278,10 +278,8 @@ const IconEditor = () => {
               </div>
 
               <button type="submit" className="icon-editor-button-atualizar">Atualizar</button>
-              <button type="button" className="icon-editor-button-deletar delete-button" onClick={handleDelete}>
-                Deletar
-              </button>
-            </div>
+              <button type="button" className="icon-editor-button-deletar delete-button" onClick={handleDelete}>Deletar</button>
+              <button type="submit" className="icon-editor-button-salvar">Salvar</button>
           </>
         )}
       </form>
