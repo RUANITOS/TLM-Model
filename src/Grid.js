@@ -8,6 +8,8 @@ const Grid = () => {
   const [displayIcons, setDisplayIcons] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [iframeSrc, setIframeSrc] = useState('');
+  const [isPositionSelectorActive, setIsPositionSelectorActive] = useState(false);
+  const [hoveredPosition, setHoveredPosition] = useState(null);
 
   const fetchIconsAndMosaics = async () => {
     try {
@@ -55,6 +57,17 @@ const Grid = () => {
     setIframeSrc('');
   };
 
+  const togglePositionSelector = () => {
+    setIsPositionSelectorActive(!isPositionSelectorActive);
+    setHoveredPosition(null); // Reseta a posição quando desativa
+  };
+
+  const handleMouseOver = (row, col) => {
+    if (isPositionSelectorActive) {
+      setHoveredPosition({ row, col });
+    }
+  };
+
   const renderIcon = (icon) => (
     <img
       src={icon.src}
@@ -74,7 +87,12 @@ const Grid = () => {
       const iconInSquare = displayIcons.find(icon => icon.posicao_linha === row + 1 && icon.posicao_coluna === col + 1);
 
       return (
-        <div key={id} id={id} className="square">
+        <div
+          key={id}
+          id={id}
+          className="square"
+          onMouseOver={() => handleMouseOver(row + 1, col + 1)}
+        >
           {iconInSquare ? renderIcon(iconInSquare) : null}
         </div>
       );
@@ -83,6 +101,16 @@ const Grid = () => {
 
   return (
     <div className="grid-container">
+      <div className="button-container">
+        <button onClick={togglePositionSelector}>
+          {isPositionSelectorActive ? 'Desativar Seleção de Posição' : 'Selecionar Posição'}
+        </button>
+        {hoveredPosition && (
+          <div className="position-indicator">
+            Posição: Linha {hoveredPosition.row}, Coluna {hoveredPosition.col}
+          </div>
+        )}
+      </div>
       {squares}
       {isModalOpen && (
         <div className="modal-overlay" onClick={closeModal}>
