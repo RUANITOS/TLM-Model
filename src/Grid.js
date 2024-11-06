@@ -94,7 +94,7 @@ const Grid = () => {
               frameBorder="0"
               allowFullScreen
             />
-            <button className="close-button" onClick={closeModal}>Fechar</button>
+            <button className="close-button" onClick={closeModal}>X</button>
           </div>
         </div>
       )}
