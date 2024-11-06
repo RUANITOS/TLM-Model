@@ -1,4 +1,5 @@
 .icon-editor-container {
+
   border-radius: 8px;
   width: 100%;
   padding-left: 1%;
@@ -7,7 +8,9 @@
 .icon-editor-title {
   text-align: left;
   color: #373e4a;
+  /* Mantido o valor único */
   margin: 20px 0 20px 5px;
+  /* Simplificado para margem superior e inferior */
   font-size: 25px;
   font-weight: 500;
   line-height: 1.1;
@@ -18,22 +21,61 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  /* Mantido o espaço entre os elementos */
   position: relative;
+  /* Necessário para o posicionamento absoluto dos underlines */
   align-items: center;
 }
+
+/* Adiciona um underline suave entre os elementos */
+.icon-editor-form>* {
+  position: relative;
+  /* Necessário para o pseudo-elemento */
+}
+
+.icon-editor-form>*:not(:last-child)::after {
+  content: "";
+  /* Cria um pseudo-elemento vazio */
+  position: absolute;
+  left: 0;
+  /* Alinha à esquerda */
+  right: 0;
+  /* Alinha à direita */
+  bottom: -5px;
+  /* Posiciona o underline abaixo do elemento */
+  height: 1px;
+  /* Espessura do underline */
+  background-color: rgba(0, 0, 0, 0.1);
+  /* Cor suave para o underline */
+  transition: background-color 0.3s;
+  /* Suaviza a transição ao passar o mouse */
+}
+
+
 
 .icon-editor-label {
   font-weight: 600;
   margin-bottom: 8px;
   color: #555;
   width: 313px;
+
 }
 
 .select {
-  width: 417px;
+  width: 410px;
   margin-top: 5px;
   margin-bottom: 5px;
+  margin-left: -4%;
   box-shadow: 0px 2px 11px 2px rgba(0, 54, 130, 0.53) !important;
+}
+
+.select-icon {
+  width: 313px;
+}
+
+.select-icon-modify {
+  width: 300px;
+  margin-left: 5px;
 }
 
 .icon-editor-input {
@@ -45,21 +87,7 @@
   padding: 5px;
 }
 
-.icon-preview-container {
-  width: 60px;
-  height: 60px;
-  overflow: hidden; /* Esconde o que ultrapassar */
-  border: 1px solid #ccc; /* Opcional: borda para visualização */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.icon-preview {
-  width: 100%;
-  height: auto;
-  object-fit: cover; /* Mantém a proporção da imagem */
-}
 
 /* Botão */
 .icon-editor-button-salvar {
@@ -67,35 +95,56 @@
   border: none;
   color: #ffffff;
   font-size: 14px;
-  width: 7%;
+  width: 10%;
   height: 40px;
   line-height: 40px;
   padding: 0;
-  margin-top: 10px;
+  margin-top: -50px;
   border-radius: 25px;
+  margin-left: 20%;
   transition: background-color 0.3s ease;
   cursor: pointer;
+
+
 }
 
-
-.icon-editor-button-atualizar-deletar {
+.icon-editor-button-atualizar {
+  
   background: #202959;
   border: none;
   color: #ffffff;
   font-size: 14px;
-  width: 40%;
+  width: 10%;
   height: 40px;
   line-height: 40px;
   padding: 0;
   margin-top: 10px;
   border-radius: 25px;
+  margin-left: -20%;
   transition: background-color 0.3s ease;
-  margin-right: 10%;
   cursor: pointer;
+}
+
+
+.icon-editor-button-deletar {
+  background: #202959;
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    width: 7%;
+    height: 40px;
+    line-height: 40px;
+    padding: 0;
+    margin-top: -50px;
+    border-radius: 25px;
+    margin-right: 0%;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
 }
 
 .icon-editor-button:hover {
   background-color: #1a1f3c;
+  /* Sombra mais clara ao passar o mouse */
 }
 
 body {
@@ -105,15 +154,14 @@ body {
 
 .icon-editor-label-title {
   background-color: rgba(255, 255, 255, 0.8);
+  /* Fundo semi-transparente para o formulário */
   border-radius: 2px;
   width: 100%;
   box-shadow: 0px 2px 11px 2px rgba(0, 54, 130, 0.53) !important;
+  /* Usar rgba para maior clareza */
   padding-bottom: 1px;
+  /* Corrigido para lowercase */
   text-align: center;
   margin-top: 10px;
   padding-top: 1px;
-}
-.icon-preview-imagem{
-  width: 60px;
-  height: 60px;
 }
