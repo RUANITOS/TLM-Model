@@ -130,7 +130,7 @@ const Grid = () => {
             Posição: Linha {hoveredPosition.row}, Coluna {hoveredPosition.col}
           </div>
         )}
-         <Link to="/MosaicEditor">
+         <Link to="/TLM-Producao/MosaicEditor">
           <button className="icon-editor-button">Editar Mosaico</button>
         </Link>
       </div>
