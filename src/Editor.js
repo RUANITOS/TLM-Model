@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './styles/Editor.css';
 import Header from './components/Header';
 import './styles/Login.css';
+
 const IconEditor = () => {
   const [formData, setFormData] = useState({
     id: '',
@@ -11,7 +12,6 @@ const IconEditor = () => {
   });
   const [iconIds, setIconIds] = useState([]);
   const [selectedId, setSelectedId] = useState('');
-  const [action, setAction] = useState('add');
   const [imagePreview, setImagePreview] = useState(null);
   const [creationDate, setCreationDate] = useState(null);
   const [modificationDate, setModificationDate] = useState(null);
@@ -66,15 +66,6 @@ const IconEditor = () => {
     }
   };
 
-  const handleActionChange = (e) => {
-    setAction(e.target.value);
-    setSelectedId('');
-    setImagePreview(null);
-    setFormData({ id: '', src: null, descricao: '', newId: '' });
-    setCreationDate(null);
-    setModificationDate(null);
-  };
-
   const handleDelete = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/icons/delete/${selectedId}`, {
@@ -84,9 +75,7 @@ const IconEditor = () => {
       if (response.ok) {
         alert('Ícone deletado com sucesso!');
         fetchIconIds();
-        setImagePreview(null);
-        setFormData({ id: '', src: null, descricao: '', newId: '' });
-        setSelectedId('');
+        resetForm();
       } else {
         const error = await response.text();
         console.error('Erro ao deletar o ícone:', error);
@@ -99,13 +88,14 @@ const IconEditor = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formDataToSend = new FormData();
+    const isAdding = !selectedId;
 
-    if (action === 'add') {
+    if (isAdding) {
       formDataToSend.append('icon_id', formData.id);
       formDataToSend.append('src', formData.src);
       formDataToSend.append('descricao', formData.descricao);
       formDataToSend.append('dt_criacao', new Date().toISOString());
-    } else if (action === 'modify') {
+    } else {
       formDataToSend.append('icon_id', selectedId);
       formDataToSend.append('src', formData.src);
       formDataToSend.append('descricao', formData.descricao);
@@ -113,8 +103,8 @@ const IconEditor = () => {
     }
 
     try {
-      const url = `http://localhost:5000/api/icons/${action === 'add' ? 'add' : 'modify'}`;
-      const method = action === 'add' ? 'POST' : 'PUT';
+      const url = `http://localhost:5000/api/icons/${isAdding ? 'add' : 'modify'}`;
+      const method = isAdding ? 'POST' : 'PUT';
 
       const response = await fetch(url, {
         method,
@@ -122,11 +112,9 @@ const IconEditor = () => {
       });
 
       if (response.ok) {
-        alert(`Ícone ${action === 'add' ? 'adicionado' : 'modificado'} com sucesso!`);
+        alert(`Ícone ${isAdding ? 'adicionado' : 'modificado'} com sucesso!`);
         fetchIconIds();
-        setImagePreview(null);
-        setFormData({ id: '', src: null, descricao: '', newId: '' });
-        setSelectedId('');
+        resetForm();
       } else {
         const error = await response.text();
         console.error('Erro ao enviar os dados:', error);
@@ -136,151 +124,103 @@ const IconEditor = () => {
     }
   };
 
+  const resetForm = () => {
+    setFormData({ id: '', src: null, descricao: '', newId: '' });
+    setSelectedId('');
+    setImagePreview(null);
+    setCreationDate(null);
+    setModificationDate(null);
+  };
+
   return (
     <div className="icon-editor-container">
       <Header />
-      <div className='icon-editor-label-title'>
-        <h2 className="icon-editor-title">Editor de ícones</h2>
+      <div className="icon-editor-label-title">
+        <h2 className="icon-editor-title">Editor de Ícones</h2>
       </div>
 
-     
-
       <form className="icon-editor-form" onSubmit={handleSubmit}>
-        {action === 'add' && (
-          <>
-           <select className='select' onChange={handleActionChange} value={action}>
-        <option value="add">Adicionar Ícone</option>
-        <option value="modify">Modificar Ícone</option>
-      </select>
-            <div className="form-group">
-              <label className="icon-editor-label">ID do Ícone:</label>
-              <input
-                type="text"
-                name="id"
-                value={formData.id}
-                onChange={handleChange}
-                placeholder="Digite o ID do ícone"
-                className="icon-editor-input"
-                required
-              />
-            </div>
+        <div className="form-group">
+          <label className="icon-editor-label">ID do Ícone:</label>
+          <input
+            type="text"
+            name="id"
+            value={formData.id}
+            onChange={(e) => {
+              const id = e.target.value;
+              setSelectedId(id);
+              setFormData({ ...formData, id });
+              if (id.length <= 3) fetchIconById(id);
+            }}
+            placeholder="Digite o ID do ícone"
+            className="icon-editor-input"
+            required
+          />
+        </div>
 
-            <div className="form-group">
-              <label className="icon-editor-label">Descrição:</label>
-              <input
-                type="text"
-                name="descricao"
-                value={formData.descricao}
-                onChange={handleChange}
-                placeholder="Digite a descrição do ícone"
-                className="icon-editor-input"
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="icon-editor-label">Carregar Imagem:</label>
-              <input
-                type="file"
-                name="src"
-                onChange={handleChange}
-                accept="image/*"
-                className="icon-editor-input-file"
-                required
-              />
-            </div>
-
-            <button type="submit" className="icon-editor-button-salvar">Salvar</button>
-          </>
+        {creationDate && (
+          <div className="form-group">
+            <label className="icon-editor-label">Data de Criação:</label>
+            <input
+              type="text"
+              value={new Date(creationDate).toLocaleString()}
+              readOnly
+              className="icon-editor-input"
+            />
+          </div>
         )}
 
-        {action === 'modify' && (
-          <>
-           <select className='select' onChange={handleActionChange} value={action}>
-        <option value="add">Adicionar Ícone</option>
-        <option value="modify">Modificar Ícone</option>
-      </select>
-            <div className="form-group">
-              <label className="icon-editor-label">ID do Ícone:</label>
-              <input
-                type="number"
-                maxLength="3"
-                value={selectedId}
-                onChange={(e) => {
-                  setSelectedId(e.target.value);
-                  if (e.target.value.length <= 3) {
-                    fetchIconById(e.target.value);
-                  }
-                }}
-                placeholder="Digite o ID do ícone"
-                className="icon-editor-input"
-                required
-              />
-            </div>
+        {modificationDate && (
+          <div className="form-group">
+            <label className="icon-editor-label">Última Modificação:</label>
+            <input
+              type="text"
+              value={new Date(modificationDate).toLocaleString()}
+              readOnly
+              className="icon-editor-input"
+            />
+          </div>
+        )}
 
-            {/* Seção de Visualização */}
-            <div className="visualization-section">
-              {creationDate && (
-                <div className="form-group">
-                  <label className="icon-editor-label">Data de Criação:</label>
-                  <input
-                    type="text"
-                    value={new Date(creationDate).toLocaleString()}
-                    readOnly
-                    className="icon-editor-input"
-                  />
-                </div>
-              )}
+        {imagePreview && (
+          <div className="form-group">
+            <label className="icon-editor-label-imagem">Imagem Atual:</label>
+            <img src={imagePreview} alt="Preview" className="icon-preview-imagem" />
+          </div>
+        )}
 
-              {modificationDate && (
-                <div className="form-group">
-                  <label className="icon-editor-label">Última Modificação:</label>
-                  <input
-                    type="text"
-                    value={new Date(modificationDate).toLocaleString()}
-                    readOnly
-                    className="icon-editor-input"
-                  />
-                </div>
-              )}
+        <div className="form-group">
+          <label className="icon-editor-label">Descrição:</label>
+          <input
+            type="text"
+            name="descricao"
+            value={formData.descricao}
+            onChange={handleChange}
+            placeholder="Digite a descrição do ícone"
+            className="icon-editor-input"
+            required
+          />
+        </div>
 
-              {imagePreview && (
-                <div className="form-group">
-                  <label className="icon-editor-label-imagem">Imagem Atual:</label>
-                  <img src={imagePreview} alt="Preview" className="icon-preview-imagem" />
-                </div>
-              )}
-            </div>
+        <div className="form-group">
+          <label className="icon-editor-label">Carregar Imagem:</label>
+          <input
+            type="file"
+            name="src"
+            onChange={handleChange}
+            accept="image/*"
+            className="icon-editor-input-file"
+            required={!selectedId}
+          />
+        </div>
 
-            {/* Seção de Alteração */}
-            
-              <div className="form-group">
-                <label className="icon-editor-label">Descrição:</label>
-                <input
-                  type="text"
-                  name="descricao"
-                  value={formData.descricao}
-                  onChange={handleChange}
-                  placeholder="Digite a nova descrição"
-                  className="icon-editor-input"
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="icon-editor-label">Carregar Nova Imagem:</label>
-                <input
-                  type="file"
-                  name="src"
-                  onChange={handleChange}
-                  accept="image/*"
-                  className="icon-editor-input-file"
-                />
-              </div>
-
-              <button type="submit" className="icon-editor-button-atualizar">Atualizar</button>
-              <button type="button" className="icon-editor-button-deletar delete-button" onClick={handleDelete}>Deletar</button>
-              <button type="submit" className="icon-editor-button-salvar">Salvar</button>
-          </>
+        <button type="submit" className="icon-editor-button-salvar">
+          {selectedId ? 'Atualizar' : 'Salvar'}
+        </button>
+        {selectedId && (
+          <button type="button" className="icon-editor-button-deletar delete-button" onClick={handleDelete}>
+            Deletar
+          </button>
         )}
       </form>
     </div>
