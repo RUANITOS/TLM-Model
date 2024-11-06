@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './styles/Editor.css';
 import Header from './components/Header';
-
+import './styles/Login.css';
 const IconEditor = () => {
   const [formData, setFormData] = useState({
     id: '',
