@@ -108,14 +108,15 @@ function MosaicForm() {
         <h2 className="icon-editor-title">Editor de Mosaicos</h2>
       </div>
 
-      <select className="select" onChange={handleActionChange} value={action}>
-        <option value="add">Adicionar Mosaico</option>
-        <option value="modify">Modificar Mosaico</option>
-      </select>
+
 
       <form className="icon-editor-form" onSubmit={action === 'add' ? handleSubmit : handleUpdate}>
         {action === 'add' && (
           <>
+            <select className="select" onChange={handleActionChange} value={action}>
+              <option value="add">Adicionar Mosaico</option>
+              <option value="modify">Modificar Mosaico</option>
+            </select>
             <div className="form-group">
               <label className="icon-editor-label">Posição Linha:</label>
               <input
@@ -208,6 +209,10 @@ function MosaicForm() {
 
         {action === 'modify' && (
           <>
+            <select className="select" onChange={handleActionChange} value={action}>
+              <option value="add">Adicionar Mosaico</option>
+              <option value="modify">Modificar Mosaico</option>
+            </select>
             <div className="form-group">
               <label className="icon-editor-label">ID do Mosaico:</label>
               <input
