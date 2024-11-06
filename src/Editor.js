@@ -190,7 +190,7 @@ const IconEditor = () => {
               />
             </div>
 
-            <button type="submit" className="icon-editor-button">Salvar</button>
+            <button type="submit" className="icon-editor-button-salvar">Salvar</button>
           </>
         )}
 
@@ -277,8 +277,8 @@ const IconEditor = () => {
                 />
               </div>
 
-              <button type="submit" className="icon-editor-button">Atualizar</button>
-              <button type="button" className="icon-editor-button delete-button" onClick={handleDelete}>
+              <button type="submit" className="icon-editor-button-atualizar">Atualizar</button>
+              <button type="button" className="icon-editor-button-deletar delete-button" onClick={handleDelete}>
                 Deletar
               </button>
             </div>
