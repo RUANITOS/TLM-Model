@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './styles/Editor.css';
 import Header from './components/Header';
-
+import { Link } from 'react-router-dom';
 function MosaicForm() {
   const [formData, setFormData] = useState({
     posicao_linha: '',
@@ -308,9 +308,15 @@ function MosaicForm() {
             <button type="button" className="icon-editor-button delete-button" onClick={handleDelete}>
               Deletar
             </button>
+
           </>
+
         )}
+        <Link to="/TLM-Producao">
+          <button className="icon-editor-button">Voltar para TLM-Producao</button>
+        </Link>
       </form>
+
     </div>
   );
 }
