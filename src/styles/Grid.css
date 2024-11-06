@@ -6,6 +6,7 @@
   height: 100vh;
   width: 100vw;
 }
+
 .grid-container::before {
   content: '';
   position: absolute;
@@ -20,46 +21,53 @@
   opacity: 0.1; /* Controla a opacidade da imagem */
   z-index: -1; /* Coloca a imagem atrás do conteúdo */
 }
+
 .square {
-  height: 50px; /* Altura de cada quadrado */
+  height: 50px; /* Altura fixa de cada quadrado */
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative; /* Para posicionamento absoluto dos ícones associados */
+  position: relative; /* Para possibilitar o posicionamento absoluto do ícone */
 }
+
 .icon-container {
   position: absolute; /* Posiciona o ícone acima do quadrado */
   top: -30px; /* Ajuste conforme necessário para posicionar o ícone acima */
   left: 50%; /* Centraliza horizontalmente */
-  transform: translateX(-50%); /* Ajusta a posição para que fique centralizado */
+  transform: translateX(-50%); /* Ajusta para centralizar */
 }
+
 .icon {
-  width: 80px; /* Largura do ícone */
+  width: 80px; /* Largura fixa do ícone */
+  height: auto; /* Mantém a proporção da imagem */
   cursor: pointer;
   transition: transform 0.3s ease;
 }
+
 .icon:hover {
-  transform: scale(1.1);
+  transform: scale(1.1); /* Efeito de zoom ao passar o mouse */
 }
+
 .associated-icons {
-  position: absolute; /* Para posicionar ícones associados em relação ao ícone pai */
+  position: absolute; /* Posiciona os ícones associados em relação ao ícone pai */
   top: 0;
   left: 100%; /* Coloca os ícones associados à direita do ícone pai */
-  white-space: nowrap; /* Impede que os ícones associados quebrem linha */
+  white-space: nowrap; /* Impede quebra de linha */
   cursor: pointer;
 }
-/* Estilos específicos para o 'icon-3' */
+
 .special-icon {
-  width: 260px;  /* Largura maior para 'icon-3' */
-  height: 130px; /* Altura maior para 'icon-3' */
+  width: 260px;  /* Largura maior específica */
+  height: 130px; /* Altura maior específica */
 }
+
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo semitransparente */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,23 +83,46 @@
 .modal-content button {
   margin-top: 10px;
 }
+
 .hover-text {
   position: absolute;
-  top: -30px; /* Ajusta a posição do texto acima do ícone */
+  top: -30px; /* Posiciona o texto acima do ícone */
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.8); /* Fundo escuro */
   color: #fff;
   padding: 5px 10px;
   border-radius: 5px;
   font-size: 14px;
-  white-space: nowrap;
-  opacity: 0;
+  white-space: nowrap; /* Evita quebra de linha */
+  opacity: 0; /* Invisível por padrão */
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .icon-container:hover .hover-text {
   opacity: 1;
-  visibility: visible;
+  visibility: visible; /* Mostra o texto ao passar o mouse */
+}
+
+.button-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10000; /* Eleva os botões acima de outros elementos */
+  background-color: #fff; /* Fundo branco para a caixa */
+  padding: 15px; /* Espaçamento interno */
+  border-radius: 8px; /* Bordas arredondadas */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Sombra suave */
+  display: flex;
+  flex-direction: column; /* Empilha os elementos verticalmente */
+  gap: 10px; /* Espaço entre os elementos */
+}
+
+.position-indicator {
+  color: black;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: center; /* Centraliza o texto */
 }
