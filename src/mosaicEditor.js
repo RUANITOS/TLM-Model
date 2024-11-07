@@ -3,6 +3,8 @@ import axios from 'axios';
 import './styles/Editor.css';
 import Header from './components/Header';
 import { Link } from 'react-router-dom';
+import { useAlertas } from './contexts/AlertasContext'; // Importa o contexto de alertas
+
 function MosaicForm() {
   const [formData, setFormData] = useState({
     posicao_linha: '',
@@ -16,7 +18,7 @@ function MosaicForm() {
   });
   const [mosaicId, setMosaicId] = useState('');
   const [action, setAction] = useState('add');
-
+  const { addAlert } = useAlertas();
   // Função para obter o valor de um cookie
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -62,42 +64,42 @@ function MosaicForm() {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/api/mosaics/add', formData);
-      alert('Mosaico adicionado com sucesso!');
+      addAlert('Mosaico adicionado com sucesso!', 'success');
       console.log(response.data);
     } catch (error) {
       console.error('Erro ao adicionar mosaico:', error);
-      alert('Erro ao adicionar mosaico.');
+      addAlert('Erro ao adicionar mosaico.', 'error');
     }
   };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     if (!mosaicId) {
-      alert('Por favor, forneça um ID de mosaico para modificar.');
+      addAlert('Por favor, forneça um ID de mosaico para modificar.','error');
       return;
     }
     try {
       const response = await axios.put(`http://localhost:5000/api/mosaics/modify/${mosaicId}`, formData);
-      alert('Mosaico modificado com sucesso!');
+      addAlert('Mosaico modificado com sucesso!','success');
       console.log(response.data);
     } catch (error) {
       console.error('Erro ao modificar mosaico:', error);
-      alert('Erro ao modificar mosaico.');
+      addAlert('Erro ao modificar mosaico.','error');
     }
   };
 
   const handleDelete = async (e) => {
     e.preventDefault();
     if (!mosaicId) {
-      alert('Por favor, forneça um ID de mosaico para deletar.');
+      addAlert('Por favor, forneça um ID de mosaico para deletar.','error');
       return;
     }
     try {
       await axios.delete(`http://localhost:5000/api/mosaics/delete/${mosaicId}`);
-      alert('Mosaico deletado com sucesso!');
+      addAlert('Mosaico deletado com sucesso!','success');
     } catch (error) {
       console.error('Erro ao deletar mosaico:', error);
-      alert('Erro ao deletar mosaico.');
+      addAlert('Erro ao deletar mosaico.','error');
     }
   };
 
@@ -313,7 +315,7 @@ function MosaicForm() {
 
         )}
         <Link to="/TLM-Producao">
-          <button className="icon-editor-button">Voltar para TLM-Producao</button>
+          <button className="icon-editor-button">Voltar para o mosaico</button>
         </Link>
       </form>
 

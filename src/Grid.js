@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './styles/Grid.css';
 
 const Grid = () => {
@@ -12,28 +12,21 @@ const Grid = () => {
   const [isPositionSelectorActive, setIsPositionSelectorActive] = useState(false);
   const [hoveredPosition, setHoveredPosition] = useState(null);
 
+  const navigate = useNavigate();
+
   const fetchIconsAndMosaics = async () => {
     try {
-      // Busca os ícones da rota /api/icons
       const iconsResponse = await fetch('http://localhost:5000/api/icons');
       const iconsData = await iconsResponse.json();
-
-      // Busca os parâmetros de mosaico da rota /api/mosaics
       const mosaicsResponse = await fetch('http://localhost:5000/api/mosaics');
       const mosaicsData = await mosaicsResponse.json();
 
-      // Combina os dados dos ícones com os parâmetros de mosaico
       const combinedData = mosaicsData.map((mosaic) => {
         const associatedIcon = iconsData.find(icon => icon.icon_id === mosaic.id_icone);
-
         if (associatedIcon) {
           const imgBlob = associatedIcon.src ? new Blob([new Uint8Array(associatedIcon.src.data)]) : null;
           const imgUrl = imgBlob ? URL.createObjectURL(imgBlob) : '';
-
-          return {
-            ...mosaic,
-            src: imgUrl, // Adiciona a URL da imagem
-          };
+          return { ...mosaic, src: imgUrl };
         }
         return null;
       }).filter(icon => icon !== null);
@@ -45,7 +38,7 @@ const Grid = () => {
   };
 
   useEffect(() => {
-    fetchIconsAndMosaics(); // Chama a função ao montar o componente
+    fetchIconsAndMosaics();
   }, []);
 
   const handleIconClick = (origemConteudo) => {
@@ -60,7 +53,7 @@ const Grid = () => {
 
   const togglePositionSelector = () => {
     setIsPositionSelectorActive(!isPositionSelectorActive);
-    setHoveredPosition(null); // Reseta a posição quando desativa
+    setHoveredPosition(null);
   };
 
   const handleMouseOver = (row, col) => {
@@ -69,15 +62,14 @@ const Grid = () => {
     }
   };
 
-  const copyPositionToCookies = (row, col) => {
-    // Salva a linha e a coluna nos cookies separados
-    document.cookie = `position_row=${row}; path=/; max-age=${60 * 60 * 24 * 7}`; // Salva por 7 dias
-    document.cookie = `position_col=${col}; path=/; max-age=${60 * 60 * 24 * 7}`; // Salva por 7 dias
+  const copyPositionToCookiesAndNavigate = (row, col) => {
+    document.cookie = `position_row=${row}; path=/; max-age=${60 * 60 * 24 * 7}`;
+    document.cookie = `position_col=${col}; path=/; max-age=${60 * 60 * 24 * 7}`;
 
-    // Também copia o texto para a área de transferência
     const positionText = `Linha ${row}, Coluna ${col}`;
     navigator.clipboard.writeText(positionText).then(() => {
       console.log('Texto copiado para a área de transferência!');
+      navigate('/TLM-Producao/MosaicEditor'); // Redireciona para o MosaicEditor
     }).catch((err) => {
       console.error('Erro ao copiar o texto:', err);
     });
@@ -109,7 +101,7 @@ const Grid = () => {
           onMouseOver={() => handleMouseOver(row + 1, col + 1)}
           onClick={() => {
             if (hoveredPosition) {
-              copyPositionToCookies(hoveredPosition.row, hoveredPosition.col); // Salva linha e coluna nos cookies
+              copyPositionToCookiesAndNavigate(hoveredPosition.row, hoveredPosition.col);
             }
           }}
         >
@@ -130,7 +122,7 @@ const Grid = () => {
             Posição: Linha {hoveredPosition.row}, Coluna {hoveredPosition.col}
           </div>
         )}
-         <Link to="/TLM-Producao/MosaicEditor">
+        <Link to="/TLM-Producao/MosaicEditor">
           <button className="icon-editor-button">Editar Mosaico</button>
         </Link>
       </div>
