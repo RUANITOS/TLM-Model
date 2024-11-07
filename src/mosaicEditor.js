@@ -205,7 +205,7 @@ function MosaicForm() {
                 required
               />
             </div>
-            <button type="submit" className="icon-editor-button">Adicionar</button>
+            <button type="submit" className="icon-editor-button-adicionar">Adicionar</button>
           </>
         )}
 
@@ -306,8 +306,8 @@ function MosaicForm() {
                 required
               />
             </div>
-            <button type="submit" className="icon-editor-button">Modificar</button>
-            <button type="button" className="icon-editor-button delete-button" onClick={handleDelete}>
+            <button type="submit" className="icon-editor-button-salvar2">Modificar</button>
+            <button type="button" className="icon-editor-button-deletar-mosaic delete-button" onClick={handleDelete}>
               Deletar
             </button>
 
@@ -315,7 +315,7 @@ function MosaicForm() {
 
         )}
         <Link to="/TLM-Producao">
-          <button className="icon-editor-button">Voltar para o mosaico</button>
+          <button className="icon-editor-button-voltar">Voltar para o mosaico</button>
         </Link>
       </form>
 
