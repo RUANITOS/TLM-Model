@@ -75,31 +75,31 @@ function MosaicForm() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     if (!mosaicId) {
-      addAlert('Por favor, forneça um ID de mosaico para modificar.','error');
+      addAlert('Por favor, forneça um ID de mosaico para modificar.', 'error');
       return;
     }
     try {
       const response = await axios.put(`http://localhost:5000/api/mosaics/modify/${mosaicId}`, formData);
-      addAlert('Mosaico modificado com sucesso!','success');
+      addAlert('Mosaico modificado com sucesso!', 'success');
       console.log(response.data);
     } catch (error) {
       console.error('Erro ao modificar mosaico:', error);
-      addAlert('Erro ao modificar mosaico.','error');
+      addAlert('Erro ao modificar mosaico.', 'error');
     }
   };
 
   const handleDelete = async (e) => {
     e.preventDefault();
     if (!mosaicId) {
-      addAlert('Por favor, forneça um ID de mosaico para deletar.','error');
+      addAlert('Por favor, forneça um ID de mosaico para deletar.', 'error');
       return;
     }
     try {
       await axios.delete(`http://localhost:5000/api/mosaics/delete/${mosaicId}`);
-      addAlert('Mosaico deletado com sucesso!','success');
+      addAlert('Mosaico deletado com sucesso!', 'success');
     } catch (error) {
       console.error('Erro ao deletar mosaico:', error);
-      addAlert('Erro ao deletar mosaico.','error');
+      addAlert('Erro ao deletar mosaico.', 'error');
     }
   };
 
@@ -205,7 +205,7 @@ function MosaicForm() {
                 required
               />
             </div>
-            <button type="submit" className="icon-editor-button-adicionar">Adicionar</button>
+            <button type="submit" id='botao-salvar' className="icon-editor-button" onClick={handleSubmit}>Adicionar</button>
           </>
         )}
 
@@ -306,8 +306,8 @@ function MosaicForm() {
                 required
               />
             </div>
-            <button type="submit" className="icon-editor-button-salvar2">Modificar</button>
-            <button type="button" className="icon-editor-button-deletar-mosaic delete-button" onClick={handleDelete}>
+            <button type="submit" id='botao-modificar' className="icon-editor-button" onClick={handleUpdate}>Modificar</button>
+            <button type="button" id='botao-deletar' className="icon-editor-button" onClick={handleDelete}>
               Deletar
             </button>
 
@@ -315,7 +315,7 @@ function MosaicForm() {
 
         )}
         <Link to="/TLM-Producao">
-          <button className="icon-editor-button-voltar">Voltar para o mosaico</button>
+          <button type="button" id='botao-voltar' className="icon-editor-button">Voltar para o mosaico</button>
         </Link>
       </form>
 
