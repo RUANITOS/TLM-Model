@@ -92,18 +92,33 @@
 /* Botão */
 .icon-editor-button-salvar {
   background: #202959;
-    border: none;
-    color: #ffffff;
-    font-size: 14px;
-    width: 10%;
-    height: 40px;
-    line-height: 40px;
-    padding: 0;
-    margin-top: -50px;
-    border-radius: 25px;
-    margin-left: 25%;
-    transition: background-color 0.3s ease;
-    cursor: pointer;
+  border: none;
+  color: #ffffff;
+  font-size: 14px;
+  width: 10%;
+  height: 40px;
+  line-height: 40px;
+  padding: 0;
+  margin-top: -50px;
+  border-radius: 25px;
+  margin-right: -25%;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+.icon-editor-button-salvar2 {
+  background: #202959;
+  border: none;
+  color: #ffffff;
+  font-size: 14px;
+  width: 10%;
+  height: 40px;
+  line-height: 40px;
+ margin-top: 0px;
+  padding: 0;
+  border-radius: 25px;
+  margin-right: -25%;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
 }
 
 .icon-editor-button-atualizar {

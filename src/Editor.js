@@ -143,16 +143,13 @@ const IconEditor = () => {
       <div className='icon-editor-label-title'>
         <h2 className="icon-editor-title">Editor de ícones</h2>
       </div>
-
-     
-
       <form className="icon-editor-form" onSubmit={handleSubmit}>
         {action === 'add' && (
           <>
-           <select className='select' onChange={handleActionChange} value={action}>
-        <option value="add">Adicionar Ícone</option>
-        <option value="modify">Modificar Ícone</option>
-      </select>
+              <select className='select' onChange={handleActionChange} value={action}>
+                <option value="add">Adicionar Ícone</option>
+                <option value="modify">Modificar Ícone</option>
+              </select>
             <div className="form-group">
               <label className="icon-editor-label">ID do Ícone:</label>
               <input
@@ -167,7 +164,7 @@ const IconEditor = () => {
             </div>
 
             <div className="form-group">
-              <label className="icon-editor-label">Descrição:</label>
+              <label className="icon-editor-label">Descrição:   </label>
               <input
                 type="text"
                 name="descricao"
@@ -190,17 +187,18 @@ const IconEditor = () => {
                 required
               />
             </div>
-
-            <button type="submit" className="icon-editor-button-salvar">Salvar</button>
+            <button type="submit" className="icon-editor-button-salvar2">Salvar</button>
           </>
+          
         )}
+
 
         {action === 'modify' && (
           <>
-           <select className='select' onChange={handleActionChange} value={action}>
-        <option value="add">Adicionar Ícone</option>
-        <option value="modify">Modificar Ícone</option>
-      </select>
+              <select className='select' onChange={handleActionChange} value={action}>
+                <option value="add">Adicionar Ícone</option>
+                <option value="modify">Modificar Ícone</option>
+              </select>
             <div className="form-group">
               <label className="icon-editor-label">ID do Ícone:</label>
               <input
@@ -219,8 +217,7 @@ const IconEditor = () => {
               />
             </div>
 
-            {/* Seção de Visualização */}
-            <div className="visualization-section">
+            
               {creationDate && (
                 <div className="form-group">
                   <label className="icon-editor-label">Data de Criação:</label>
@@ -231,7 +228,8 @@ const IconEditor = () => {
                     className="icon-editor-input"
                   />
                 </div>
-              )}
+                )
+              }
 
               {modificationDate && (
                 <div className="form-group">
@@ -243,18 +241,17 @@ const IconEditor = () => {
                     className="icon-editor-input"
                   />
                 </div>
-              )}
+                )
+              }
 
               {imagePreview && (
                 <div className="form-group">
                   <label className="icon-editor-label-imagem">Imagem Atual:</label>
                   <img src={imagePreview} alt="Preview" className="icon-preview-imagem" />
                 </div>
-              )}
-            </div>
+                )
+              }
 
-            {/* Seção de Alteração */}
-            
               <div className="form-group">
                 <label className="icon-editor-label">Descrição:</label>
                 <input
@@ -268,7 +265,7 @@ const IconEditor = () => {
               </div>
 
               <div className="form-group">
-                <label className="icon-editor-label">Carregar Nova Imagem:</label>
+                <label className="icon-editor-label">Carregar Imagem:</label>
                 <input
                   type="file"
                   name="src"
