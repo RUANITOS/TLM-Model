@@ -126,3 +126,20 @@
   font-size: 14px;
   text-align: center; /* Centraliza o texto */
 }
+.iframe-content{
+  width:800px;
+  height: 500px;
+}
+
+.modal-content button{
+  position: fixed;
+  left: 1175px;
+  color: red;
+  border: none;
+  font-size: 20px;
+  background-color: rgb(150, 150, 150);
+  border-radius: 5px;
+}
+.modal-content{
+  width: 55%;
+}
