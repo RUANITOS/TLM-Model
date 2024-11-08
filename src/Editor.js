@@ -187,7 +187,7 @@ const IconEditor = () => {
                 required
               />
             </div>
-            <button type="submit" className="icon-editor-button-salvar2">Salvar</button>
+            <button type="submit" className="icon-editor-button-salvar">Salvar</button>
           </>
           
         )}
@@ -277,7 +277,7 @@ const IconEditor = () => {
 
               <button type="submit" className="icon-editor-button-atualizar">Atualizar</button>
               <button type="button" className="icon-editor-button-deletar delete-button" onClick={handleDelete}>Deletar</button>
-              <button type="submit" className="icon-editor-button-salvar">Salvar</button>
+              <button type="submit" className="icon-editor-button-salvar2">Salvar</button>
           </>
         )}
       </form>
