@@ -8,7 +8,7 @@ const IconEditor = () => {
     id: '',
     src: null,
     descricao: '',
-    newId: '',
+    id_implementacao: '', // novo campo para id_implementacao
   });
   const [iconIds, setIconIds] = useState([]);
   const [selectedId, setSelectedId] = useState('');
@@ -17,6 +17,7 @@ const IconEditor = () => {
   const [creationDate, setCreationDate] = useState(null);
   const [modificationDate, setModificationDate] = useState(null);
 
+  // Função para buscar os IDs de ícones
   const fetchIconIds = async () => {
     try {
       const response = await fetch('http://localhost:5000/api/icons/ids');
@@ -31,11 +32,12 @@ const IconEditor = () => {
     }
   };
 
+  // Função para buscar um ícone por ID
   const fetchIconById = async (id) => {
     try {
       const response = await fetch(`http://localhost:5000/api/icons/${id}`);
       if (response.ok) {
-        const { src, descricao, dt_criacao, dt_modificacao } = await response.json();
+        const { src, descricao, id_implementacao, dt_criacao, dt_modificacao } = await response.json();
 
         if (src && Array.isArray(src.data) && src.type) {
           const blob = new Blob([Uint8Array.from(src.data)], { type: src.type });
@@ -45,7 +47,7 @@ const IconEditor = () => {
 
         setCreationDate(dt_criacao);
         setModificationDate(dt_modificacao);
-        setFormData({ ...formData, descricao });
+        setFormData({ descricao, id_implementacao });
       } else {
         console.error('Erro ao buscar o ícone:', response.statusText);
       }
@@ -71,7 +73,7 @@ const IconEditor = () => {
     setAction(e.target.value);
     setSelectedId('');
     setImagePreview(null);
-    setFormData({ id: '', src: null, descricao: '', newId: '' });
+    setFormData({ id: '', src: null, descricao: '', id_implementacao: '' });
     setCreationDate(null);
     setModificationDate(null);
   };
@@ -86,7 +88,7 @@ const IconEditor = () => {
         alert('Ícone deletado com sucesso!');
         fetchIconIds();
         setImagePreview(null);
-        setFormData({ id: '', src: null, descricao: '', newId: '' });
+        setFormData({ id: '', src: null, descricao: '', id_implementacao: '' });
         setSelectedId('');
       } else {
         const error = await response.text();
@@ -105,11 +107,13 @@ const IconEditor = () => {
       formDataToSend.append('icon_id', formData.id);
       formDataToSend.append('src', formData.src);
       formDataToSend.append('descricao', formData.descricao);
+      formDataToSend.append('id_implementacao', formData.id_implementacao);
       formDataToSend.append('dt_criacao', new Date().toISOString());
     } else if (action === 'modify') {
       formDataToSend.append('icon_id', selectedId);
       formDataToSend.append('src', formData.src);
       formDataToSend.append('descricao', formData.descricao);
+      formDataToSend.append('id_implementacao', formData.id_implementacao);
       formDataToSend.append('dt_modificacao', new Date().toISOString());
     }
 
@@ -126,7 +130,7 @@ const IconEditor = () => {
         alert(`Ícone ${action === 'add' ? 'adicionado' : 'modificado'} com sucesso!`);
         fetchIconIds();
         setImagePreview(null);
-        setFormData({ id: '', src: null, descricao: '', newId: '' });
+        setFormData({ id: '', src: null, descricao: '', id_implementacao: '' });
         setSelectedId('');
       } else {
         const error = await response.text();
@@ -164,7 +168,7 @@ const IconEditor = () => {
             </div>
 
             <div className="form-group">
-              <label className="icon-editor-label">Descrição:   </label>
+              <label className="icon-editor-label">Descrição:</label>
               <input
                 type="text"
                 name="descricao"
@@ -189,9 +193,7 @@ const IconEditor = () => {
             </div>
             <button type="submit" className="icon-editor-button-salvar">Salvar</button>
           </>
-          
         )}
-
 
         {action === 'modify' && (
           <>
@@ -217,7 +219,6 @@ const IconEditor = () => {
               />
             </div>
 
-            
               {creationDate && (
                 <div className="form-group">
                   <label className="icon-editor-label">Data de Criação:</label>
@@ -228,8 +229,7 @@ const IconEditor = () => {
                     className="icon-editor-input"
                   />
                 </div>
-                )
-              }
+              )}
 
               {modificationDate && (
                 <div className="form-group">
@@ -241,16 +241,14 @@ const IconEditor = () => {
                     className="icon-editor-input"
                   />
                 </div>
-                )
-              }
+              )}
 
               {imagePreview && (
                 <div className="form-group">
-                  <label className="icon-editor-label-imagem">Imagem Atual:</label>
-                  <img src={imagePreview} alt="Preview" className="icon-preview-imagem" />
+                  <label className="icon-editor-label-imagem">Imagem Preview:</label>
+                  <img src={imagePreview} alt="Imagem preview" className="icon-editor-img-preview" />
                 </div>
-                )
-              }
+              )}
 
               <div className="form-group">
                 <label className="icon-editor-label">Descrição:</label>
@@ -259,13 +257,13 @@ const IconEditor = () => {
                   name="descricao"
                   value={formData.descricao}
                   onChange={handleChange}
-                  placeholder="Digite a nova descrição"
+                  placeholder="Digite a descrição do ícone"
                   className="icon-editor-input"
+                  required
                 />
               </div>
-
               <div className="form-group">
-                <label className="icon-editor-label">Carregar Imagem:</label>
+                <label className="icon-editor-label">Novo Ícone (opcional):</label>
                 <input
                   type="file"
                   name="src"
@@ -275,9 +273,22 @@ const IconEditor = () => {
                 />
               </div>
 
-              <button type="submit" className="icon-editor-button-atualizar">Atualizar</button>
-              <button type="button" className="icon-editor-button-deletar delete-button" onClick={handleDelete}>Deletar</button>
-              <button type="submit" className="icon-editor-button-salvar2">Salvar</button>
+            <div className="form-group">
+              <label className="icon-editor-label">ID da Implementação:</label>
+              <input
+                type="text"
+                name="id_implementacao"
+                value={formData.id_implementacao}
+                onChange={handleChange}
+                placeholder="Digite o ID de implementação"
+                className="icon-editor-input"
+                required
+              />
+            </div>
+            <div>
+              <button type="submit" className="icon-editor-button-modificar">Modificar</button>
+              <button type="button" onClick={handleDelete} className="icon-editor-button-deletar">Deletar</button>
+            </div>
           </>
         )}
       </form>

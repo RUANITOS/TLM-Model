@@ -19,6 +19,7 @@ function MosaicForm() {
   const [mosaicId, setMosaicId] = useState('');
   const [action, setAction] = useState('add');
   const { addAlert } = useAlertas();
+
   // Função para obter o valor de um cookie
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -57,7 +58,7 @@ function MosaicForm() {
 
   const handleActionChange = (e) => {
     setAction(e.target.value);
-    setMosaicId('');
+    setMosaicId('');  // Resetando o ID do mosaico ao mudar a ação
   };
 
   const handleSubmit = async (e) => {
@@ -110,9 +111,10 @@ function MosaicForm() {
         <h2 className="icon-editor-title">Editor de Mosaicos</h2>
       </div>
 
-
-
-      <form className="icon-editor-form" onSubmit={action === 'add' ? handleSubmit : handleUpdate}>
+      <form
+        className="icon-editor-form"
+        onSubmit={action === 'add' ? handleSubmit : handleUpdate} // Formulário ajustado para enviar dados
+      >
         {action === 'add' && (
           <>
             <select className="select" onChange={handleActionChange} value={action}>
@@ -205,7 +207,7 @@ function MosaicForm() {
                 required
               />
             </div>
-            <button type="submit" id='botao-salvar' className="icon-editor-button" onClick={handleSubmit}>Adicionar</button>
+            <button type="submit" id='botao-salvar' className="icon-editor-button">Adicionar</button>
           </>
         )}
 
@@ -226,7 +228,6 @@ function MosaicForm() {
                 required
               />
             </div>
-            {/* Campos de Modificação */}
             <div className="form-group">
               <label className="icon-editor-label">Posição Linha:</label>
               <input
@@ -258,16 +259,6 @@ function MosaicForm() {
               />
             </div>
             <div className="form-group">
-              <label className="icon-editor-label">ID Ícone:</label>
-              <input
-                type="number"
-                name="id_icone"
-                value={formData.id_icone}
-                onChange={handleChange}
-                className="icon-editor-input"
-              />
-            </div>
-            <div className="form-group">
               <label className="icon-editor-label">Descrição Completa:</label>
               <textarea
                 name="descricao_completa"
@@ -285,40 +276,13 @@ function MosaicForm() {
                 className="icon-editor-input"
               />
             </div>
-            <div className="form-group">
-              <label className="icon-editor-label">Tipo de Conteúdo:</label>
-              <input
-                type="number"
-                name="conteudo_efetivo"
-                value={formData.conteudo_efetivo}
-                onChange={handleChange}
-                className="icon-editor-input"
-                placeholder='0=url 1=foto 2=texto 3=video 4=link genérico'
-              />
-            </div>
-            <div className="form-group">
-              <label className="icon-editor-label">Conteúdo:</label>
-              <textarea
-                name="origem_conteudo"
-                value={formData.origem_conteudo}
-                onChange={handleChange}
-                className="icon-editor-input"
-                required
-              />
-            </div>
-            <button type="submit" id='botao-modificar' className="icon-editor-button" onClick={handleUpdate}>Modificar</button>
-            <button type="button" id='botao-deletar' className="icon-editor-button" onClick={handleDelete}>
-              Deletar
-            </button>
-
+            <button type="submit" id='botao-modificar' className="icon-editor-button">Modificar</button>
+            <button onClick={handleDelete} id='botao-deletar' className="icon-editor-button">Deletar</button>
           </>
-
         )}
-        <Link to="/TLM-Producao">
-          <button type="button" id='botao-voltar' className="icon-editor-button">Voltar para o mosaico</button>
-        </Link>
       </form>
 
+      <Link to='/mosaico' className="link-button">Cancelar</Link>
     </div>
   );
 }
