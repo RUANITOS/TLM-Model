@@ -276,13 +276,13 @@ function MosaicForm() {
                 className="icon-editor-input"
               />
             </div>
-            <button type="submit" id='botao-modificar' className="icon-editor-button">Modificar</button>
-            <button onClick={handleDelete} id='botao-deletar' className="icon-editor-button">Deletar</button>
+            <button type="submit" id='botao-modificar' className="icon-editor-button-atualizar">Modificar</button>
+            <button onClick={handleDelete} id='botao-deletar' className="icon-editor-button-deletar">Deletar</button>
           </>
         )}
       </form>
 
-      <Link to='/mosaico' className="link-button">Cancelar</Link>
+      <Link to='/TLM-Producao/' className="link-button">Voltar</Link>
     </div>
   );
 }

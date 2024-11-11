@@ -121,18 +121,19 @@
 }
 .icon-editor-button-atualizar {
   background: #202959;
-  border: none;
-  color: #ffffff;
-  font-size: 14px;
-  width: 70px;
-  height: 40px;
-  line-height: 40px;
-  padding: 0;
-  margin-right: 340px;
-  border-radius: 25px;
-  transition: background-color 0.3s ease;
-  cursor: pointer;
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    width: 70px;
+    height: 40px;
+    line-height: 40px;
+    padding: 0;
+    border-radius: 25px;
+    margin-right: 20px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
 }
+
 .icon-editor-button-deletar {
   background: #202959;
   border: none;
@@ -143,7 +144,6 @@
   line-height: 40px;
   padding: 0;
   margin-top: -50px;
-  margin-right: 185px;
   border-radius: 25px;
   transition: background-color 0.3s ease;
   cursor: pointer;
@@ -194,12 +194,12 @@ body {
   height: 40px;
   line-height: 40px;
   padding: 0;
-  margin-top: -50px;
-  margin-bottom: -40px;
+  margin-right: 120px;
+  margin-bottom: 0px;
   border-radius: 25px;
-  margin-right: 16%;
   transition: background-color 0.3s ease;
   cursor: pointer;
+  z-index: 10000;
 }
 #botao-modificar{
   background: #202959;
@@ -209,25 +209,26 @@ body {
   width: 10%;
   height: 40px;
   line-height: 40px;
- margin-top: 0px;
   padding: 0;
-  border-radius: 25px;
-  transition: background-color 0.3s ease;
-  cursor: pointer;
-  z-index: 100000;
-}
-#botao-salvar{
-  background: #202959;
-  border: none;
-  color: #ffffff;
-  font-size: 14px;
-  width: 10%;
-  height: 40px;
-  line-height: 40px;
-  padding: 0;
-  margin-bottom: -40px;
+  margin-bottom: 0px;
+  margin-right: 0px;
   border-radius: 25px;
   transition: background-color 0.3s ease;
   cursor: pointer;
   z-index: 10000;
+}
+#botao-salvar{
+  background: #202959;
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    width: 10%;
+    height: 40px;
+    line-height: 40px;
+    padding: 0;
+    margin-bottom: 0px;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    z-index: 10000;
 }

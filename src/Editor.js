@@ -202,6 +202,18 @@ const IconEditor = () => {
                 <option value="modify">Modificar Ícone</option>
               </select>
             <div className="form-group">
+            <label className="icon-editor-label">ID da Implementação:</label>
+            <input
+              type="text"
+              name="id_implementacao"
+              value={formData.id_implementacao}
+              onChange={handleChange}
+              placeholder="Digite o ID de implementação"
+              className="icon-editor-input"
+              required
+            />
+            </div>
+            <div className="form-group">
               <label className="icon-editor-label">ID do Ícone:</label>
               <input
                 type="number"
@@ -263,7 +275,7 @@ const IconEditor = () => {
                 />
               </div>
               <div className="form-group">
-                <label className="icon-editor-label">Novo Ícone (opcional):</label>
+                <label className="icon-editor-label">Novo Ícone:</label>
                 <input
                   type="file"
                   name="src"
@@ -272,21 +284,8 @@ const IconEditor = () => {
                   className="icon-editor-input-file"
                 />
               </div>
-
-            <div className="form-group">
-              <label className="icon-editor-label">ID da Implementação:</label>
-              <input
-                type="text"
-                name="id_implementacao"
-                value={formData.id_implementacao}
-                onChange={handleChange}
-                placeholder="Digite o ID de implementação"
-                className="icon-editor-input"
-                required
-              />
-            </div>
             <div>
-              <button type="submit" className="icon-editor-button-modificar">Modificar</button>
+              <button type="submit" className="icon-editor-button-atualizar">Atualizar</button>
               <button type="button" onClick={handleDelete} className="icon-editor-button-deletar">Deletar</button>
             </div>
           </>
