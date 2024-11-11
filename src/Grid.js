@@ -20,27 +20,37 @@ const Grid = () => {
   const { addAlert } = useAlertas();
   const fetchIconsAndMosaics = async () => {
     try {
-      const iconsResponse = await fetch('http://localhost:5001/api/icons');
-      const iconsData = await iconsResponse.json();
+      // Fetch dos mosaicos
       const mosaicsResponse = await fetch('http://localhost:5001/api/mosaics');
       const mosaicsData = await mosaicsResponse.json();
 
-      const combinedData = mosaicsData.map((mosaic) => {
-        const associatedIcon = iconsData.find(icon => icon.icon_id === mosaic.id_icone);
-        if (associatedIcon) {
-          const imgBlob = associatedIcon.src ? new Blob([new Uint8Array(associatedIcon.src.data)]) : null;
-          const imgUrl = imgBlob ? URL.createObjectURL(imgBlob) : '';
+      // Para cada mosaico, buscamos o ícone correspondente
+      const combinedData = await Promise.all(mosaicsData.map(async (mosaic) => {
+        const iconResponse = await fetch(`http://localhost:5001/api/icons/${mosaic.id_icone}`);
+        const iconData = await iconResponse.json();
+
+        if (iconData.src && iconData.src.data) {
+          // Converte o array de bytes (Buffer) para um Blob
+          const imgBlob = new Blob([new Uint8Array(iconData.src.data)], { type: 'image/png' });
+          const imgUrl = URL.createObjectURL(imgBlob); // Cria a URL do objeto para exibição
+          
+          // Retorna o mosaico com o ícone associado
           return { ...mosaic, src: imgUrl };
         }
-        return null;
-      }).filter(icon => icon !== null);
 
-      setDisplayIcons(combinedData);
+        return null; // Caso o ícone não tenha sido encontrado
+      }));
+
+      // Filtra mosaicos que possuem ícones associados
+      setDisplayIcons(combinedData.filter(item => item !== null));
     } catch (error) {
       console.error('Erro ao buscar ícones e mosaicos:', error);
     }
   };
 
+  useEffect(() => {
+    fetchIconsAndMosaics();
+  }, []);
   const fetchMosaicByPosition = async (row, col) => {
     try {
       const response = await fetch(`http://localhost:5001/api/mosaics/position/${row}/${col}`);
