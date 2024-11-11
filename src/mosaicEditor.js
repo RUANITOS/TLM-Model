@@ -64,7 +64,7 @@ function MosaicForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/mosaics/add', formData);
+      const response = await axios.post('http://localhost:5001/api/mosaics/add', formData);
       addAlert('Mosaico adicionado com sucesso!', 'success');
       console.log(response.data);
     } catch (error) {
@@ -80,7 +80,7 @@ function MosaicForm() {
       return;
     }
     try {
-      const response = await axios.put(`http://localhost:5000/api/mosaics/modify/${mosaicId}`, formData);
+      const response = await axios.put(`http://localhost:5001/api/mosaics/modify/${mosaicId}`, formData);
       addAlert('Mosaico modificado com sucesso!', 'success');
       console.log(response.data);
     } catch (error) {
@@ -96,7 +96,7 @@ function MosaicForm() {
       return;
     }
     try {
-      await axios.delete(`http://localhost:5000/api/mosaics/delete/${mosaicId}`);
+      await axios.delete(`http://localhost:5001/api/mosaics/delete/${mosaicId}`);
       addAlert('Mosaico deletado com sucesso!', 'success');
     } catch (error) {
       console.error('Erro ao deletar mosaico:', error);

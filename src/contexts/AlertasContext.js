@@ -11,7 +11,7 @@ export const AlertasProvider = ({ children }) => {
   const addAlert = (message, type = 'success') => {
     const id = Date.now();
     setAlerts([...alerts, { id, message, type }]);
-    setTimeout(() => removeAlert(id), 5000); // Remove automaticamente após 5 segundos
+    setTimeout(() => removeAlert(id), 5001); // Remove automaticamente após 5 segundos
   };
 
   const removeAlert = (id) => {

@@ -8,7 +8,7 @@ const Header = () => {
   // Função para buscar a imagem do logo com icon_id "logo"
   const fetchLogoImage = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/icons/1');
+      const response = await fetch('http://localhost:5001/api/icons/1');
       if (response.ok) {
         const { src, mimetype } = await response.json();
         const blob = new Blob([Uint8Array.from(src.data)], { type: mimetype });

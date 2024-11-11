@@ -20,7 +20,7 @@ const IconEditor = () => {
   // Função para buscar os IDs de ícones
   const fetchIconIds = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/icons/ids');
+      const response = await fetch('http://localhost:5001/api/icons/ids');
       if (response.ok) {
         const data = await response.json();
         setIconIds(data);
@@ -35,7 +35,7 @@ const IconEditor = () => {
   // Função para buscar um ícone por ID
   const fetchIconById = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/icons/${id}`);
+      const response = await fetch(`http://localhost:5001/api/icons/${id}`);
       if (response.ok) {
         const { src, descricao, id_implementacao, dt_criacao, dt_modificacao } = await response.json();
 
@@ -80,7 +80,7 @@ const IconEditor = () => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/icons/delete/${selectedId}`, {
+      const response = await fetch(`http://localhost:5001/api/icons/delete/${selectedId}`, {
         method: 'DELETE',
       });
 
@@ -118,7 +118,7 @@ const IconEditor = () => {
     }
 
     try {
-      const url = `http://localhost:5000/api/icons/${action === 'add' ? 'add' : 'modify'}`;
+      const url = `http://localhost:5001/api/icons/${action === 'add' ? 'add' : 'modify'}`;
       const method = action === 'add' ? 'POST' : 'PUT';
 
       const response = await fetch(url, {

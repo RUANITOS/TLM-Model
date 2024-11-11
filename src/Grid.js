@@ -20,9 +20,9 @@ const Grid = () => {
   const { addAlert } = useAlertas();
   const fetchIconsAndMosaics = async () => {
     try {
-      const iconsResponse = await fetch('http://localhost:5000/api/icons');
+      const iconsResponse = await fetch('http://localhost:5001/api/icons');
       const iconsData = await iconsResponse.json();
-      const mosaicsResponse = await fetch('http://localhost:5000/api/mosaics');
+      const mosaicsResponse = await fetch('http://localhost:5001/api/mosaics');
       const mosaicsData = await mosaicsResponse.json();
 
       const combinedData = mosaicsData.map((mosaic) => {
@@ -43,7 +43,7 @@ const Grid = () => {
 
   const fetchMosaicByPosition = async (row, col) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/mosaics/position/${row}/${col}`);
+      const response = await fetch(`http://localhost:5001/api/mosaics/position/${row}/${col}`);
       const data = await response.json();
       localStorage.setItem('mosaicData', JSON.stringify(data));
       setSelectedMosaicData(data); // Salva dados do mosaico selecionado para alteração posterior
@@ -57,7 +57,7 @@ const Grid = () => {
 
   const modifyMosaicPosition = async (id, newRow, newCol) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/mosaics/modify/${id}`, {
+      const response = await fetch(`http://localhost:5001/api/mosaics/modify/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ posicao_linha: newRow, posicao_coluna: newCol }), // Carrega newRow e newCol para o backend
@@ -145,7 +145,7 @@ const Grid = () => {
   };
   const updateMosaicInDatabase = async (mosaicData) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/mosaics/modify-position/${mosaicData.id}`, {
+      const response = await fetch(`http://localhost:5001/api/mosaics/modify-position/${mosaicData.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
