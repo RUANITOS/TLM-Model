@@ -8,15 +8,15 @@ const Header = () => {
   // Função para buscar a imagem do logo com icon_id "logo"
   const fetchLogoImage = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/icons/1');
-      if (response.ok) {
-        const { src, mimetype } = await response.json();
-        const blob = new Blob([Uint8Array.from(src.data)], { type: mimetype });
-        const imageUrl = URL.createObjectURL(blob);
-        setLogoImage(imageUrl);
-      } else {
-        console.error('Erro ao buscar a imagem do logo:', response.statusText);
-      }
+      const response = await fetch('https://gentle-nearly-marmoset.ngrok-free.app/api/icons/1', {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
+      });
+      const { src, mimetype } = await response.json();
+      const blob = new Blob([Uint8Array.from(src.data)], { type: mimetype });
+      const imageUrl = URL.createObjectURL(blob);
+      setLogoImage(imageUrl);
     } catch (error) {
       console.error('Erro ao conectar com o backend:', error);
     }

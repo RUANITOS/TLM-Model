@@ -20,7 +20,9 @@ const IconEditor = () => {
   // Função para buscar os IDs de ícones
   const fetchIconIds = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/icons/ids');
+      const response = await fetch('https://gentle-nearly-marmoset.ngrok-free.app/api/icons/ids', {
+        headers: { 'ngrok-skip-browser-warning': 'true' }
+      });
       if (response.ok) {
         const data = await response.json();
         setIconIds(data);
@@ -35,7 +37,9 @@ const IconEditor = () => {
   // Função para buscar um ícone por ID
   const fetchIconById = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5001/api/icons/${id}`);
+      const response = await fetch(`https://gentle-nearly-marmoset.ngrok-free.app/api/icons/${id}`, {
+        headers: { 'ngrok-skip-browser-warning': 'true' }
+      });
       if (response.ok) {
         const { src, descricao, id_implementacao, dt_criacao, dt_modificacao } = await response.json();
 
@@ -80,8 +84,9 @@ const IconEditor = () => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/api/icons/delete/${selectedId}`, {
+      const response = await fetch(`https://gentle-nearly-marmoset.ngrok-free.app/api/icons/delete/${selectedId}`, {
         method: 'DELETE',
+        headers: { 'Content-Type': 'application/json','ngrok-skip-browser-warning': 'true' },
       });
 
       if (response.ok) {
@@ -118,12 +123,13 @@ const IconEditor = () => {
     }
 
     try {
-      const url = `http://localhost:5001/api/icons/${action === 'add' ? 'add' : 'modify'}`;
-      const method = action === 'add' ? 'POST' : 'PUT';
+      const url = `https://gentle-nearly-marmoset.ngrok-free.app/api/icons/${action === 'add' ? 'add' : 'modify'}`;
+      const method = action === 'add' ? 'POST' : 'PUT'
 
       const response = await fetch(url, {
         method,
         body: formDataToSend,
+        headers: { 'ngrok-skip-browser-warning': 'true' },
       });
 
       if (response.ok) {

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import './styles/Editor.css';
 import Header from './components/Header';
 import { Link } from 'react-router-dom';
@@ -64,15 +63,24 @@ function MosaicForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5001/api/mosaics/add', formData);
-      addAlert('Mosaico adicionado com sucesso!', 'success');
-      console.log(response.data);
+      const response = await fetch('https://gentle-nearly-marmoset.ngrok-free.app/api/mosaics/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+        },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        addAlert('Mosaico adicionado com sucesso!', 'success');
+      } else {
+        throw new Error('Erro ao adicionar mosaico');
+      }
     } catch (error) {
-      console.error('Erro ao adicionar mosaico:', error);
+      console.error(error);
       addAlert('Erro ao adicionar mosaico.', 'error');
     }
   };
-
   const handleUpdate = async (e) => {
     e.preventDefault();
     if (!mosaicId) {
@@ -80,11 +88,21 @@ function MosaicForm() {
       return;
     }
     try {
-      const response = await axios.put(`http://localhost:5001/api/mosaics/modify/${mosaicId}`, formData);
-      addAlert('Mosaico modificado com sucesso!', 'success');
-      console.log(response.data);
+      const response = await fetch(`https://gentle-nearly-marmoset.ngrok-free.app/api/mosaics/modify/${mosaicId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+        },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        addAlert('Mosaico modificado com sucesso!', 'success');
+      } else {
+        throw new Error('Erro ao modificar mosaico');
+      }
     } catch (error) {
-      console.error('Erro ao modificar mosaico:', error);
+      console.error(error);
       addAlert('Erro ao modificar mosaico.', 'error');
     }
   };
@@ -96,14 +114,22 @@ function MosaicForm() {
       return;
     }
     try {
-      await axios.delete(`http://localhost:5001/api/mosaics/delete/${mosaicId}`);
-      addAlert('Mosaico deletado com sucesso!', 'success');
+      const response = await fetch(`https://gentle-nearly-marmoset.ngrok-free.app/api/mosaics/delete/${mosaicId}`, {
+        method: 'DELETE',
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+        },
+      });
+      if (response.ok) {
+        addAlert('Mosaico deletado com sucesso!', 'success');
+      } else {
+        throw new Error('Erro ao deletar mosaico');
+      }
     } catch (error) {
-      console.error('Erro ao deletar mosaico:', error);
+      console.error(error);
       addAlert('Erro ao deletar mosaico.', 'error');
     }
   };
-
   return (
     <div className="icon-editor-container">
       <Header />
