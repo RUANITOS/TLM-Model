@@ -18,35 +18,72 @@ function MosaicForm() {
   const [mosaicId, setMosaicId] = useState('');
   const [action, setAction] = useState('add');
   const { addAlert } = useAlertas();
+  // Função para obter dados armazenados na localStorage
+  const getFromLocalStorage = (key) => {
+    return localStorage.getItem(key) ? localStorage.getItem(key) : '';
+  };
+  useEffect(() => {
+    // Verificar se há dados na localStorage e popular os campos
+    const positionRow = getFromLocalStorage('position_row');
+    const positionCol = getFromLocalStorage('position_col');
+    const tituloCelula = getFromLocalStorage('titulo_celula');
+    const idIcone = getFromLocalStorage('id_icone');
+    const descricaoCompleta = getFromLocalStorage('descricao_completa');
+    const descricaoResumida = getFromLocalStorage('descricao_resumida');
+    const conteudoEfetivo = getFromLocalStorage('conteudo_efetivo');
+    const origemConteudo = getFromLocalStorage('origem_conteudo');
 
-  // Função para obter o valor de um cookie
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      posicao_linha: positionRow,
+      posicao_coluna: positionCol,
+      titulo_celula: tituloCelula,
+      id_icone: idIcone,
+      descricao_completa: descricaoCompleta,
+      descricao_resumida: descricaoResumida,
+      conteudo_efetivo: conteudoEfetivo,
+      origem_conteudo: origemConteudo,
+    }));
+  }, []);
+  // Função para obter dados armazenados no cookie mosaic_data
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
     return null;
   };
-
   useEffect(() => {
-    // Verificar e popular os campos com os valores dos cookies
-    const positionRow = getCookie('position_row');
-    const positionCol = getCookie('position_col');
-
-    if (positionRow) {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        posicao_linha: positionRow,
-      }));
-    }
-
-    if (positionCol) {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        posicao_coluna: positionCol,
-      }));
+    // Verificar se o cookie mosaic_data existe e popular os campos
+    const mosaicData = getCookie('mosaic_data');
+    if (mosaicData) {
+      const parsedData = JSON.parse(mosaicData);  // Supondo que os dados estejam em JSON no cookie
+      setFormData({
+        posicao_linha: parsedData.posicao_linha || '',
+        posicao_coluna: parsedData.posicao_coluna || '',
+        titulo_celula: parsedData.titulo_celula || '',
+        id_icone: parsedData.id_icone || '',
+        descricao_completa: parsedData.descricao_completa || '',
+        descricao_resumida: parsedData.descricao_resumida || '',
+        conteudo_efetivo: parsedData.conteudo_efetivo || '',
+        origem_conteudo: parsedData.origem_conteudo || '',
+      });
     }
   }, []);
-
+ // useEffect para preencher o mosaicId quando a ação for "modify"
+ useEffect(() => {
+  // Verificar se a ação é "modify" e se há dados de mosaico no localStorage ou no cookie
+  if (action === 'modify') {
+    const mosaicData = getCookie('mosaic_data'); // Verificar o cookie
+    if (mosaicData) {
+      const parsedData = JSON.parse(mosaicData);
+      setMosaicId(parsedData.id_icone || '');  // Preencher com o id_icone do cookie
+    } else {
+      // Caso não haja dados no cookie, pode-se buscar do localStorage, se necessário
+      const storedId = getFromLocalStorage('id');  // Ajuste conforme necessário
+      setMosaicId(storedId || '');
+    }
+  }
+}, [action]);  // Executar sempre que a ação mudar
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({

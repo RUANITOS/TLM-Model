@@ -62,8 +62,12 @@ const Grid = () => {
         headers: { 'ngrok-skip-browser-warning': 'true' }
       });
       const data = await response.json();
+      // Salva todos os dados do mosaico selecionado na localStorage
       localStorage.setItem('mosaicData', JSON.stringify(data));
-      setSelectedMosaicData(data); // Salva dados do mosaico selecionado para alteração posterior
+      // Salva dados do mosaico selecionado para alteração posterior
+      setSelectedMosaicData(data);
+       // Salvando todos os dados do mosaico nos cookies
+       document.cookie = `mosaic_data=${JSON.stringify(data)}; path=/; max-age=${60 * 60 * 24 * 7}`; // Salva os dados completos do mosaico nos cookies
       console.log('Dados do mosaico salvos na localStorage:', data);
       addAlert('Mosaico selecionado','success')
     } catch (error) {
