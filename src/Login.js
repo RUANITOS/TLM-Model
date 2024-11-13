@@ -23,23 +23,23 @@ const Login = ({ onLogin }) => {
   return (
     <div className="login-container">
       <img className="logosss" src={process.env.PUBLIC_URL + '/assets/logonova.png'} alt="Logo" />
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleLogin} className='main-div'>
+        <h2 className='panel h2'>Identificação do usuário</h2>
+        <p className='panel p'>Insira seu Usuário e senha</p>
         <div className="input-group">
-          <label>Usuário</label>
-          <input
+          <input className='form-control'
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="Digite seu usuário"
+            placeholder="Usuário"
           />
         </div>
         <div className="input-group">
-          <label>Senha</label>
-          <input
+          <input className='form-control'
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Digite sua senha"
+            placeholder="Senha"
           />
         </div>
         <div className="input-group">

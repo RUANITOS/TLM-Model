@@ -62,3 +62,73 @@ form {
   font-size: 14px;
   margin-top: 10px;
 }
+.main-div {
+
+  padding: 70px 60px 20px 60px;
+  width: 33.333333%;
+  margin-left: 33.333333%;
+  float: left;
+  position: relative;
+  min-height: 1px;
+  margin-top: 5px;
+  border-radius: 2px;
+
+}
+.form-control {
+  border: 1px solid #d4d4d4;
+  border-radius: 4px;
+  font-size: 14px;
+  height: 54px;
+  line-height: 50px;
+}
+
+.panel{
+  text-align: center;
+  color: #777777;
+  font-size: 14px;
+  margin: 0px;
+  line-height: 24px;
+}
+p {
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  unicode-bidi: isolate;
+}
+.panel{
+  color: #444444;
+  font-size: 18px;
+  margin: 0 0 8px 0;
+}
+h2 {
+  display: block;
+  font-size: 1.5em;
+  margin-block-start: 0.83em;
+  margin-block-end: 0.83em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+  unicode-bidi: isolate;
+}
+.form-control {
+  display: block;
+  width: 100%;
+  height: 31px;
+  padding: 6px 12px;
+  font-size: 12px;
+  line-height: 1.42857143;
+  color: #555555;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #afafaf;
+  border-radius: 3px;
+  -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+  -moz-transition: border-color ease-in-out .15s, -moz-box-shadow ease-in-out .15s;
+  -moz-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  box-shadow: 1px 1px 12px 0px #b9b9b9;
+}
