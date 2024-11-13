@@ -15,6 +15,7 @@ const Grid = () => {
   const [isDataFetchActive, setIsDataFetchActive] = useState(false); // Novo estado para o botão "Pegar Dados"
   const [hoveredPosition, setHoveredPosition] = useState(null);
   const [selectedMosaicData, setSelectedMosaicData] = useState(null); // Armazena dados do mosaico selecionado
+  const [hoveredIconData, setHoveredIconData] = useState(null); // Novo estado para armazenar os dados do ícone em hover
 
   const navigate = useNavigate();
   const { addAlert } = useAlertas();
@@ -189,17 +190,30 @@ const Grid = () => {
   };
 
   const renderIcon = (icon) => (
-    <img
-      src={icon.src}
-      alt={icon.titulo_celula}
-      className="icon"
-      onClick={() => {
-        if (icon.conteudo_efetivo === 0) {
-          handleIconClick(icon.origem_conteudo);
-        }
-      }}
-    />
+    <div
+      className="icon-container"
+      onMouseEnter={() => setHoveredIconData({ id: icon.id, titulo_celula: icon.titulo_celula })} // Armazena os dados do ícone ao passar o mouse
+      onMouseLeave={() => setHoveredIconData(null)} // Limpa os dados ao sair com o mouse
+    >
+      <img
+        src={icon.src}
+        alt={icon.titulo_celula}
+        className="icon"
+        onClick={() => {
+          if (icon.conteudo_efetivo === 0) {
+            handleIconClick(icon.origem_conteudo);
+          }
+        }}
+      />
+      {hoveredIconData && hoveredIconData.id === icon.id && (
+        <div className="hover-text">
+          <span>ID: {hoveredIconData.id} | </span>
+          <span>{hoveredIconData.titulo_celula}</span>
+        </div>
+      )}
+    </div>
   );
+  
   const squares = Array.from({ length: rows }, (_, row) =>
     Array.from({ length: cols }, (_, col) => {
       const id = `square-${col + 1}-${row + 1}`;
@@ -252,6 +266,7 @@ const Grid = () => {
         </div>
       )}
     </div>
+    
   );
 };
 
