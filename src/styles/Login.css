@@ -50,8 +50,10 @@ form {
   height: 50px;
   line-height: 50px;
   padding: 0;
+  border-radius: 4px;
   margin-bottom: 65px;
 }
+
 
 .login-button:hover {
   background-color: #1a2a5d;
@@ -74,13 +76,6 @@ form {
   margin-top: 5px;
   border-radius: 2px;
 
-}
-.form-control {
-  border: 1px solid #d4d4d4;
-  border-radius: 4px;
-  font-size: 14px;
-  height: 54px;
-  line-height: 50px;
 }
 
 .panel{
@@ -115,7 +110,7 @@ h2 {
 }
 .form-control {
   display: block;
-  width: 100%;
+  width: 90%;
   height: 31px;
   padding: 6px 12px;
   font-size: 12px;
@@ -132,4 +127,14 @@ h2 {
   -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   box-shadow: 1px 1px 12px 0px #b9b9b9;
+}
+
+.implementacao {
+  margin-top: 30px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.seletor-imp{
+  margin-left: 10px;
+  padding-right: 60%;
 }

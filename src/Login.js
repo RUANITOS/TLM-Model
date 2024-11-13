@@ -42,9 +42,9 @@ const Login = ({ onLogin }) => {
             placeholder="Senha"
           />
         </div>
-        <div className="input-group">
-          <label>Implementação</label>
-          <select value={implementation} onChange={(e) => setImplementation(e.target.value)}>
+        <div className="implementacao">
+          <label className='panel'>Implementação</label>
+          <select className='seletor-imp' value={implementation} onChange={(e) => setImplementation(e.target.value)}>
             <option value="0">Implementação 0</option>
             <option value="1">Implementação 1</option>
           </select>
