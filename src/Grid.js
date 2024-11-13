@@ -25,7 +25,7 @@ const Grid = () => {
       const mosaicsResponse = await fetch('https://gentle-nearly-marmoset.ngrok-free.app/api/mosaics', {
         headers: { 'ngrok-skip-browser-warning': 'true' }
       });
-      
+
       const mosaicsData = await mosaicsResponse.json();
 
       // Para cada mosaico, buscamos o ícone correspondente
@@ -39,7 +39,7 @@ const Grid = () => {
           // Converte o array de bytes (Buffer) para um Blob
           const imgBlob = new Blob([new Uint8Array(iconData.src.data)], { type: 'image/png' });
           const imgUrl = URL.createObjectURL(imgBlob); // Cria a URL do objeto para exibição
-          
+
           // Retorna o mosaico com o ícone associado
           return { ...mosaic, src: imgUrl };
         }
@@ -67,13 +67,13 @@ const Grid = () => {
       localStorage.setItem('mosaicData', JSON.stringify(data));
       // Salva dados do mosaico selecionado para alteração posterior
       setSelectedMosaicData(data);
-       // Salvando todos os dados do mosaico nos cookies
-       document.cookie = `mosaic_data=${JSON.stringify(data)}; path=/; max-age=${60 * 60 * 24 * 7}`; // Salva os dados completos do mosaico nos cookies
+      // Salvando todos os dados do mosaico nos cookies
+      document.cookie = `mosaic_data=${JSON.stringify(data)}; path=/; max-age=${60 * 60 * 24 * 7}`; // Salva os dados completos do mosaico nos cookies
       console.log('Dados do mosaico salvos na localStorage:', data);
-      addAlert('Mosaico selecionado','success')
+      addAlert('Mosaico selecionado', 'success')
     } catch (error) {
       console.error('Erro ao buscar dados do mosaico por posição:', error);
-      addAlert('Erro ao buscar dados do mosaico','error')
+      addAlert('Erro ao buscar dados do mosaico', 'error')
     }
   };
 
@@ -81,11 +81,11 @@ const Grid = () => {
     try {
       const response = await fetch(`https://gentle-nearly-marmoset.ngrok-free.app/api/mosaics/modify/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json','ngrok-skip-browser-warning': 'true' },
+        headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
         body: JSON.stringify({ posicao_linha: newRow, posicao_coluna: newCol }), // Carrega newRow e newCol para o backend
       });
       if (response.ok) {
-        addAlert('Posição do mosaico alterada!','success')
+        addAlert('Posição do mosaico alterada!', 'success')
         console.log(`Mosaico atualizado para a nova posição: Linha ${newRow}, Coluna ${newCol}`);
       } else {
         console.error('Erro ao atualizar posição do mosaico');
@@ -141,7 +141,7 @@ const Grid = () => {
     if (isDataFetchActive) {
       fetchMosaicByPosition(row, col);
       setIsDataFetchActive(false); // Desativa o modo "Pegar Dados" após a busca
-      
+
     } else if (isPositionSelectorActive) {
       copyPositionToCookiesAndNavigate(row, col);
     } else if (selectedMosaicData) {
@@ -170,7 +170,7 @@ const Grid = () => {
     try {
       const response = await fetch(`https://gentle-nearly-marmoset.ngrok-free.app/api/mosaics/modify-position/${mosaicData.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json','ngrok-skip-browser-warning': 'true' },
+        headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
         body: JSON.stringify({
           posicao_linha: mosaicData.posicao_linha,
           posicao_coluna: mosaicData.posicao_coluna
@@ -213,12 +213,12 @@ const Grid = () => {
       )}
     </div>
   );
-  
+
   const squares = Array.from({ length: rows }, (_, row) =>
     Array.from({ length: cols }, (_, col) => {
       const id = `square-${col + 1}-${row + 1}`;
       const iconInSquare = displayIcons.find(icon => icon.posicao_linha === row + 1 && icon.posicao_coluna === col + 1);
-  
+
       return (
         <div
           key={id}
@@ -239,7 +239,7 @@ const Grid = () => {
           {isPositionSelectorActive ? 'Desativar Seleção de Posição' : 'Selecionar Posição'}
         </button>
         <button onClick={toggleDataFetch}>
-          {isDataFetchActive ? 'Desativar Pegar Dados' : 'Pegar Dados'}
+          {isDataFetchActive ? 'Cancelar' : 'Reposicionar Mosaico'}
         </button>
         {hoveredPosition && (
           <div className="position-indicator">
@@ -247,7 +247,7 @@ const Grid = () => {
           </div>
         )}
         <Link to="/TLM-Producao/MosaicEditor">
-          <button className="icon-editor-button">Editar Mosaico</button>
+          <button className="icon-editor-button">Editor de Mosaicos</button>
         </Link>
       </div>
       {squares}
@@ -266,7 +266,7 @@ const Grid = () => {
         </div>
       )}
     </div>
-    
+
   );
 };
 

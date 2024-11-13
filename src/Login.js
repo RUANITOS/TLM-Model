@@ -12,7 +12,7 @@ const Login = ({ onLogin }) => {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    if (username === '' && password === '') {
+    if (username === 'tlm' && password === '123') {
       onLogin();
       navigate(`/TLM-Producao?implem=${implementation}`); // Redireciona para a rota principal com a implementação selecionada
     } else {

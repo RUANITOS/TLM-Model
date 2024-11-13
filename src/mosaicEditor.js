@@ -79,7 +79,7 @@ function MosaicForm() {
       setMosaicId(parsedData.id_icone || '');  // Preencher com o id_icone do cookie
     } else {
       // Caso não haja dados no cookie, pode-se buscar do localStorage, se necessário
-      const storedId = getFromLocalStorage('mosaic_id');  // Ajuste conforme necessário
+      const storedId = getFromLocalStorage('');  // Ajuste conforme necessário
       setMosaicId(storedId || '');
     }
   }
