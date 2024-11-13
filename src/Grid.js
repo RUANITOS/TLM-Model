@@ -235,10 +235,10 @@ const Grid = () => {
   return (
     <div className="grid-container">
       <div className="button-container">
-        <button onClick={togglePositionSelector}>
+        <button className='editar-mosaico' onClick={togglePositionSelector}>
           {isPositionSelectorActive ? 'Desativar Seleção de Posição' : 'Selecionar Posição'}
         </button>
-        <button onClick={toggleDataFetch}>
+        <button className='editar-mosaico' onClick={toggleDataFetch}>
           {isDataFetchActive ? 'Desativar Pegar Dados' : 'Pegar Dados'}
         </button>
         {hoveredPosition && (
@@ -247,7 +247,7 @@ const Grid = () => {
           </div>
         )}
         <Link to="/TLM-Producao/MosaicEditor">
-          <button className="icon-editor-button">Editar Mosaico</button>
+          <button className="editar-mosaico">Editar Mosaico</button>
         </Link>
       </div>
       {squares}

@@ -143,3 +143,19 @@
 .modal-content{
   width: 55%;
 }
+
+.editar-mosaico {
+  background: #202959;
+  border: none;
+  color: #ffffff;
+  font-size: 14px;
+  width: 115%;
+  height: 40px;
+  line-height: 40px;
+  padding: 0;
+  margin-left: -8px;
+  border-radius: 25px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  z-index: 10000;
+}
