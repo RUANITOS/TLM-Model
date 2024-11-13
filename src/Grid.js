@@ -136,6 +136,7 @@ const Grid = () => {
     if (isDataFetchActive) {
       fetchMosaicByPosition(row, col);
       setIsDataFetchActive(false); // Desativa o modo "Pegar Dados" após a busca
+      
     } else if (isPositionSelectorActive) {
       copyPositionToCookiesAndNavigate(row, col);
     } else if (selectedMosaicData) {
