@@ -16,10 +16,11 @@ function MosaicForm() {
     origem_conteudo: '',
   });
   const [mosaicId, setMosaicId] = useState('');
+  const [iconIds, setIconIds] = useState([]);
   const [action, setAction] = useState('add');
   const { addAlert } = useAlertas();
   const [loading, setLoading] = useState(true);
-
+  const [imagePreview, setImagePreview] = useState(null);
   const getFromLocalStorage = (key) => {
     return localStorage.getItem(key) ? localStorage.getItem(key) : '';
   };
@@ -76,7 +77,59 @@ function MosaicForm() {
       ...formData,
       [name]: value,
     });
+    if (name === 'id_icone') {
+      fetchIconIds(value); // Chama a função para buscar o ícone quando o ID for alterado
+    }
   };
+  // Função para buscar os IDs de ícones
+  const fetchIconIds = async (id) => {
+    if (!id) return; // Não faz fetch se o ID estiver vazio
+    try {
+      const response = await fetch(`https://gentle-nearly-marmoset.ngrok-free.app/api/icons/${id}`, {
+        headers: { 'ngrok-skip-browser-warning': 'true' }
+      });
+      if (response.ok) {
+        const { src } = await response.json();
+        if (src && Array.isArray(src.data) && src.type) {
+          const blob = new Blob([Uint8Array.from(src.data)], { type: src.type });
+          const imageUrl = URL.createObjectURL(blob);
+          setImagePreview(imageUrl);
+        } else {
+          setImagePreview(null); // Se não encontrar imagem
+        }
+      } else {
+        setImagePreview(null); // Se falhar ao buscar o ícone
+      }
+    } catch (error) {
+      console.error('Erro ao buscar o ícone:', error);
+      setImagePreview(null);
+    }
+  };
+  // Função para buscar um ícone por ID
+  const fetchIconById = async (id) => {
+    try {
+      const response = await fetch(`https://gentle-nearly-marmoset.ngrok-free.app/api/icons/${id}`, {
+        headers: { 'ngrok-skip-browser-warning': 'true' }
+      });
+      if (response.ok) {
+        const { src, } = await response.json();
+
+        if (src && Array.isArray(src.data) && src.type) {
+          const blob = new Blob([Uint8Array.from(src.data)], { type: src.type });
+          const imageUrl = URL.createObjectURL(blob);
+          setImagePreview(imageUrl);
+        }
+      } else {
+        console.error('Erro ao buscar o ícone:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Erro ao conectar com o backend:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchIconIds();
+  }, []);
 
   const handleActionChange = (e) => {
     setAction(e.target.value);
@@ -227,16 +280,16 @@ function MosaicForm() {
                 type="number"
                 name="id_icone"
                 value={formData.id_icone}
-                onChange={handleChange}
+                onChange={handleChange} // Atualiza o valor no estado e busca o ícone
                 className="icon-editor-input"
                 required
               />
             </div>
-            
-            {formData.id_icone && (
+
+            {imagePreview && (
               <div className="view-icon-mosaic2">
                 <label className="icon-editor-label-imagem">Imagem Preview:</label>
-                <img src={formData.id_icone} alt="Imagem preview" className="icon-editor-img-preview" />
+                <img src={imagePreview} alt="Preview" className="icon-editor-img-preview" />
               </div>
             )}
 
@@ -335,15 +388,18 @@ function MosaicForm() {
                 type="number"
                 name="id_icone"
                 value={formData.id_icone}
-                onChange={handleChange}
+                onChange={(e) => {
+                  handleChange(e);
+                  fetchIconById(e.target.value); // Chama a função para buscar o ícone
+                }}
                 className="icon-editor-input"
                 required
               />
             </div>
-            {formData.id_icone && (
+            {imagePreview && (
               <div className="view-icon-mosaic2">
                 <label className="icon-editor-label-imagem">Imagem Preview:</label>
-                <img src={formData.id_icone} alt="Imagem preview" className="icon-editor-img-preview" />
+                <img src={imagePreview} alt="Preview" className="icon-editor-img-preview" />
               </div>
             )}
 
@@ -374,6 +430,7 @@ function MosaicForm() {
                 value={formData.conteudo_efetivo}
                 onChange={handleChange}
                 className="icon-editor-input"
+                style={{ height: '50px' }}
                 required
               >
                 <option value="0">URL</option>
