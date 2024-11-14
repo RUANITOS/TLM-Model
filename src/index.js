@@ -41,9 +41,10 @@ const App = () => {
               <Route path="/TLM-Producao/Editor" element={<Editor />} />
               <Route path="/TLM-Producao/Mosaiceditor" element={<MosaicForm />} />
               <Route path="/" element={<Navigate to="/TLM-Producao" />} />
+              <Route path="*" element={<Navigate to="/" />} />
             </>
           )}
-          <Route path="*" element={<Navigate to="/" />} />
+
         </Routes>
       </Router>
     </AlertasProvider>
