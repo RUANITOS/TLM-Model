@@ -270,19 +270,7 @@ function MosaicForm() {
               />
             </div>
             <div className="form-group">
-              <label className="icon-editor-label">Tipo de Conteúdo:</label>
-              <input
-                type="number"
-                name="conteudo_efetivo"
-                value={formData.conteudo_efetivo}
-                onChange={handleChange}
-                className="icon-editor-input"
-                placeholder='0=url 1=foto 2=texto 3=video 4=link genérico'
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label className="icon-editor-label">Conteúdo:</label>
+              Tipo de conteudo:
               <select
                 name="conteudo_efetivo"
                 value={formData.conteudo_efetivo}
@@ -296,6 +284,16 @@ function MosaicForm() {
                 <option value="3">Vídeo</option>
                 <option value="4">Link Genérico</option>
               </select>
+            </div>
+            <div className="form-group">
+              <label className="icon-editor-label">Conteúdo:</label>
+              <textarea
+                name="origem_conteudo"
+                value={formData.origem_conteudo}
+                onChange={handleChange}
+                className="icon-editor-input"
+                required
+              />
             </div>
             <button type="submit" id='botao-salvar' className="icon-editor-button">Adicionar</button>
           </>
