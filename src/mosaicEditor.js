@@ -296,7 +296,7 @@ function MosaicForm() {
             </div>
             {imagePreview && (
               <div className="view-icon-mosaic2">
-                <label className="icon-editor-label-imagem">Imagem Preview:</label>
+                <label className="icon-editor-label-imagem">Imagem selecionada:</label>
                 <img src={imagePreview} alt="Preview" className="icon-editor-img-preview" />
               </div>
             )}
