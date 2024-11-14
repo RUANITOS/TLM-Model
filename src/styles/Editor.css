@@ -185,7 +185,7 @@ body {
   margin-top: -17%;
   cursor: pointer;
 }
-#botao-deletar{
+#botao-deletar {
   background: #202959;
   border: none;
   color: #ffffff;
@@ -194,14 +194,14 @@ body {
   height: 40px;
   line-height: 40px;
   padding: 0;
-  margin-right: 15%;
+  margin-right: 27%;
   margin-bottom: 0px;
   border-radius: 25px;
   transition: background-color 0.3s ease;
   cursor: pointer;
   z-index: 10000;
 }
-#botao-modificar{
+#botao-modificar {
   background: #202959;
   border: none;
   color: #ffffff;
@@ -211,26 +211,24 @@ body {
   line-height: 40px;
   padding: 0;
   margin-bottom: 0px;
-  margin-right: 0px;
-  border-radius: 25px;
+  margin-right: 13%;
   transition: background-color 0.3s ease;
   cursor: pointer;
   z-index: 10000;
 }
-#botao-salvar{
+#botao-salvar {
   background: #202959;
-    border: none;
-    color: #ffffff;
-    font-size: 14px;
-    width: 10%;
-    height: 40px;
-    line-height: 40px;
-    padding: 0;
-    margin-bottom: 0px;
-    border-radius: 25px;
-    transition: background-color 0.3s ease;
-    cursor: pointer;
-    z-index: 10000;
+  border: none;
+  color: #ffffff;
+  font-size: 14px;
+  width: 10%;
+  height: 40px;
+  line-height: 40px;
+  margin-bottom: -50px;
+  border-radius: 25px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  z-index: 10000;
 }
 
 .editar-mosaico{
@@ -260,12 +258,13 @@ body {
   height: 40px;
   line-height: 40px;
   padding: 0;
-  margin-right: 30%;
+  margin-right: 40%;
   border-radius: 25px;
   transition: background-color 0.3s ease;
   cursor: pointer;
   z-index: 10000;
 }
+
 
 .icon-editor-img-preview{
   width: 55px;
