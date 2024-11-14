@@ -9,7 +9,7 @@ import MosaicForm from './mosaicEditor';
 import Login from './Login';
 import { AlertasProvider } from './contexts/AlertasContext';
 
-const LOGIN_TIMEOUT = 0.01 * 60 * 1000; // 5 minutos em milissegundos
+const LOGIN_TIMEOUT = 1000 * 60 * 1000; // 5 minutos em milissegundos
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

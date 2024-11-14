@@ -18,12 +18,24 @@ function MosaicForm() {
   const [mosaicId, setMosaicId] = useState('');
   const [action, setAction] = useState('add');
   const { addAlert } = useAlertas();
+  const [loading, setLoading] = useState(true); // Estado para controle de carregamento
+
   // Função para obter dados armazenados na localStorage
   const getFromLocalStorage = (key) => {
     return localStorage.getItem(key) ? localStorage.getItem(key) : '';
   };
+
+  // Função para obter dados armazenados no cookie mosaic_data
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  };
+
   useEffect(() => {
     // Verificar se há dados na localStorage e popular os campos
+    const id_mosaico = getFromLocalStorage('id');
     const positionRow = getFromLocalStorage('position_row');
     const positionCol = getFromLocalStorage('position_col');
     const tituloCelula = getFromLocalStorage('titulo_celula');
@@ -35,6 +47,7 @@ function MosaicForm() {
 
     setFormData((prevFormData) => ({
       ...prevFormData,
+      id: id_mosaico,
       posicao_linha: positionRow,
       posicao_coluna: positionCol,
       titulo_celula: tituloCelula,
@@ -44,14 +57,26 @@ function MosaicForm() {
       conteudo_efetivo: conteudoEfetivo,
       origem_conteudo: origemConteudo,
     }));
+    // Agora carrega os dados do cookie, se existirem
+    const mosaicData = getCookie('mosaic_data');
+    if (mosaicData) {
+      const parsedData = JSON.parse(mosaicData);  // Supondo que os dados estejam em JSON no cookie
+      setFormData({
+        posicao_linha: parsedData.posicao_linha || '',
+        posicao_coluna: parsedData.posicao_coluna || '',
+        titulo_celula: parsedData.titulo_celula || '',
+        id_icone: parsedData.id_icone || '',
+        descricao_completa: parsedData.descricao_completa || '',
+        descricao_resumida: parsedData.descricao_resumida || '',
+        conteudo_efetivo: parsedData.conteudo_efetivo || '',
+        origem_conteudo: parsedData.origem_conteudo || '',
+      });
+    }
+
+    // Finaliza o carregamento
+    setLoading(false);
   }, []);
-  // Função para obter dados armazenados no cookie mosaic_data
-  const getCookie = (name) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-    return null;
-  };
+
   useEffect(() => {
     // Verificar se o cookie mosaic_data existe e popular os campos
     const mosaicData = getCookie('mosaic_data');
@@ -69,21 +94,17 @@ function MosaicForm() {
       });
     }
   }, []);
- // useEffect para preencher o mosaicId quando a ação for "modify"
- useEffect(() => {
-  // Verificar se a ação é "modify" e se há dados de mosaico no localStorage ou no cookie
-  if (action === 'modify') {
-    const mosaicData = getCookie('mosaic_data'); // Verificar o cookie
-    if (mosaicData) {
-      const parsedData = JSON.parse(mosaicData);
-      setMosaicId(parsedData.id_icone || '');  // Preencher com o id_icone do cookie
-    } else {
-      // Caso não haja dados no cookie, pode-se buscar do localStorage, se necessário
-      const storedId = getFromLocalStorage('');  // Ajuste conforme necessário
-      setMosaicId(storedId || '');
+  // useEffect para preencher o mosaicId quando a ação for "modify"
+  useEffect(() => {
+    // Verificar se a ação é "modify" e se há dados de mosaico no localStorage ou no cookie
+    if (action === 'modify') {
+      const id_mosaico = getFromLocalStorage('id');
+      const mosaicData = getCookie('mosaic_data'); // Verificar o cookie
+      if (mosaicData) {
+        setMosaicId(id_mosaico);  // Preencher com o id_icone do cookie
+      }
     }
-  }
-}, [action]);  // Executar sempre que a ação mudar
+  }, [action]);  // Executar sempre que a ação mudar
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -262,13 +283,19 @@ function MosaicForm() {
             </div>
             <div className="form-group">
               <label className="icon-editor-label">Conteúdo:</label>
-              <textarea
-                name="origem_conteudo"
-                value={formData.origem_conteudo}
+              <select
+                name="conteudo_efetivo"
+                value={formData.conteudo_efetivo}
                 onChange={handleChange}
                 className="icon-editor-input"
                 required
-              />
+              >
+                <option value="0">URL</option>
+                <option value="1">Foto</option>
+                <option value="2">Texto</option>
+                <option value="3">Vídeo</option>
+                <option value="4">Link Genérico</option>
+              </select>
             </div>
             <button type="submit" id='botao-salvar' className="icon-editor-button">Adicionar</button>
           </>
@@ -345,7 +372,7 @@ function MosaicForm() {
         )}
         <Link to='/TLM-Producao/' className="voltar-mosaic">Voltar</Link>
       </form>
-      
+
     </div>
   );
 }

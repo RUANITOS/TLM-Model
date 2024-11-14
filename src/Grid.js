@@ -55,8 +55,24 @@ const Grid = () => {
   };
 
   useEffect(() => {
+    //localStorage.clear();
+    //clearCookies();
     fetchIconsAndMosaics();
   }, []);
+  const clearCookies = () => {
+    // Limpa cookies específicos
+    document.cookie = 'mosaic_data=; path=/; max-age=0';
+    document.cookie = 'position_row=; path=/; max-age=0';
+    document.cookie = 'position_col=; path=/; max-age=0';
+  
+    // Se você quiser limpar todos os cookies
+    const cookies = document.cookie.split(";");
+  
+    cookies.forEach(cookie => {
+      const cookieName = cookie.split("=")[0].trim();
+      document.cookie = `${cookieName}=; path=/; max-age=0`; // Expira o cookie
+    });
+  };
   const fetchMosaicByPosition = async (row, col) => {
     try {
       const response = await fetch(`https://gentle-nearly-marmoset.ngrok-free.app/api/mosaics/position/${row}/${col}`, {
