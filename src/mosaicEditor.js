@@ -306,17 +306,6 @@ function MosaicForm() {
               <option value="modify">Modificar Mosaico</option>
             </select>
             <div className="form-group">
-              <label className="icon-editor-label">ID do Mosaico:</label>
-              <input
-                type="text"
-                value={mosaicId}
-                onChange={(e) => setMosaicId(e.target.value)}
-                className="icon-editor-input"
-                placeholder="Digite o ID do mosaico a ser alterado"
-                required
-              />
-            </div>
-            <div className="form-group">
               <label className="icon-editor-label">Posição Linha:</label>
               <input
                 type="number"
@@ -324,6 +313,7 @@ function MosaicForm() {
                 value={formData.posicao_linha}
                 onChange={handleChange}
                 className="icon-editor-input"
+                required
               />
             </div>
             <div className="form-group">
@@ -334,6 +324,7 @@ function MosaicForm() {
                 value={formData.posicao_coluna}
                 onChange={handleChange}
                 className="icon-editor-input"
+                required
               />
             </div>
             <div className="form-group">
@@ -344,8 +335,27 @@ function MosaicForm() {
                 value={formData.titulo_celula}
                 onChange={handleChange}
                 className="icon-editor-input"
+                required
               />
             </div>
+            <div className="form-group">
+              <label className="icon-editor-label">ID Ícone:</label>
+              <input
+                type="number"
+                name="id_icone"
+                value={formData.id_icone}
+                onChange={handleChange}
+                className="icon-editor-input"
+                required
+              />
+            </div>
+            {formData.id_icone && (
+                  <div className="view-icon-mosaic">
+                    <label className="icon-editor-label-imagem">Imagem Preview:</label>
+                    <img src={formData.id_icone} alt="Imagem preview" className="icon-editor-img-preview" />
+                  </div>
+                )}
+
             <div className="form-group">
               <label className="icon-editor-label">Descrição Completa:</label>
               <textarea
@@ -353,6 +363,7 @@ function MosaicForm() {
                 value={formData.descricao_completa}
                 onChange={handleChange}
                 className="icon-editor-input"
+                required
               />
             </div>
             <div className="form-group">
@@ -362,8 +373,36 @@ function MosaicForm() {
                 value={formData.descricao_resumida}
                 onChange={handleChange}
                 className="icon-editor-input"
+                required
               />
             </div>
+            <div className="form-group">
+              Tipo de conteudo:
+              <select
+                name="conteudo_efetivo"
+                value={formData.conteudo_efetivo}
+                onChange={handleChange}
+                className="icon-editor-input"
+                required
+              >
+                <option value="0">URL</option>
+                <option value="1">Foto</option>
+                <option value="2">Texto</option>
+                <option value="3">Vídeo</option>
+                <option value="4">Link Genérico</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="icon-editor-label">Conteúdo:</label>
+              <textarea
+                name="origem_conteudo"
+                value={formData.origem_conteudo}
+                onChange={handleChange}
+                className="icon-editor-input"
+                required
+              />
+            </div>
+
             <button type="submit" id='botao-modificar' className="icon-editor-button-atualizar">Modificar</button>
             <button onClick={handleDelete} id='botao-deletar' className="icon-editor-button-deletar">Deletar</button>
           </>
