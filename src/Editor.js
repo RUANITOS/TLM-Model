@@ -236,6 +236,12 @@ const IconEditor = () => {
                 required
               />
             </div>
+              {imagePreview && (
+                  <div className="view-icon">
+                    <label className="icon-editor-label-imagem">Imagem Preview:</label>
+                    <img src={imagePreview} alt="Imagem preview" className="icon-editor-img-preview" />
+                  </div>
+                )}
 
               {creationDate && (
                 <div className="form-group">
@@ -258,13 +264,6 @@ const IconEditor = () => {
                     readOnly
                     className="icon-editor-input"
                   />
-                </div>
-              )}
-
-              {imagePreview && (
-                <div className="form-group">
-                  <label className="icon-editor-label-imagem">Imagem Preview:</label>
-                  <img src={imagePreview} alt="Imagem preview" className="icon-editor-img-preview" />
                 </div>
               )}
 
