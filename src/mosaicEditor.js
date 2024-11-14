@@ -350,7 +350,7 @@ function MosaicForm() {
             </div>
 
             <button onClick={handleSubmit}id='botao-salvar' className="icon-editor-button">Adicionar</button>
-            <button onClick={handleUpdate}id='botao-modificar' className="icon-editor-button-atualizar">Modificar</button>
+            <button onClick={handleUpdate}id='botao-modificar' className="icon-editor-button-atualizar">Atualizar</button>
             <button onClick={handleDelete} id='botao-deletar' className="icon-editor-button-deletar">Deletar</button>
           </>
         )}
