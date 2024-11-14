@@ -343,8 +343,9 @@ function MosaicForm() {
             <button onClick={handleDelete} id='botao-deletar' className="icon-editor-button-deletar">Deletar</button>
           </>
         )}
+        <Link to='/TLM-Producao/' className="voltar-mosaic">Voltar</Link>
       </form>
-      <Link to='/TLM-Producao/' className="link-button">Voltar</Link>
+      
     </div>
   );
 }

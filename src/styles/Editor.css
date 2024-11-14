@@ -234,6 +234,24 @@ body {
 }
 
 .editar-mosaico{
+    background: #202959;
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    width: 10%;
+    height: 40px;
+    line-height: 40px;
+    padding: 0;
+    margin-bottom: 0px;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    z-index: 10000;
+}
+
+.voltar-mosaic {
+  margin-top: -49px;
+  text-align: center;
   background: #202959;
   border: none;
   color: #ffffff;
@@ -242,7 +260,7 @@ body {
   height: 40px;
   line-height: 40px;
   padding: 0;
-  margin-bottom: 0px;
+  margin-right: 14%;
   border-radius: 25px;
   transition: background-color 0.3s ease;
   cursor: pointer;
