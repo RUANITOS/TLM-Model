@@ -221,7 +221,6 @@ const Grid = () => {
           }
         }}
       />
-      
       {hoveredIconData && hoveredIconData.id === icon.id && (
         <div className="hover-text">
           <span>ID: {hoveredIconData.id} | </span>
