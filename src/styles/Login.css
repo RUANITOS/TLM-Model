@@ -138,9 +138,10 @@ h2 {
 .select-imp {
   display: block;
   width: 95%;
-  height: 31px;
+  height: 55px;
   padding: 6px 12px;
   font-size: 12px;
+  margin-top: 15px;
   line-height: 1.42857143;
   color: #555555;
   background-color: #ffffff;
