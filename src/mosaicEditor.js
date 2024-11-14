@@ -328,7 +328,7 @@ function MosaicForm() {
                 value={formData.conteudo_efetivo}
                 onChange={handleChange}
                 className="icon-editor-input"
-                style={{ height: '50px' }}
+                style={{ height: '20.6px', width:'318.6px' }}
                 required
               >
                 <option value="0">URL</option>
