@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/TLM-Producao/static/css/main.57bc0b08.chunk.css",
+    "main.js": "/TLM-Producao/static/js/main.44188c84.chunk.js",
+    "main.js.map": "/TLM-Producao/static/js/main.44188c84.chunk.js.map",
+    "runtime~main.js": "/TLM-Producao/static/js/runtime~main.cc1ae956.js",
+    "runtime~main.js.map": "/TLM-Producao/static/js/runtime~main.cc1ae956.js.map",
+    "static/js/2.cde3852f.chunk.js": "/TLM-Producao/static/js/2.cde3852f.chunk.js",
+    "static/js/2.cde3852f.chunk.js.map": "/TLM-Producao/static/js/2.cde3852f.chunk.js.map",
+    "static/js/3.8ba39429.chunk.js": "/TLM-Producao/static/js/3.8ba39429.chunk.js",
+    "static/js/3.8ba39429.chunk.js.map": "/TLM-Producao/static/js/3.8ba39429.chunk.js.map",
+    "index.html": "/TLM-Producao/index.html",
+    "precache-manifest.f9d2275e1772e956e1ececbe05429761.js": "/TLM-Producao/precache-manifest.f9d2275e1772e956e1ececbe05429761.js",
+    "service-worker.js": "/TLM-Producao/service-worker.js",
+    "static/css/main.57bc0b08.chunk.css.map": "/TLM-Producao/static/css/main.57bc0b08.chunk.css.map"
+  }
+}
