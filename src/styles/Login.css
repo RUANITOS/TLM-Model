@@ -46,7 +46,7 @@ form {
   border-color: #202959;
   color: #ffffff;
   font-size: 14px;
-  width: 100%;
+  width: 95%;
   height: 50px;
   line-height: 50px;
   padding: 0;
@@ -134,7 +134,19 @@ h2 {
   margin-bottom: 20px;
   text-align: center;
 }
-.seletor-imp{
-  margin-left: 10px;
-  padding-right: 60%;
+
+.select-imp {
+  display: block;
+  width: 95%;
+  height: 31px;
+  padding: 6px 12px;
+  font-size: 12px;
+  line-height: 1.42857143;
+  color: #555555;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #afafaf;
+  border-radius: 3px;
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  box-shadow: 1px 1px 12px 0px #b9b9b9;
 }
