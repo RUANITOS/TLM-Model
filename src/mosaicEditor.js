@@ -233,122 +233,9 @@ function MosaicForm() {
 
       <form
         className="icon-editor-form"
-        onSubmit={action === 'add' ? handleSubmit : handleUpdate} // Formulário ajustado para enviar dados
       >
         {action === 'add' && (
           <>
-            <select className="select" onChange={handleActionChange} value={action}>
-              <option value="add">Adicionar Mosaico</option>
-              <option value="modify">Modificar Mosaico</option>
-            </select>
-            <div className="form-group">
-              <label className="icon-editor-label">Posição Linha:</label>
-              <input
-                type="number"
-                name="posicao_linha"
-                value={formData.posicao_linha}
-                onChange={handleChange}
-                className="icon-editor-input"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label className="icon-editor-label">Posição Coluna:</label>
-              <input
-                type="number"
-                name="posicao_coluna"
-                value={formData.posicao_coluna}
-                onChange={handleChange}
-                className="icon-editor-input"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label className="icon-editor-label">Título Célula:</label>
-              <input
-                type="text"
-                name="titulo_celula"
-                value={formData.titulo_celula}
-                onChange={handleChange}
-                className="icon-editor-input"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label className="icon-editor-label">ID Ícone:</label>
-              <input
-                type="number"
-                name="id_icone"
-                value={formData.id_icone}
-                onChange={handleChange} // Atualiza o valor no estado e busca o ícone
-                className="icon-editor-input"
-                required
-              />
-            </div>
-
-            {imagePreview && (
-              <div className="view-icon-mosaic2">
-                <label className="icon-editor-label-imagem">Imagem Preview:</label>
-                <img src={imagePreview} alt="Preview" className="icon-editor-img-preview" />
-              </div>
-            )}
-
-            <div className="form-group">
-              <label className="icon-editor-label">Descrição Completa:</label>
-              <textarea
-                name="descricao_completa"
-                value={formData.descricao_completa}
-                onChange={handleChange}
-                className="icon-editor-input"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label className="icon-editor-label">Descrição Resumida:</label>
-              <textarea
-                name="descricao_resumida"
-                value={formData.descricao_resumida}
-                onChange={handleChange}
-                className="icon-editor-input"
-                required
-              />
-            </div>
-            <div className="form-group">
-              Tipo de conteudo:
-              <select
-                name="conteudo_efetivo"
-                value={formData.conteudo_efetivo}
-                onChange={handleChange}
-                className="icon-editor-input"
-                required
-              >
-                <option value="0">URL</option>
-                <option value="1">Foto</option>
-                <option value="2">Texto</option>
-                <option value="3">Vídeo</option>
-                <option value="4">Link Genérico</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label className="icon-editor-label">Conteúdo:</label>
-              <textarea
-                name="origem_conteudo"
-                value={formData.origem_conteudo}
-                onChange={handleChange}
-                className="icon-editor-input"
-                required
-              />
-            </div>
-            <button type="submit" id='botao-salvar' className="icon-editor-button">Adicionar</button>
-          </>
-        )}
-
-        {action === 'modify' && (
-          <>
-            <select className="select" onChange={handleActionChange} value={action}>
-              <option value="add">Adicionar Mosaico</option>
-              <option value="modify">Modificar Mosaico</option>
-            </select>
             <div className="form-group">
               <label className="icon-editor-label">ID do Mosaico:</label>
               <input
@@ -462,7 +349,8 @@ function MosaicForm() {
               />
             </div>
 
-            <button type="submit" id='botao-modificar' className="icon-editor-button-atualizar">Modificar</button>
+            <button onClick={handleSubmit}id='botao-salvar' className="icon-editor-button">Adicionar</button>
+            <button onClick={handleUpdate}id='botao-modificar' className="icon-editor-button-atualizar">Modificar</button>
             <button onClick={handleDelete} id='botao-deletar' className="icon-editor-button-deletar">Deletar</button>
           </>
         )}
