@@ -350,6 +350,17 @@ function MosaicForm() {
               <option value="modify">Modificar Mosaico</option>
             </select>
             <div className="form-group">
+              <label className="icon-editor-label">ID do Mosaico:</label>
+              <input
+                type="text"
+                value={mosaicId}
+                onChange={(e) => setMosaicId(e.target.value)}
+                className="icon-editor-input"
+                placeholder="Digite o ID do mosaico a ser alterado"
+                required
+              />
+            </div>
+            <div className="form-group">
               <label className="icon-editor-label">Posição Linha:</label>
               <input
                 type="number"
