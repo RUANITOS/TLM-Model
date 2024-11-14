@@ -232,6 +232,14 @@ function MosaicForm() {
                 required
               />
             </div>
+            
+            {formData.id_icone && (
+              <div className="view-icon-mosaic2">
+                <label className="icon-editor-label-imagem">Imagem Preview:</label>
+                <img src={formData.id_icone} alt="Imagem preview" className="icon-editor-img-preview" />
+              </div>
+            )}
+
             <div className="form-group">
               <label className="icon-editor-label">Descrição Completa:</label>
               <textarea
@@ -333,7 +341,7 @@ function MosaicForm() {
               />
             </div>
             {formData.id_icone && (
-              <div className="view-icon-mosaic">
+              <div className="view-icon-mosaic2">
                 <label className="icon-editor-label-imagem">Imagem Preview:</label>
                 <img src={formData.id_icone} alt="Imagem preview" className="icon-editor-img-preview" />
               </div>
