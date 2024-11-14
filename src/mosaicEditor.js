@@ -18,14 +18,12 @@ function MosaicForm() {
   const [mosaicId, setMosaicId] = useState('');
   const [action, setAction] = useState('add');
   const { addAlert } = useAlertas();
-  const [loading, setLoading] = useState(true); // Estado para controle de carregamento
+  const [loading, setLoading] = useState(true);
 
-  // Função para obter dados armazenados na localStorage
   const getFromLocalStorage = (key) => {
     return localStorage.getItem(key) ? localStorage.getItem(key) : '';
   };
 
-  // Função para obter dados armazenados no cookie mosaic_data
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -34,77 +32,44 @@ function MosaicForm() {
   };
 
   useEffect(() => {
-    // Verificar se há dados na localStorage e popular os campos
-    const id_mosaico = getFromLocalStorage('id');
-    const positionRow = getFromLocalStorage('position_row');
-    const positionCol = getFromLocalStorage('position_col');
-    const tituloCelula = getFromLocalStorage('titulo_celula');
-    const idIcone = getFromLocalStorage('id_icone');
-    const descricaoCompleta = getFromLocalStorage('descricao_completa');
-    const descricaoResumida = getFromLocalStorage('descricao_resumida');
-    const conteudoEfetivo = getFromLocalStorage('conteudo_efetivo');
-    const origemConteudo = getFromLocalStorage('origem_conteudo');
-
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      id: id_mosaico,
-      posicao_linha: positionRow,
-      posicao_coluna: positionCol,
-      titulo_celula: tituloCelula,
-      id_icone: idIcone,
-      descricao_completa: descricaoCompleta,
-      descricao_resumida: descricaoResumida,
-      conteudo_efetivo: conteudoEfetivo,
-      origem_conteudo: origemConteudo,
-    }));
-    // Agora carrega os dados do cookie, se existirem
-    const mosaicData = getCookie('mosaic_data');
-    if (mosaicData) {
-      const parsedData = JSON.parse(mosaicData);  // Supondo que os dados estejam em JSON no cookie
-      setFormData({
-        posicao_linha: parsedData.posicao_linha || '',
-        posicao_coluna: parsedData.posicao_coluna || '',
-        titulo_celula: parsedData.titulo_celula || '',
-        id_icone: parsedData.id_icone || '',
-        descricao_completa: parsedData.descricao_completa || '',
-        descricao_resumida: parsedData.descricao_resumida || '',
-        conteudo_efetivo: parsedData.conteudo_efetivo || '',
-        origem_conteudo: parsedData.origem_conteudo || '',
-      });
-    }
-
-    // Finaliza o carregamento
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    // Verificar se o cookie mosaic_data existe e popular os campos
-    const mosaicData = getCookie('mosaic_data');
-    if (mosaicData) {
-      const parsedData = JSON.parse(mosaicData);  // Supondo que os dados estejam em JSON no cookie
-      setFormData({
-        posicao_linha: parsedData.posicao_linha || '',
-        posicao_coluna: parsedData.posicao_coluna || '',
-        titulo_celula: parsedData.titulo_celula || '',
-        id_icone: parsedData.id_icone || '',
-        descricao_completa: parsedData.descricao_completa || '',
-        descricao_resumida: parsedData.descricao_resumida || '',
-        conteudo_efetivo: parsedData.conteudo_efetivo || '',
-        origem_conteudo: parsedData.origem_conteudo || '',
-      });
-    }
-  }, []);
-  // useEffect para preencher o mosaicId quando a ação for "modify"
-  useEffect(() => {
-    // Verificar se a ação é "modify" e se há dados de mosaico no localStorage ou no cookie
-    if (action === 'modify') {
+    // Carregar dados da localStorage e cookies apenas após o carregamento inicial da página
+    if (!loading) {
       const id_mosaico = getFromLocalStorage('id');
-      const mosaicData = getCookie('mosaic_data'); // Verificar o cookie
+      const positionRow = getFromLocalStorage('position_row');
+      const positionCol = getFromLocalStorage('position_col');
+      const tituloCelula = getFromLocalStorage('titulo_celula');
+      const idIcone = getFromLocalStorage('id_icone');
+      const descricaoCompleta = getFromLocalStorage('descricao_completa');
+      const descricaoResumida = getFromLocalStorage('descricao_resumida');
+      const conteudoEfetivo = getFromLocalStorage('conteudo_efetivo');
+      const origemConteudo = getFromLocalStorage('origem_conteudo');
+
+      setFormData({
+        posicao_linha: positionRow || '',
+        posicao_coluna: positionCol || '',
+        titulo_celula: tituloCelula || '',
+        id_icone: idIcone || '',
+        descricao_completa: descricaoCompleta || '',
+        descricao_resumida: descricaoResumida || '',
+        conteudo_efetivo: conteudoEfetivo || '',
+        origem_conteudo: origemConteudo || '',
+      });
+
+      const mosaicData = getCookie('mosaic_data');
       if (mosaicData) {
-        setMosaicId(id_mosaico);  // Preencher com o id_icone do cookie
+        const parsedData = JSON.parse(mosaicData);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          ...parsedData,
+        }));
       }
     }
-  }, [action]);  // Executar sempre que a ação mudar
+  }, [loading]);
+
+  useEffect(() => {
+    setLoading(false); // Definindo que a página carregou completamente
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -115,7 +80,7 @@ function MosaicForm() {
 
   const handleActionChange = (e) => {
     setAction(e.target.value);
-    setMosaicId('');  // Resetando o ID do mosaico ao mudar a ação
+    setMosaicId('');
   };
 
   const handleSubmit = async (e) => {
@@ -139,6 +104,7 @@ function MosaicForm() {
       addAlert('Erro ao adicionar mosaico.', 'error');
     }
   };
+
   const handleUpdate = async (e) => {
     e.preventDefault();
     if (!mosaicId) {
@@ -188,6 +154,23 @@ function MosaicForm() {
       addAlert('Erro ao deletar mosaico.', 'error');
     }
   };
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  useEffect(() => {
+    // Verifica se o parâmetro `reloaded` está na URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasReloaded = urlParams.get('reloaded');
+
+    if (isInitialLoad && !hasReloaded) {
+      setIsInitialLoad(false);
+
+      // Define um timer para recarregar a página após 1 segundo com o parâmetro `reloaded`
+      setTimeout(() => {
+        urlParams.set('reloaded', 'true');
+        window.location.search = urlParams.toString();
+      }, 1000);
+    }
+  }, [isInitialLoad]);
   return (
     <div className="icon-editor-container">
       <Header />
@@ -249,14 +232,6 @@ function MosaicForm() {
                 required
               />
             </div>
-
-            {formData.id_icone && (
-                  <div className="view-icon-mosaic2">
-                    <label className="icon-editor-label-imagem">Imagem Preview:</label>
-                    <img src={formData.id_icone} alt="Imagem preview" className="icon-editor-img-preview" />
-                  </div>
-                )}
-
             <div className="form-group">
               <label className="icon-editor-label">Descrição Completa:</label>
               <textarea
@@ -358,11 +333,11 @@ function MosaicForm() {
               />
             </div>
             {formData.id_icone && (
-                  <div className="view-icon-mosaic2">
-                    <label className="icon-editor-label-imagem">Imagem Preview:</label>
-                    <img src={formData.id_icone} alt="Imagem preview" className="icon-editor-img-preview" />
-                  </div>
-                )}
+              <div className="view-icon-mosaic">
+                <label className="icon-editor-label-imagem">Imagem Preview:</label>
+                <img src={formData.id_icone} alt="Imagem preview" className="icon-editor-img-preview" />
+              </div>
+            )}
 
             <div className="form-group">
               <label className="icon-editor-label">Descrição Completa:</label>
