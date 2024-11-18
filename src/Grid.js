@@ -22,7 +22,7 @@ const Grid = () => {
   const fetchIconsAndMosaics = async () => {
     try {
       // Fetch dos mosaicos
-      const mosaicsResponse = await fetch('https://gentle-nearly-marmoset.ngrok-free.app/api/mosaics', {
+      const mosaicsResponse = await fetch('https://wise-likely-swan.ngrok-free.app/api/mosaics', {
         headers: { 'ngrok-skip-browser-warning': 'true' }
       });
 
@@ -30,7 +30,7 @@ const Grid = () => {
 
       // Para cada mosaico, buscamos o ícone correspondente
       const combinedData = await Promise.all(mosaicsData.map(async (mosaic) => {
-        const iconResponse = await fetch(`https://gentle-nearly-marmoset.ngrok-free.app/api/icons/${mosaic.id_icone}`, {
+        const iconResponse = await fetch(`https://wise-likely-swan.ngrok-free.app/api/icons/${mosaic.id_icone}`, {
           headers: { 'ngrok-skip-browser-warning': 'true' }
         });
         const iconData = await iconResponse.json();
@@ -75,7 +75,7 @@ const Grid = () => {
   };
   const fetchMosaicByPosition = async (row, col) => {
     try {
-      const response = await fetch(`https://gentle-nearly-marmoset.ngrok-free.app/api/mosaics/position/${row}/${col}`, {
+      const response = await fetch(`https://wise-likely-swan.ngrok-free.app/api/mosaics/position/${row}/${col}`, {
         headers: { 'ngrok-skip-browser-warning': 'true' }
       });
       const data = await response.json();
@@ -95,7 +95,7 @@ const Grid = () => {
 
   const modifyMosaicPosition = async (id, newRow, newCol) => {
     try {
-      const response = await fetch(`https://gentle-nearly-marmoset.ngrok-free.app/api/mosaics/modify/${id}`, {
+      const response = await fetch(`https://wise-likely-swan.ngrok-free.app/api/mosaics/modify/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
         body: JSON.stringify({ posicao_linha: newRow, posicao_coluna: newCol }), // Carrega newRow e newCol para o backend
@@ -184,7 +184,7 @@ const Grid = () => {
   };
   const updateMosaicInDatabase = async (mosaicData) => {
     try {
-      const response = await fetch(`https://gentle-nearly-marmoset.ngrok-free.app/api/mosaics/modify-position/${mosaicData.id}`, {
+      const response = await fetch(`https://wise-likely-swan.ngrok-free.app/api/mosaics/modify-position/${mosaicData.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
         body: JSON.stringify({
@@ -211,16 +211,24 @@ const Grid = () => {
       onMouseEnter={() => setHoveredIconData({ id: icon.id, titulo_celula: icon.titulo_celula })} // Armazena os dados do ícone ao passar o mouse
       onMouseLeave={() => setHoveredIconData(null)} // Limpa os dados ao sair com o mouse
     >
-      <img
-        src={icon.src}
-        alt={icon.titulo_celula}
-        className="icon"
-        onClick={() => {
-          if (icon.conteudo_efetivo === 0) {
-            handleIconClick(icon.origem_conteudo);
-          }
-        }}
-      />
+      {icon.conteudo_efetivo === 1 ? ( // Verifica se é uma imagem
+        <img
+          src={icon.origem_conteudo} // Usa a mesma fonte do iframe
+          alt={icon.titulo_celula}
+          className="icon"
+        />
+      ) : (
+        <img
+          src={icon.src}
+          alt={icon.titulo_celula}
+          className="icon"
+          onClick={() => {
+            if (icon.conteudo_efetivo === 0) {
+              handleIconClick(icon.origem_conteudo); // Abre o modal para conteúdo efetivo 0
+            }
+          }}
+        />
+      )}
       {hoveredIconData && hoveredIconData.id === icon.id && (
         <div className="hover-text">
           <span>ID: {hoveredIconData.id} | </span>
@@ -229,6 +237,7 @@ const Grid = () => {
       )}
     </div>
   );
+  
 
   const squares = Array.from({ length: rows }, (_, row) =>
     Array.from({ length: cols }, (_, col) => {

@@ -8,7 +8,7 @@ const Header = () => {
   // Função para buscar a imagem do logo com icon_id "logo"
   const fetchLogoImage = async () => {
     try {
-      const response = await fetch('https://gentle-nearly-marmoset.ngrok-free.app/api/icons/1', {
+      const response = await fetch('https://wise-likely-swan.ngrok-free.app/api/icons/1', {
         headers: {
           'ngrok-skip-browser-warning': 'true'
         }
