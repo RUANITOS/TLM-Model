@@ -31,41 +31,64 @@ function MosaicForm() {
     if (parts.length === 2) return parts.pop().split(';').shift();
     return null;
   };
-
   useEffect(() => {
-    // Carregar dados da localStorage e cookies apenas após o carregamento inicial da página
-    if (!loading) {
-      const id_mosaico = getFromLocalStorage('id');
-      const positionRow = getFromLocalStorage('position_row');
-      const positionCol = getFromLocalStorage('position_col');
-      const tituloCelula = getFromLocalStorage('titulo_celula');
-      const idIcone = getFromLocalStorage('id_icone');
-      const descricaoCompleta = getFromLocalStorage('descricao_completa');
-      const descricaoResumida = getFromLocalStorage('descricao_resumida');
-      const conteudoEfetivo = getFromLocalStorage('conteudo_efetivo');
-      const origemConteudo = getFromLocalStorage('origem_conteudo');
-
-      setFormData({
-        posicao_linha: positionRow || '',
-        posicao_coluna: positionCol || '',
-        titulo_celula: tituloCelula || '',
-        id_icone: idIcone || '',
-        descricao_completa: descricaoCompleta || '',
-        descricao_resumida: descricaoResumida || '',
-        conteudo_efetivo: conteudoEfetivo || '',
-        origem_conteudo: origemConteudo || '',
-      });
-
-      const mosaicData = getCookie('mosaic_data');
-      if (mosaicData) {
-        const parsedData = JSON.parse(mosaicData);
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          ...parsedData,
-        }));
-      }
+    // Obtém o ID do mosaico do cookie e atualiza o estado inicial
+    const idMosaicFromCookie = getCookie('mosaic_id');
+    if (idMosaicFromCookie) {
+      setMosaicId(idMosaicFromCookie);
     }
-  }, [loading]);
+  }, []);
+
+    useEffect(() => {
+      if (!loading) {
+        const id_mosaico = getFromLocalStorage('id')||'';
+        const positionRow = getCookie('position_row'); // Lê o valor do cookie para linha
+        const positionCol = getCookie('position_col'); // Lê o valor do cookie para coluna
+        const tituloCelula = getFromLocalStorage('titulo_celula');
+        const idIcone = getFromLocalStorage('id_icone');
+        const descricaoCompleta = getFromLocalStorage('descricao_completa');
+        const descricaoResumida = getFromLocalStorage('descricao_resumida');
+        const conteudoEfetivo = getFromLocalStorage('conteudo_efetivo');
+        const origemConteudo = getFromLocalStorage('origem_conteudo');
+    
+        // Verifica se a mensagem de erro está no localStorage
+        const errorMessage = getFromLocalStorage('message');
+        if (errorMessage === 'Mosaico não encontrado para a posição fornecida') {
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            posicao_linha: positionRow || '', // Popula a linha com o valor do cookie
+            posicao_coluna: positionCol || '', // Popula a coluna com o valor do cookie
+            titulo_celula: '',
+            id_icone: '',
+            descricao_completa: '',
+            descricao_resumida: '',
+            conteudo_efetivo: '',
+            origem_conteudo: '',
+          }));
+        } else {
+          setFormData({
+            posicao_linha: positionRow || '',
+            posicao_coluna: positionCol || '',
+            titulo_celula: tituloCelula || '',
+            id_icone: idIcone || '',
+            descricao_completa: descricaoCompleta || '',
+            descricao_resumida: descricaoResumida || '',
+            conteudo_efetivo: conteudoEfetivo || '',
+            origem_conteudo: origemConteudo || '',
+          });
+        }
+    
+        const mosaicData = getCookie('mosaic_data');
+        if (mosaicData) {
+          const parsedData = JSON.parse(mosaicData);
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            ...parsedData,
+          }));
+        }
+      }
+    }, [loading]);
+    
 
   useEffect(() => {
     setLoading(false); // Definindo que a página carregou completamente
@@ -240,7 +263,7 @@ function MosaicForm() {
               <label className="icon-editor-label">ID do Mosaico:</label>
               <input
                 type="text"
-                value={mosaicId}
+                value={mosaicId || ''}
                 onChange={(e) => setMosaicId(e.target.value)}
                 className="icon-editor-input"
                 placeholder="Digite o ID do mosaico a ser alterado"
@@ -354,7 +377,7 @@ function MosaicForm() {
             <button onClick={handleDelete} id='botao-deletar' className="icon-editor-button-deletar">Deletar</button>
           </>
         )}
-        <Link to='/TLM-Producao/' className="voltar-mosaic">Voltar</Link>
+        <Link to='/' className="voltar-mosaic">Voltar</Link>
       </form>
 
     </div>

@@ -64,10 +64,10 @@ const Grid = () => {
     document.cookie = 'mosaic_data=; path=/; max-age=0';
     document.cookie = 'position_row=; path=/; max-age=0';
     document.cookie = 'position_col=; path=/; max-age=0';
-  
+
     // Se você quiser limpar todos os cookies
     const cookies = document.cookie.split(";");
-  
+
     cookies.forEach(cookie => {
       const cookieName = cookie.split("=")[0].trim();
       document.cookie = `${cookieName}=; path=/; max-age=0`; // Expira o cookie
@@ -85,6 +85,8 @@ const Grid = () => {
       setSelectedMosaicData(data);
       // Salvando todos os dados do mosaico nos cookies
       document.cookie = `mosaic_data=${JSON.stringify(data)}; path=/; max-age=${60 * 60 * 24 * 7}`; // Salva os dados completos do mosaico nos cookies
+      const mosaicIdValue = data.id ? data.id : '';// Atribui vazio se não houver um valor válido
+      document.cookie = `mosaic_id=${mosaicIdValue}; path=/; max-age=${60 * 60 * 24 * 7}`;
       console.log('Dados do mosaico salvos na localStorage:', data);
       addAlert('Mosaico selecionado', 'success')
     } catch (error) {
@@ -169,18 +171,44 @@ const Grid = () => {
     }
   };
 
+  const fallbackCopyTextToClipboard = (text) => {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed'; // Evita scroll da página
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      console.log('Texto copiado para a área de transferência (fallback).');
+    } catch (err) {
+      console.error('Erro ao copiar texto (fallback):', err);
+    }
+    document.body.removeChild(textArea);
+  };
+
   const copyPositionToCookiesAndNavigate = (row, col) => {
     document.cookie = `position_row=${row}; path=/; max-age=${60 * 60 * 24 * 7}`;
     document.cookie = `position_col=${col}; path=/; max-age=${60 * 60 * 24 * 7}`;
 
     const positionText = `Linha ${row}, Coluna ${col}`;
-    navigator.clipboard.writeText(positionText).then(() => {
-      console.log('Texto copiado para a área de transferência!');
-      fetchMosaicByPosition(row, col); // Busca dados do mosaico com os valores atualizados
-      navigate('/TLM-Producao/MosaicEditor'); // Redireciona para o MosaicEditor
-    }).catch((err) => {
-      console.error('Erro ao copiar o texto:', err);
-    });
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(positionText)
+        .then(() => {
+          console.log('Texto copiado para a área de transferência!');
+          fetchMosaicByPosition(row, col);
+          navigate('/TLM-Producao/MosaicEditor');
+        })
+        .catch((err) => {
+          console.error('Erro ao copiar o texto:', err);
+          fallbackCopyTextToClipboard(positionText); // Usa o fallback
+        });
+    } else {
+      fallbackCopyTextToClipboard(positionText);
+      fetchMosaicByPosition(row, col);
+      navigate('/TLM-Producao/MosaicEditor');
+    }
   };
   const updateMosaicInDatabase = async (mosaicData) => {
     try {
@@ -237,7 +265,7 @@ const Grid = () => {
       )}
     </div>
   );
-  
+
 
   const squares = Array.from({ length: rows }, (_, row) =>
     Array.from({ length: cols }, (_, col) => {
@@ -260,7 +288,7 @@ const Grid = () => {
   return (
     <div className="grid-container">
       <div className="button-container">
-        <button id='teste'className='editar-mosaico' onClick={togglePositionSelector}>
+        <button id='teste' className='editar-mosaico' onClick={togglePositionSelector}>
           {isPositionSelectorActive ? 'Desativar Seleção de Posição' : 'Selecionar Posição'}
         </button>
         <button id='teste2' onClick={toggleDataFetch}>

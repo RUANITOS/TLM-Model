@@ -127,7 +127,7 @@
   text-align: center; /* Centraliza o texto */
 }
 .iframe-content{
-  width:800px;
+  width:95%;
   height: 500px;
 }
 
@@ -197,5 +197,8 @@
   margin-left: -5px;
   border-radius: 25px;
   transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+.close-button{
   cursor: pointer;
 }
