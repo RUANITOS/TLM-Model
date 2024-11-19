@@ -16,6 +16,8 @@ const Grid = () => {
   const [hoveredPosition, setHoveredPosition] = useState(null);
   const [selectedMosaicData, setSelectedMosaicData] = useState(null); // Armazena dados do mosaico selecionado
   const [hoveredIconData, setHoveredIconData] = useState(null); // Novo estado para armazenar os dados do ícone em hover
+  const [isTextModalOpen, setIsTextModalOpen] = useState(false);
+  const [textModalContent, setTextModalContent] = useState('');
 
   const navigate = useNavigate();
   const { addAlert } = useAlertas();
@@ -130,14 +132,23 @@ const Grid = () => {
     return null;
   };
 
-  const handleIconClick = (origemConteudo) => {
-    setIframeSrc(origemConteudo);
-    setIsModalOpen(true);
+  const handleIconClick = (origemConteudo, conteudoEfetivo) => {
+    if (conteudoEfetivo === 0) {
+      setIframeSrc(origemConteudo);
+      setIsModalOpen(true);
+    } else if (conteudoEfetivo === 2) {
+      setTextModalContent(origemConteudo); // Define o conteúdo do texto
+      setIsTextModalOpen(true); // Abre o modal de texto
+    }
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setIframeSrc('');
+  };
+  const closeTextModal = () => {
+    setIsTextModalOpen(false);
+    setTextModalContent('');
   };
 
   const togglePositionSelector = () => {
@@ -236,25 +247,28 @@ const Grid = () => {
   const renderIcon = (icon) => (
     <div
       className="icon-container"
-      onMouseEnter={() => setHoveredIconData({ id: icon.id, titulo_celula: icon.titulo_celula })} // Armazena os dados do ícone ao passar o mouse
+      onMouseEnter={() => setHoveredIconData({ id: icon.id, titulo_celula: icon.titulo_celula })} // Exibe os dados ao passar o mouse
       onMouseLeave={() => setHoveredIconData(null)} // Limpa os dados ao sair com o mouse
     >
-      {icon.conteudo_efetivo === 1 ? ( // Verifica se é uma imagem
+      {icon.conteudo_efetivo === 0 ? ( // Verifica se o ícone deve ser um iframe
         <img
-          src={icon.origem_conteudo} // Usa a mesma fonte do iframe
+          src={icon.src} // Usa o ícone associado ao mosaico
           alt={icon.titulo_celula}
           className="icon"
+          onClick={() => handleIconClick(icon.origem_conteudo, 0)} // Abre modal para conteúdo efetivo 0
+        />
+      ) : icon.conteudo_efetivo === 2 ? ( // Verifica se o ícone é de texto
+        <img
+          src={icon.src} // Exibe o ícone normalmente
+          alt={icon.titulo_celula}
+          className="icon"
+          onClick={() => handleIconClick(icon.descricao_completa, 2)} // Abre modal de texto para conteúdo efetivo 2
         />
       ) : (
         <img
           src={icon.src}
           alt={icon.titulo_celula}
           className="icon"
-          onClick={() => {
-            if (icon.conteudo_efetivo === 0) {
-              handleIconClick(icon.origem_conteudo); // Abre o modal para conteúdo efetivo 0
-            }
-          }}
         />
       )}
       {hoveredIconData && hoveredIconData.id === icon.id && (
@@ -318,9 +332,23 @@ const Grid = () => {
           </div>
         </div>
       )}
+        {/* Modal de texto */}
+    {isTextModalOpen && (
+      <TextModal textContent={textModalContent} onClose={closeTextModal} />
+    )}
     </div>
 
   );
 };
+
+const TextModal = ({ textContent, onClose }) => (
+  <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="text-content">{textContent}</div>
+      
+    </div>
+  </div>
+);
+
 
 export default Grid;
