@@ -20,7 +20,7 @@ const IconEditor = () => {
   // Função para buscar os IDs de ícones
   const fetchIconIds = async () => {
     try {
-      const response = await fetch('https://wise-likely-swan.ngrok-free.app/api/icons/ids', {
+      const response = await fetch('https://shepherd-in-cleanly.ngrok-free.app/api/icons/ids', {
         headers: { 'ngrok-skip-browser-warning': 'true' }
       });
       if (response.ok) {
@@ -37,7 +37,7 @@ const IconEditor = () => {
   // Função para buscar um ícone por ID
   const fetchIconById = async (id) => {
     try {
-      const response = await fetch(`https://wise-likely-swan.ngrok-free.app/api/icons/${id}`, {
+      const response = await fetch(`https://shepherd-in-cleanly.ngrok-free.app/api/icons/${id}`, {
         headers: { 'ngrok-skip-browser-warning': 'true' }
       });
       if (response.ok) {
@@ -84,7 +84,7 @@ const IconEditor = () => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`https://wise-likely-swan.ngrok-free.app/api/icons/delete/${selectedId}`, {
+      const response = await fetch(`https://shepherd-in-cleanly.ngrok-free.app/api/icons/delete/${selectedId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json','ngrok-skip-browser-warning': 'true' },
       });
@@ -123,7 +123,7 @@ const IconEditor = () => {
     }
 
     try {
-      const url = `https://wise-likely-swan.ngrok-free.app/api/icons/${action === 'add' ? 'add' : 'modify'}`;
+      const url = `https://shepherd-in-cleanly.ngrok-free.app/api/icons/${action === 'add' ? 'add' : 'modify'}`;
       const method = action === 'add' ? 'POST' : 'PUT'
 
       const response = await fetch(url, {

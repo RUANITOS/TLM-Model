@@ -202,3 +202,7 @@
 .close-button{
   cursor: pointer;
 }
+.text-content {
+  white-space: pre-wrap; /* Respeita espaços e quebras de linha */
+  word-wrap: break-word; /* Evita que palavras muito longas quebrem o layout */
+}
