@@ -18,7 +18,7 @@ const Grid = () => {
   const [hoveredIconData, setHoveredIconData] = useState(null); // Novo estado para armazenar os dados do ícone em hover
   const [isTextModalOpen, setIsTextModalOpen] = useState(false);
   const [textModalContent, setTextModalContent] = useState('');
-
+  const [textModalTitle, setTextModalTitle] = useState(''); // Adicionado para o título do modal
   const navigate = useNavigate();
   const { addAlert } = useAlertas();
   const fetchIconsAndMosaics = async () => {
@@ -132,12 +132,13 @@ const Grid = () => {
     return null;
   };
 
-  const handleIconClick = (origemConteudo, conteudoEfetivo) => {
+  const handleIconClick = (origemConteudo,descricaoCompleta, conteudoEfetivo ) => {
     if (conteudoEfetivo === 0) {
       setIframeSrc(origemConteudo);
       setIsModalOpen(true);
     } else if (conteudoEfetivo === 2) {
-      setTextModalContent(origemConteudo); // Define o conteúdo do texto
+      setTextModalTitle(origemConteudo); // Define o conteúdo do texto
+      setTextModalContent(descricaoCompleta); // Define o conteúdo do modal (garanta que 'conteudoEfetivo' contenha o texto)
       setIsTextModalOpen(true); // Abre o modal de texto
     }
   };
@@ -262,7 +263,7 @@ const Grid = () => {
           src={icon.src} // Exibe o ícone normalmente
           alt={icon.titulo_celula}
           className="icon"
-          onClick={() => handleIconClick(icon.descricao_completa, 2)} // Abre modal de texto para conteúdo efetivo 2
+          onClick={() => handleIconClick(icon.origem_conteudo, icon.descricao_completa, 2)} // Passa descricao_completa para o conteúdo de texto
         />
       ) : (
         <img
@@ -334,18 +335,19 @@ const Grid = () => {
       )}
         {/* Modal de texto */}
     {isTextModalOpen && (
-      <TextModal textContent={textModalContent} onClose={closeTextModal} />
+      <TextModal title={textModalTitle} textContent={textModalContent} onClose={closeTextModal} />
     )}
     </div>
 
   );
 };
 
-const TextModal = ({ textContent, onClose }) => (
+const TextModal = ({ title, textContent, onClose }) => (
   <div className="modal-overlay" onClick={onClose}>
     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-      <div className="text-content">{textContent}</div>
-      
+      <h2>{textContent}</h2> {/* Título do modal */}
+      <div className="text-content">{title}</div>
+
     </div>
   </div>
 );
