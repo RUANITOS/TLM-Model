@@ -106,9 +106,13 @@
 }
 
 .button-container {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none; /* Evita cliques quando oculto */
   position: absolute;
-  top: 10px;
+  top: 60px;
   right: 10px;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
   z-index: 10000; /* Eleva os botões acima de outros elementos */
   background-color: #fff; /* Fundo branco para a caixa */
   padding: 15px; /* Espaçamento interno */
@@ -205,4 +209,34 @@
 .text-content {
   white-space: pre-wrap; /* Respeita espaços e quebras de linha */
   word-wrap: break-word; /* Evita que palavras muito longas quebrem o layout */
+}
+.button-container.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto; /* Permite cliques quando visível */
+  cursor:pointer;
+}
+
+.button-container.hidden {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none; /* Evita cliques quando oculto */
+  cursor:pointer;
+}
+.menu-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 24px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000000000000000;
 }

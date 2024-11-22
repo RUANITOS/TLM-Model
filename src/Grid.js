@@ -23,8 +23,8 @@ const Grid = () => {
   const navigate = useNavigate();
   const { addAlert } = useAlertas();
 
-  const toggleMenu = () => {
-    setIsMenuVisible(!isMenuVisible);
+  const toggleMenuVisibility = () => {
+    setIsMenuVisible(!isMenuVisible); // Alterna entre mostrar e esconder
   };
   const fetchIconsAndMosaics = async () => {
     try {
@@ -141,7 +141,7 @@ const Grid = () => {
     console.log("Origem Conteúdo:", origemConteudo);
     console.log("Descrição Completa:", descricaoCompleta);
     console.log("Conteúdo Efetivo:", conteudoEfetivo);
-  
+
     if (conteudoEfetivo === 0) {
       // Modal de iframe
       setIframeSrc(origemConteudo);
@@ -313,20 +313,18 @@ const Grid = () => {
   ).flat();
   return (
     <div className="grid-container">
-      <div className="button-container">
-        <button id='teste' className='editar-mosaico' onClick={togglePositionSelector}>
+      <div className="menu-icon" onClick={toggleMenuVisibility}>
+        <span>✏️</span> {/* Ícone de interrogação */}
+      </div>
+      <div className={`button-container ${isMenuVisible ? 'visible' : 'hidden'}`}>
+        <button id="teste" className="editar-mosaico" onClick={() => setIsPositionSelectorActive(!isPositionSelectorActive)}>
           {isPositionSelectorActive ? 'Desativar Seleção de Posição' : 'Selecionar Posição'}
         </button>
-        <button id='teste2' onClick={toggleDataFetch}>
+        <button id="teste2" onClick={() => setIsDataFetchActive(!isDataFetchActive)}>
           {isDataFetchActive ? 'Cancelar' : 'Reposicionar Mosaico'}
         </button>
-        {hoveredPosition && (
-          <div className="position-indicator">
-            Posição: Linha {hoveredPosition.row}, Coluna {hoveredPosition.col}
-          </div>
-        )}
         <Link to="/TLM-Producao/MosaicEditor">
-          <button id='teste3' className="icon-editor-button">Editor de Mosaicos</button>
+          <button id="teste3" className="icon-editor-button">Editor de Mosaicos</button>
         </Link>
       </div>
       {squares}
@@ -346,7 +344,7 @@ const Grid = () => {
       )}
       {/* Modal de texto */}
       {isTextModalOpen && (
-         <TextModal title={textModalTitle} textContent={textModalContent} onClose={closeTextModal} />
+        <TextModal title={textModalTitle} textContent={textModalContent} onClose={closeTextModal} />
       )}
     </div>
 
