@@ -24,6 +24,7 @@ const Login = ({ onLogin }) => {
   
       if (response.status === 200) {
         onLogin(data.user); // Executa a ação de login bem-sucedido
+        document.cookie = `id_implem=${implementation}; path=/;`;
         navigate('/dashboard'); // Redireciona para outra página (exemplo: Dashboard)
       } else {
         setError(data.message || 'Erro desconhecido');

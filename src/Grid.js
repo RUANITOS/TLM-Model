@@ -10,6 +10,7 @@ const Grid = () => {
 
   const [displayIcons, setDisplayIcons] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [idImplem, setIdImplem] = useState(null); // Novo estado para armazenar o id_implem
   const [iframeSrc, setIframeSrc] = useState('');
   const [isPositionSelectorActive, setIsPositionSelectorActive] = useState(false);
   const [isDataFetchActive, setIsDataFetchActive] = useState(false); // Novo estado para o botão "Pegar Dados"
@@ -28,38 +29,42 @@ const Grid = () => {
   };
   const fetchIconsAndMosaics = async () => {
     try {
-      // Fetch dos mosaicos
+      // Obter mosaicos
       const mosaicsResponse = await fetch('https://meuprojetoteste.serveo.net/api/mosaics', {
-        headers: { 'ngrok-skip-browser-warning': 'true' }
       });
-
       const mosaicsData = await mosaicsResponse.json();
-
-      // Para cada mosaico, buscamos o ícone correspondente
-      const combinedData = await Promise.all(mosaicsData.map(async (mosaic) => {
+      // Filtrar mosaicos pelo id_implem
+      const filteredMosaics = mosaicsData.filter(mosaic => mosaic.id_implem === idImplem);
+      // Obter ícones correspondentes
+      const combinedData = await Promise.all(filteredMosaics.map(async (mosaic) => {
         const iconResponse = await fetch(`https://meuprojetoteste.serveo.net/api/icons/${mosaic.id_icone}`, {
-          headers: { 'ngrok-skip-browser-warning': 'true' }
+
         });
         const iconData = await iconResponse.json();
-
         if (iconData.src && iconData.src.data) {
-          // Converte o array de bytes (Buffer) para um Blob
           const imgBlob = new Blob([new Uint8Array(iconData.src.data)], { type: 'image/png' });
-          const imgUrl = URL.createObjectURL(imgBlob); // Cria a URL do objeto para exibição
-
-          // Retorna o mosaico com o ícone associado
+          const imgUrl = URL.createObjectURL(imgBlob);
           return { ...mosaic, src: imgUrl };
         }
-
-        return null; // Caso o ícone não tenha sido encontrado
+        return null;
       }));
 
-      // Filtra mosaicos que possuem ícones associados
+      // Atualizar estado com mosaicos filtrados e ícones associados
       setDisplayIcons(combinedData.filter(item => item !== null));
     } catch (error) {
       console.error('Erro ao buscar ícones e mosaicos:', error);
     }
   };
+  useEffect(() => {
+    // Obter id_implem do cookie ou localStorage
+    const storedIdImplem = getCookie('id_implem');
+    console.log('Cookie id_implem:', storedIdImplem);
+    setIdImplem(Number(storedIdImplem)); // Converter para número
+    if (storedIdImplem) {
+      fetchIconsAndMosaics();
+      console.log('Cookie id_implem2:', storedIdImplem);
+    }
+  }, [idImplem]);
 
   useEffect(() => {
     //localStorage.clear();
@@ -83,7 +88,6 @@ const Grid = () => {
   const fetchMosaicByPosition = async (row, col) => {
     try {
       const response = await fetch(`https://meuprojetoteste.serveo.net/api/mosaics/position/${row}/${col}`, {
-        headers: { 'ngrok-skip-browser-warning': 'true' }
       });
       const data = await response.json();
       // Salva todos os dados do mosaico selecionado na localStorage
@@ -106,7 +110,7 @@ const Grid = () => {
     try {
       const response = await fetch(`https://meuprojetoteste.serveo.net/api/mosaics/modify/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ posicao_linha: newRow, posicao_coluna: newCol }), // Carrega newRow e newCol para o backend
       });
       if (response.ok) {
@@ -131,7 +135,7 @@ const Grid = () => {
   }, []);
 
   const getCookie = (name) => {
-    const value = document.cookie;
+    const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
     return null;
@@ -237,7 +241,7 @@ const Grid = () => {
     try {
       const response = await fetch(`https://meuprojetoteste.serveo.net/api/mosaics/modify-position/${mosaicData.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           posicao_linha: mosaicData.posicao_linha,
           posicao_coluna: mosaicData.posicao_coluna
@@ -360,6 +364,5 @@ const TextModal = ({ title, textContent, onClose }) => (
     </div>
   </div>
 );
-
 
 export default Grid;

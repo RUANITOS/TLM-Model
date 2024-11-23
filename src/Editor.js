@@ -21,7 +21,7 @@ const IconEditor = () => {
   const fetchIconIds = async () => {
     try {
       const response = await fetch('https://meuprojetoteste.serveo.net/api/icons/ids', {
-        headers: { 'ngrok-skip-browser-warning': 'true' }
+        
       });
       if (response.ok) {
         const data = await response.json();
@@ -38,7 +38,7 @@ const IconEditor = () => {
   const fetchIconById = async (id) => {
     try {
       const response = await fetch(`https://meuprojetoteste.serveo.net/api/icons/${id}`, {
-        headers: { 'ngrok-skip-browser-warning': 'true' }
+       
       });
       if (response.ok) {
         const { src, descricao, id_implementacao, dt_criacao, dt_modificacao } = await response.json();
@@ -86,7 +86,7 @@ const IconEditor = () => {
     try {
       const response = await fetch(`https://meuprojetoteste.serveo.net/api/icons/delete/${selectedId}`, {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json','ngrok-skip-browser-warning': 'true' },
+        headers: { 'Content-Type': 'application/json' },
       });
 
       if (response.ok) {
@@ -129,7 +129,7 @@ const IconEditor = () => {
       const response = await fetch(url, {
         method,
         body: formDataToSend,
-        headers: { 'ngrok-skip-browser-warning': 'true' },
+        
       });
 
       if (response.ok) {

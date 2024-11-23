@@ -109,7 +109,7 @@ function MosaicForm() {
     if (!id) return; // Não faz fetch se o ID estiver vazio
     try {
       const response = await fetch(`https://meuprojetoteste.serveo.net/api/icons/${id}`, {
-        headers: { 'ngrok-skip-browser-warning': 'true' }
+        
       });
       if (response.ok) {
         const { src } = await response.json();
@@ -132,7 +132,7 @@ function MosaicForm() {
   const fetchIconById = async (id) => {
     try {
       const response = await fetch(`https://meuprojetoteste.serveo.net/api/icons/${id}`, {
-        headers: { 'ngrok-skip-browser-warning': 'true' }
+        
       });
       if (response.ok) {
         const { src, } = await response.json();
@@ -166,7 +166,7 @@ function MosaicForm() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
+          
         },
         body: JSON.stringify(formData),
       });
@@ -192,7 +192,7 @@ function MosaicForm() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
+          
         },
         body: JSON.stringify(formData),
       });
@@ -216,9 +216,6 @@ function MosaicForm() {
     try {
       const response = await fetch(`https://meuprojetoteste.serveo.net/api/mosaics/delete/${mosaicId}`, {
         method: 'DELETE',
-        headers: {
-          'ngrok-skip-browser-warning': 'true',
-        },
       });
       if (response.ok) {
         addAlert('Mosaico deletado com sucesso!', 'success');

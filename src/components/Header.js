@@ -9,9 +9,6 @@ const Header = () => {
   const fetchLogoImage = async () => {
     try {
       const response = await fetch('https://meuprojetoteste.serveo.net/api/icons/1', {
-        headers: {
-          'ngrok-skip-browser-warning': 'true'
-        }
       });
       const { src, mimetype } = await response.json();
       const blob = new Blob([Uint8Array.from(src.data)], { type: mimetype });
