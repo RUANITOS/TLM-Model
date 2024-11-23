@@ -24,7 +24,7 @@ function MosaicForm() {
   const getFromLocalStorage = (key) => {
     return localStorage.getItem(key) ? localStorage.getItem(key) : '';
   };
-
+//função auxiliar para buscarmos o cookie
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
