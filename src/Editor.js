@@ -20,7 +20,7 @@ const IconEditor = () => {
   // Função para buscar os IDs de ícones
   const fetchIconIds = async () => {
     try {
-      const response = await fetch('https://meuprojetoteste.serveo.net/api/icons/ids', {
+      const response = await fetch('https://link.tlm.net.br/api/icons/ids', {
         
       });
       if (response.ok) {
@@ -37,7 +37,7 @@ const IconEditor = () => {
   // Função para buscar um ícone por ID
   const fetchIconById = async (id) => {
     try {
-      const response = await fetch(`https://meuprojetoteste.serveo.net/api/icons/${id}`, {
+      const response = await fetch(`https://link.tlm.net.br/api/icons/${id}`, {
        
       });
       if (response.ok) {
@@ -84,7 +84,7 @@ const IconEditor = () => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`https://meuprojetoteste.serveo.net/api/icons/delete/${selectedId}`, {
+      const response = await fetch(`https://link.tlm.net.br/api/icons/delete/${selectedId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -123,7 +123,7 @@ const IconEditor = () => {
     }
 
     try {
-      const url = `https://meuprojetoteste.serveo.net/api/icons/${action === 'add' ? 'add' : 'modify'}`;
+      const url = `https://link.tlm.net.br/api/icons/${action === 'add' ? 'add' : 'modify'}`;
       const method = action === 'add' ? 'POST' : 'PUT'
 
       const response = await fetch(url, {
