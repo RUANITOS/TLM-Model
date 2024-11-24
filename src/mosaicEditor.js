@@ -162,16 +162,27 @@ function MosaicForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Obter id_implem do cookie
+      const idImplem = getCookie('id_implem');
+      if (!idImplem) {
+        addAlert('Erro: id_implem não encontrado nos cookies.', 'error');
+        return;
+      }
+  
+      // Atualizar formData com id_implem
+      const updatedFormData = { ...formData, id_implem: idImplem };
+  
       const response = await fetch('https://meuprojetoteste.serveo.net/api/mosaics/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(updatedFormData),
       });
+  
       if (response.ok) {
         addAlert('Mosaico adicionado com sucesso!', 'success');
+        console.log(updatedFormData)
       } else {
         throw new Error('Erro ao adicionar mosaico');
       }
@@ -188,14 +199,24 @@ function MosaicForm() {
       return;
     }
     try {
+      // Obter id_implem do cookie
+      const idImplem = getCookie('id_implem');
+      if (!idImplem) {
+        addAlert('Erro: id_implem não encontrado nos cookies.', 'error');
+        return;
+      }
+  
+      // Atualizar formData com id_implem
+      const updatedFormData = { ...formData, id_implem: idImplem };
+  
       const response = await fetch(`https://meuprojetoteste.serveo.net/api/mosaics/modify/${mosaicId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(updatedFormData),
       });
+  
       if (response.ok) {
         addAlert('Mosaico modificado com sucesso!', 'success');
       } else {
@@ -206,7 +227,6 @@ function MosaicForm() {
       addAlert('Erro ao modificar mosaico.', 'error');
     }
   };
-
   const handleDelete = async (e) => {
     e.preventDefault();
     if (!mosaicId) {

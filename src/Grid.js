@@ -237,6 +237,13 @@ const Grid = () => {
       navigate('/TLM-Producao/MosaicEditor');
     }
   };
+  const handleLogout = () => {
+    // Limpa o lastLogin do localStorage
+    localStorage.removeItem("lastLogin");
+    // Redireciona para a tela de login
+    window.location.href = "/";
+  };
+
   const updateMosaicInDatabase = async (mosaicData) => {
     try {
       const response = await fetch(`https://meuprojetoteste.serveo.net/api/mosaics/modify-position/${mosaicData.id}`, {
@@ -316,6 +323,7 @@ const Grid = () => {
     })
   ).flat();
   return (
+    
     <div className="grid-container">
       <div className="menu-icon" onClick={toggleMenuVisibility}>
         <span>✏️</span> {/* Ícone de interrogação */}
@@ -329,6 +337,9 @@ const Grid = () => {
         </button>
         <Link to="/TLM-Producao/MosaicEditor">
           <button id="teste3" className="icon-editor-button">Editor de Mosaicos</button>
+        </Link>
+        <Link to="/TLM-Producao/Editor">
+          <button id="teste3" className="icon-editor-button">Editor de Icones</button>
         </Link>
       </div>
       {squares}
