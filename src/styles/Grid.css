@@ -285,8 +285,25 @@
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 1000000000000000;
 }
-
+.additional-div{
+  z-index: 100000000000000000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  text-align: center;
+}
 #teste31 {
-  z-index: 100000000000000;
-  left: 10px;
+  background: #202959;
+  border: none;
+  color: #ffffff;
+  font-size: 14px;
+  width: 110%;
+  height: 40px;
+  line-height: 40px;
+  padding: 10;
+  margin-left: -5px;
+  border-radius: 25px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
 }

@@ -69,9 +69,12 @@ const Login = ({ onLogin }) => {
           >
             <option value="0">Implementação 0</option>
             <option value="1">Implementação 1</option>
+            <option value="2">Implementação 2</option>
+            <option value="3">Implementação 3</option>
+            <option value="4">Implementação 4</option>
           </select>
         </div>
-        {error && <p className="error">{error}</p>}
+        {error && <p className="error">{error}</p>} 
         <button type="submit" className="login-button">
           Entrar
         </button>

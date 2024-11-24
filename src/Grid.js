@@ -7,7 +7,6 @@ import './styles/Grid.css';
 const Grid = () => {
   const rows = 15;
   const cols = 30;
-
   const [displayIcons, setDisplayIcons] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idImplem, setIdImplem] = useState(null); // Novo estado para armazenar o id_implem
@@ -23,7 +22,6 @@ const Grid = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false); // Controle de visibilidade do menu
   const navigate = useNavigate();
   const { addAlert } = useAlertas();
-
   const toggleMenuVisibility = () => {
     setIsMenuVisible(!isMenuVisible); // Alterna entre mostrar e esconder
   };
@@ -38,7 +36,6 @@ const Grid = () => {
       // Obter ícones correspondentes
       const combinedData = await Promise.all(filteredMosaics.map(async (mosaic) => {
         const iconResponse = await fetch(`https://meuprojetoteste.serveo.net/api/icons/${mosaic.id_icone}`, {
-
         });
         const iconData = await iconResponse.json();
         if (iconData.src && iconData.src.data) {
@@ -48,7 +45,6 @@ const Grid = () => {
         }
         return null;
       }));
-
       // Atualizar estado com mosaicos filtrados e ícones associados
       setDisplayIcons(combinedData.filter(item => item !== null));
     } catch (error) {
@@ -65,7 +61,6 @@ const Grid = () => {
       console.log('Cookie id_implem2:', storedIdImplem);
     }
   }, [idImplem]);
-
   useEffect(() => {
     //localStorage.clear();
     //clearCookies();
@@ -76,10 +71,8 @@ const Grid = () => {
     document.cookie = 'mosaic_data=; path=/; max-age=0';
     document.cookie = 'position_row=; path=/; max-age=0';
     document.cookie = 'position_col=; path=/; max-age=0';
-
     // Se você quiser limpar todos os cookies
     const cookies = document.cookie.split(";");
-
     cookies.forEach(cookie => {
       const cookieName = cookie.split("=")[0].trim();
       document.cookie = `${cookieName}=; path=/; max-age=0`; // Expira o cookie
@@ -105,7 +98,6 @@ const Grid = () => {
       addAlert('Erro ao buscar dados do mosaico', 'error')
     }
   };
-
   const modifyMosaicPosition = async (id, newRow, newCol) => {
     try {
       const response = await fetch(`https://meuprojetoteste.serveo.net/api/mosaics/modify/${id}`, {
@@ -125,27 +117,22 @@ const Grid = () => {
   };
   useEffect(() => {
     fetchIconsAndMosaics();
-
     const positionRow = getCookie('position_row');
     const positionCol = getCookie('position_col');
-
     if (positionRow && positionCol) {
       fetchMosaicByPosition(positionRow, positionCol);
     }
   }, []);
-
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
     return null;
   };
-
   const handleIconClick = (origemConteudo, descricaoCompleta, conteudoEfetivo) => {
     console.log("Origem Conteúdo:", origemConteudo);
     console.log("Descrição Completa:", descricaoCompleta);
     console.log("Conteúdo Efetivo:", conteudoEfetivo);
-
     if (conteudoEfetivo === 0) {
       // Modal de iframe
       setIframeSrc(origemConteudo);
@@ -157,7 +144,6 @@ const Grid = () => {
       setIsTextModalOpen(true); // Abre o modal de texto
     }
   };
-
   const closeModal = () => {
     setIsModalOpen(false);
     setIframeSrc('');
@@ -166,17 +152,14 @@ const Grid = () => {
     setIsTextModalOpen(false);
     setTextModalContent('');
   };
-
   const togglePositionSelector = () => {
     setIsPositionSelectorActive(!isPositionSelectorActive);
     setHoveredPosition(null);
   };
-
   const toggleDataFetch = () => {
     setIsDataFetchActive(!isDataFetchActive);
     setHoveredPosition(null);
   };
-
   const handleMouseOver = (row, col) => {
     if (isPositionSelectorActive || isDataFetchActive) {
       setHoveredPosition({ row, col });
@@ -186,7 +169,6 @@ const Grid = () => {
     if (isDataFetchActive) {
       fetchMosaicByPosition(row, col);
       setIsDataFetchActive(false); // Desativa o modo "Pegar Dados" após a busca
-
     } else if (isPositionSelectorActive) {
       copyPositionToCookiesAndNavigate(row, col);
     } else if (selectedMosaicData) {
@@ -197,7 +179,6 @@ const Grid = () => {
       setSelectedMosaicData(null); // Limpa os dados do mosaico selecionado
     }
   };
-
   const fallbackCopyTextToClipboard = (text) => {
     const textArea = document.createElement('textarea');
     textArea.value = text;
@@ -213,13 +194,10 @@ const Grid = () => {
     }
     document.body.removeChild(textArea);
   };
-
   const copyPositionToCookiesAndNavigate = (row, col) => {
     document.cookie = `position_row=${row}; path=/; max-age=${60 * 60 * 24 * 7}`;
     document.cookie = `position_col=${col}; path=/; max-age=${60 * 60 * 24 * 7}`;
-
     const positionText = `Linha ${row}, Coluna ${col}`;
-
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(positionText)
         .then(() => {
@@ -237,13 +215,6 @@ const Grid = () => {
       navigate('/TLM-Producao/MosaicEditor');
     }
   };
-  const handleLogout = () => {
-    // Limpa o lastLogin do localStorage
-    localStorage.removeItem("lastLogin");
-    // Redireciona para a tela de login
-    window.location.href = "/";
-  };
-
   const updateMosaicInDatabase = async (mosaicData) => {
     try {
       const response = await fetch(`https://meuprojetoteste.serveo.net/api/mosaics/modify-position/${mosaicData.id}`, {
@@ -266,7 +237,6 @@ const Grid = () => {
       addAlert('Erro ao enviar atualização da posição do mosaico', 'error');
     }
   };
-
   const renderIcon = (icon) => (
     <div
       className="icon-container"
@@ -302,13 +272,16 @@ const Grid = () => {
       )}
     </div>
   );
-
-
+  const handleLogout = () => {
+    // Limpa o lastLogin do localStorage
+    localStorage.removeItem("lastLogin");
+    // Redireciona para a tela de login
+    window.location.href = "/";
+  };
   const squares = Array.from({ length: rows }, (_, row) =>
     Array.from({ length: cols }, (_, col) => {
       const id = `square-${col + 1}-${row + 1}`;
       const iconInSquare = displayIcons.find(icon => icon.posicao_linha === row + 1 && icon.posicao_coluna === col + 1);
-
       return (
         <div
           key={id}
@@ -323,7 +296,6 @@ const Grid = () => {
     })
   ).flat();
   return (
-    
     <div className="grid-container">
       <div className="menu-icon" onClick={toggleMenuVisibility}>
         <span>✏️</span> {/* Ícone de interrogação */}
@@ -343,6 +315,11 @@ const Grid = () => {
         </Link>
       </div>
       {squares}
+      {/* Div que você pediu para colocar */}
+      <div className="additional-div">
+        {/* Aqui você pode adicionar qualquer conteúdo que deseje na nova div */}
+        <button id='teste31' onClick={handleLogout}>Voltar</button>
+      </div>
       {isModalOpen && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -362,10 +339,8 @@ const Grid = () => {
         <TextModal title={textModalTitle} textContent={textModalContent} onClose={closeTextModal} />
       )}
     </div>
-
   );
 };
-
 const TextModal = ({ title, textContent, onClose }) => (
   <div className="modal-overlay" onClick={onClose}>
     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -375,5 +350,4 @@ const TextModal = ({ title, textContent, onClose }) => (
     </div>
   </div>
 );
-
 export default Grid;
