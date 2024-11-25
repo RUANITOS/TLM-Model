@@ -20,6 +20,7 @@ const Grid = () => {
   const [textModalContent, setTextModalContent] = useState('');
   const [textModalTitle, setTextModalTitle] = useState(''); // Adicionado para o título do modal
   const [isMenuVisible, setIsMenuVisible] = useState(false); // Controle de visibilidade do menu
+  const [reposicionando, setReposicionando] = useState(false);
   const navigate = useNavigate();
   const { addAlert } = useAlertas();
   const toggleMenuVisibility = () => {
@@ -133,7 +134,11 @@ const Grid = () => {
     console.log("Origem Conteúdo:", origemConteudo);
     console.log("Descrição Completa:", descricaoCompleta);
     console.log("Conteúdo Efetivo:", conteudoEfetivo);
-    if (conteudoEfetivo === 0) {
+    if (reposicionando) {
+      // Não faça nada se estiver no modo de reposicionamento
+      return;
+    }
+    else if (conteudoEfetivo === 0) {
       // Modal de iframe
       setIframeSrc(origemConteudo);
       setIsModalOpen(true);
@@ -158,8 +163,13 @@ const Grid = () => {
   };
   const toggleDataFetch = () => {
     setIsDataFetchActive(!isDataFetchActive);
+    setReposicionando(false);
     setHoveredPosition(null);
+    console.log("Reposicionando")
   };
+  useEffect(() => {
+    console.log("Modo reposicionamento:", reposicionando);
+  }, [reposicionando]);
   const handleMouseOver = (row, col) => {
     if (isPositionSelectorActive || isDataFetchActive) {
       setHoveredPosition({ row, col });
@@ -169,6 +179,7 @@ const Grid = () => {
     if (isDataFetchActive) {
       fetchMosaicByPosition(row, col);
       setIsDataFetchActive(false); // Desativa o modo "Pegar Dados" após a busca
+      setReposicionando(true);
     } else if (isPositionSelectorActive) {
       copyPositionToCookiesAndNavigate(row, col);
     } else if (selectedMosaicData) {
@@ -176,6 +187,7 @@ const Grid = () => {
       const updatedData = { ...selectedMosaicData, posicao_linha: row, posicao_coluna: col };
       localStorage.setItem('mosaicData', JSON.stringify(updatedData)); // Atualiza no localStorage
       updateMosaicInDatabase(updatedData); // Atualiza no banco de dados
+
       setSelectedMosaicData(null); // Limpa os dados do mosaico selecionado
     }
   };
@@ -227,7 +239,9 @@ const Grid = () => {
       });
       if (response.ok) {
         addAlert('Posição do mosaico atualizada com sucesso no banco de dados!', 'success');
-        console.log('Posição do mosaico atualizada no banco de dados:', mosaicData);
+        // Recarrega a página
+        window.location.reload();
+        addAlert('Posição do mosaico atualizada com sucesso no banco de dados!', 'success');
       } else {
         console.error('Erro ao atualizar posição do mosaico no banco de dados');
         addAlert('Erro ao atualizar posição do mosaico no banco de dados', 'error');
@@ -248,14 +262,14 @@ const Grid = () => {
           src={icon.src} // Usa o ícone associado ao mosaico
           alt={icon.titulo_celula}
           className="icon"
-          onClick={() => handleIconClick(icon.origem_conteudo, '', 0)} // Abre modal para conteúdo efetivo 0
+          onClick={reposicionando ? null : () => handleIconClick(icon.origem_conteudo, '', 0)} // Desativa o clique em reposicionamento
         />
       ) : icon.conteudo_efetivo === 2 ? ( // Verifica se o ícone é de texto
         <img
           src={icon.src} // Exibe o ícone normalmente
           alt={icon.titulo_celula}
           className="icon"
-          onClick={() => handleIconClick(icon.origem_conteudo, icon.descricao_completa, 2)} // Passa descricao_completa para o conteúdo de texto
+          onClick={reposicionando ? null : () => handleIconClick(icon.origem_conteudo, icon.descricao_completa, 2)} // Passa descricao_completa para o conteúdo de texto
         />
       ) : (
         <img
@@ -299,12 +313,21 @@ const Grid = () => {
     <div className="grid-container">
       <div className="menu-icon" onClick={toggleMenuVisibility}>
         <span>✏️</span> {/* Ícone de interrogação */}
+        </div>
+        <div className="menu-icon2"onClick={handleLogout}x>
+        <span>❌</span> {/* Ícone de X */}
       </div>
       <div className={`button-container ${isMenuVisible ? 'visible' : 'hidden'}`}>
         <button id="teste" className="editar-mosaico" onClick={() => setIsPositionSelectorActive(!isPositionSelectorActive)}>
           {isPositionSelectorActive ? 'Desativar Seleção de Posição' : 'Selecionar Posição'}
         </button>
-        <button id="teste2" onClick={() => setIsDataFetchActive(!isDataFetchActive)}>
+        <button
+          id="teste2"
+          onClick={() => {
+            setIsDataFetchActive(!isDataFetchActive); // Alterna o estado de isDataFetchActive
+            setReposicionando((prev) => !prev);      // Alterna o estado de reposicionando
+          }}
+        >
           {isDataFetchActive ? 'Cancelar' : 'Reposicionar Mosaico'}
         </button>
         <Link to="/TLM-Producao/MosaicEditor">
@@ -318,7 +341,7 @@ const Grid = () => {
       {/* Div que você pediu para colocar */}
       <div className="additional-div">
         {/* Aqui você pode adicionar qualquer conteúdo que deseje na nova div */}
-        <button id='teste31' onClick={handleLogout}>Voltar</button>
+        {/*<button id='teste31' onClick={handleLogout}>Voltar</button>*/}
       </div>
       {isModalOpen && (
         <div className="modal-overlay" onClick={closeModal}>

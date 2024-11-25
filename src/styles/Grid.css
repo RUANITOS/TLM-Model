@@ -132,7 +132,7 @@
   transform: translateY(-20px);
   pointer-events: none;
   /* Evita cliques quando oculto */
-  position: absolute;
+  position: fixed;
   top: 60px;
   right: 10px;
   transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
@@ -258,6 +258,7 @@
   pointer-events: auto;
   /* Permite cliques quando visível */
   cursor: pointer;
+  position: fixed;
 }
 
 .button-container.hidden {
@@ -269,9 +270,26 @@
 }
 
 .menu-icon {
-  position: absolute;
+  position: fixed;
   top: 10px;
   right: 10px;
+  cursor: pointer;
+  font-size: 24px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000000000000000;
+}
+.menu-icon2 {
+  position: fixed;
+  top: 10px;
+  right: 60px;
   cursor: pointer;
   font-size: 24px;
   background-color: #ffffff;

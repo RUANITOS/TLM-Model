@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './styles/Login.css';
 
@@ -6,8 +6,29 @@ const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [implementation, setImplementation] = useState('0'); // Estado para a implementação selecionada
+  const [implementations, setImplementations] = useState([]); // Estado para a lista de implementações
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  // Fetch para buscar implementações do backend
+  useEffect(() => {
+    const fetchImplementations = async () => {
+      try {
+        const response = await fetch('https://link.tlm.net.br/api/implementations/namesandids/3');
+        const data = await response.json();
+
+        if (response.ok) {
+          setImplementations(data); // Supondo que o backend retorna um array de implementações
+        } else {
+          console.error('Erro ao buscar implementações:', data.message);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar implementações:', error);
+      }
+    };
+
+    fetchImplementations();
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -67,11 +88,11 @@ const Login = ({ onLogin }) => {
             value={implementation}
             onChange={(e) => setImplementation(e.target.value)}
           >
-            <option value="0">Implementação 0</option>
-            <option value="1">Implementação 1</option>
-            <option value="2">Implementação 2</option>
-            <option value="3">Implementação 3</option>
-            <option value="4">Implementação 4</option>
+            {implementations.map((imp) => (
+              <option key={imp.id_implem} value={imp.id_implem}>
+                {imp.nome_implementacao}
+              </option>
+            ))}
           </select>
         </div>
         {error && <p className="error">{error}</p>} 
