@@ -2,44 +2,25 @@ import React, { useState, useEffect } from 'react';
 import './styles/Editor.css';
 import './styles/Login.css';
 import Header from './components/Header';
+import { Link } from 'react-router-dom';
+import { useAlertas } from './contexts/AlertasContext'; // Importa o contexto de alertas
 
 const IconEditor = () => {
   const [formData, setFormData] = useState({
     id: '',
     src: null,
     descricao: '',
-    id_implementacao: '', // novo campo para id_implementacao
+    id_implementacao: '',
   });
-  const [iconIds, setIconIds] = useState([]);
-  const [selectedId, setSelectedId] = useState('');
-  const [action, setAction] = useState('add');
   const [imagePreview, setImagePreview] = useState(null);
   const [creationDate, setCreationDate] = useState(null);
   const [modificationDate, setModificationDate] = useState(null);
+  const [isNewIcon, setIsNewIcon] = useState(false); // Para determinar se o ID não existe no banco
+  const { addAlert } = useAlertas();
 
-  // Função para buscar os IDs de ícones
-  const fetchIconIds = async () => {
-    try {
-      const response = await fetch('https://link.tlm.net.br/api/icons/ids', {
-        
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setIconIds(data);
-      } else {
-        console.error('Erro ao buscar IDs de ícones');
-      }
-    } catch (error) {
-      console.error('Erro ao conectar com o backend:', error);
-    }
-  };
-
-  // Função para buscar um ícone por ID
   const fetchIconById = async (id) => {
     try {
-      const response = await fetch(`https://link.tlm.net.br/api/icons/${id}`, {
-       
-      });
+      const response = await fetch(`https://link.tlm.net.br/api/icons/${id}`);
       if (response.ok) {
         const { src, descricao, id_implementacao, dt_criacao, dt_modificacao } = await response.json();
 
@@ -51,7 +32,14 @@ const IconEditor = () => {
 
         setCreationDate(dt_criacao);
         setModificationDate(dt_modificacao);
-        setFormData({ descricao, id_implementacao });
+        setFormData({ id, descricao, id_implementacao, src: null });
+        setIsNewIcon(false); // ID encontrado
+      } else if (response.status === 404) {
+        setIsNewIcon(true); // ID não encontrado
+        setImagePreview(null);
+        setFormData({ id, descricao: '', id_implementacao: '', src: null });
+        setCreationDate(null);
+        setModificationDate(null);
       } else {
         console.error('Erro ao buscar o ícone:', response.statusText);
       }
@@ -59,10 +47,28 @@ const IconEditor = () => {
       console.error('Erro ao conectar com o backend:', error);
     }
   };
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`https://link.tlm.net.br/api/icons/delete/${formData.id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      });
 
-  useEffect(() => {
-    fetchIconIds();
-  }, []);
+      if (response.ok) {
+        addAlert('Ícone deletado com sucesso!', 'success');
+        setImagePreview(null);
+        setFormData({ id: '', src: null, descricao: '', id_implementacao: '' });
+        setCreationDate(null);
+        setModificationDate(null);
+        setIsNewIcon(false);
+      } else {
+        const error = await response.text();
+        console.error('Erro ao deletar o ícone:', error);
+      }
+    } catch (error) {
+      console.error('Erro ao conectar com o backend:', error);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, type, value } = e.target;
@@ -73,71 +79,35 @@ const IconEditor = () => {
     }
   };
 
-  const handleActionChange = (e) => {
-    setAction(e.target.value);
-    setSelectedId('');
-    setImagePreview(null);
-    setFormData({ id: '', src: null, descricao: '', id_implementacao: '' });
-    setCreationDate(null);
-    setModificationDate(null);
-  };
-
-  const handleDelete = async () => {
-    try {
-      const response = await fetch(`https://link.tlm.net.br/api/icons/delete/${selectedId}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      if (response.ok) {
-        alert('Ícone deletado com sucesso!');
-        fetchIconIds();
-        setImagePreview(null);
-        setFormData({ id: '', src: null, descricao: '', id_implementacao: '' });
-        setSelectedId('');
-      } else {
-        const error = await response.text();
-        console.error('Erro ao deletar o ícone:', error);
-      }
-    } catch (error) {
-      console.error('Erro ao conectar com o backend:', error);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formDataToSend = new FormData();
 
-    if (action === 'add') {
-      formDataToSend.append('icon_id', formData.id);
-      formDataToSend.append('src', formData.src);
-      formDataToSend.append('descricao', formData.descricao);
-      formDataToSend.append('id_implementacao', formData.id_implementacao);
+    formDataToSend.append('icon_id', formData.id);
+    formDataToSend.append('src', formData.src);
+    formDataToSend.append('descricao', formData.descricao);
+    formDataToSend.append('id_implementacao', formData.id_implementacao);
+
+    if (isNewIcon) {
       formDataToSend.append('dt_criacao', new Date().toISOString());
-    } else if (action === 'modify') {
-      formDataToSend.append('icon_id', selectedId);
-      formDataToSend.append('src', formData.src);
-      formDataToSend.append('descricao', formData.descricao);
-      formDataToSend.append('id_implementacao', formData.id_implementacao);
+    } else {
       formDataToSend.append('dt_modificacao', new Date().toISOString());
     }
 
     try {
-      const url = `https://link.tlm.net.br/api/icons/${action === 'add' ? 'add' : 'modify'}`;
-      const method = action === 'add' ? 'POST' : 'PUT'
+      const url = `https://link.tlm.net.br/api/icons/${isNewIcon ? 'add' : 'modify'}`;
+      const method = isNewIcon ? 'POST' : 'PUT';
 
       const response = await fetch(url, {
         method,
         body: formDataToSend,
-        
       });
 
       if (response.ok) {
-        alert(`Ícone ${action === 'add' ? 'adicionado' : 'modificado'} com sucesso!`);
-        fetchIconIds();
+        addAlert(`Ícone ${isNewIcon ? 'adicionado' : 'modificado'} com sucesso!`, 'success');
         setImagePreview(null);
         setFormData({ id: '', src: null, descricao: '', id_implementacao: '' });
-        setSelectedId('');
+        setIsNewIcon(false);
       } else {
         const error = await response.text();
         console.error('Erro ao enviar os dados:', error);
@@ -150,151 +120,108 @@ const IconEditor = () => {
   return (
     <div className="icon-editor-container">
       <Header />
-      <div className='icon-editor-label-title'>
-        <h2 className="icon-editor-title">Editor de ícones</h2>
-      </div>
+      <h2 className="icon-editor-title">Editor de Ícones</h2>
       <form className="icon-editor-form" onSubmit={handleSubmit}>
-        {action === 'add' && (
-          <>
-              <select className='select' onChange={handleActionChange} value={action}>
-                <option value="add">Adicionar Ícone</option>
-                <option value="modify">Modificar Ícone</option>
-              </select>
-            <div className="form-group">
-              <label className="icon-editor-label">ID do Ícone:</label>
-              <input
-                type="text"
-                name="id"
-                value={formData.id}
-                onChange={handleChange}
-                placeholder="Digite o ID do ícone"
-                className="icon-editor-input"
-                required
-              />
-            </div>
+        <div className="form-group">
+          <label className="icon-editor-label">ID do Ícone:</label>
+          <input
+            type="number"
+            maxLength="3"
+            value={formData.id}
+            onChange={(e) => {
+              const newId = e.target.value;
+              setFormData((prev) => ({ ...prev, id: newId }));
+              if (newId.length > 0) fetchIconById(newId);
+            }}
+            placeholder="Digite o ID do ícone"
+            className="icon-editor-input"
+            required
+          />
+        </div>
 
-            <div className="form-group">
-              <label className="icon-editor-label">Descrição:</label>
-              <input
-                type="text"
-                name="descricao"
-                value={formData.descricao}
-                onChange={handleChange}
-                placeholder="Digite a descrição do ícone"
-                className="icon-editor-input"
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="icon-editor-label">Carregar Imagem:</label>
-              <input
-                type="file"
-                name="src"
-                onChange={handleChange}
-                accept="image/*"
-                className="icon-editor-input-file"
-                required
-              />
-            </div>
-            <button type="submit" className="icon-editor-button-salvar">Salvar</button>
-          </>
+        {imagePreview && !isNewIcon && (
+          <div className="view-icon">
+            <label className="icon-editor-label-imagem">Imagem Preview:</label>
+            <img src={imagePreview} alt="Imagem preview" className="icon-editor-img-preview" />
+          </div>
         )}
 
-        {action === 'modify' && (
-          <>
-              <select className='select' onChange={handleActionChange} value={action}>
-                <option value="add">Adicionar Ícone</option>
-                <option value="modify">Modificar Ícone</option>
-              </select>
-            <div className="form-group">
-            <label className="icon-editor-label">ID da Implementação:</label>
+        {creationDate && (
+          <div className="form-group">
+            <label className="icon-editor-label">Data de Criação:</label>
             <input
               type="text"
-              name="id_implementacao"
-              value={formData.id_implementacao}
-              onChange={handleChange}
-              placeholder="Digite o ID de implementação"
+              value={new Date(creationDate).toLocaleString()}
+              readOnly
               className="icon-editor-input"
-              required
             />
-            </div>
-            <div className="form-group">
-              <label className="icon-editor-label">ID do Ícone:</label>
-              <input
-                type="number"
-                maxLength="3"
-                value={selectedId}
-                onChange={(e) => {
-                  setSelectedId(e.target.value);
-                  if (e.target.value.length <= 3) {
-                    fetchIconById(e.target.value);
-                  }
-                }}
-                placeholder="Digite o ID do ícone"
-                className="icon-editor-input"
-                required
-              />
-            </div>
-              {imagePreview && (
-                  <div className="view-icon">
-                    <label className="icon-editor-label-imagem">Imagem Preview:</label>
-                    <img src={imagePreview} alt="Imagem preview" className="icon-editor-img-preview" />
-                  </div>
-                )}
-
-              {creationDate && (
-                <div className="form-group">
-                  <label className="icon-editor-label">Data de Criação:</label>
-                  <input
-                    type="text"
-                    value={new Date(creationDate).toLocaleString()}
-                    readOnly
-                    className="icon-editor-input"
-                  />
-                </div>
-              )}
-
-              {modificationDate && (
-                <div className="form-group">
-                  <label className="icon-editor-label">Última Modificação:</label>
-                  <input
-                    type="text"
-                    value={new Date(modificationDate).toLocaleString()}
-                    readOnly
-                    className="icon-editor-input"
-                  />
-                </div>
-              )}
-
-              <div className="form-group">
-                <label className="icon-editor-label">Descrição:</label>
-                <input
-                  type="text"
-                  name="descricao"
-                  value={formData.descricao}
-                  onChange={handleChange}
-                  placeholder="Digite a descrição do ícone"
-                  className="icon-editor-input"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label className="icon-editor-label">Novo Ícone:</label>
-                <input
-                  type="file"
-                  name="src"
-                  onChange={handleChange}
-                  accept="image/*"
-                  className="icon-editor-input-file"
-                />
-              </div>
-            <div>
-              <button type="submit" className="icon-editor-button-atualizar">Atualizar</button>
-              <button type="button" onClick={handleDelete} className="icon-editor-button-deletar">Deletar</button>
-            </div>
-          </>
+          </div>
         )}
+
+        {modificationDate && (
+          <div className="form-group">
+            <label className="icon-editor-label">Última Modificação:</label>
+            <input
+              type="text"
+              value={new Date(modificationDate).toLocaleString()}
+              readOnly
+              className="icon-editor-input"
+            />
+          </div>
+        )}
+
+        <div className="form-group">
+          <label className="icon-editor-label">Descrição:</label>
+          <input
+            type="text"
+            name="descricao"
+            value={formData.descricao}
+            onChange={handleChange}
+            placeholder="Digite a descrição do ícone"
+            className="icon-editor-input"
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label className="icon-editor-label">Carregar Imagem:</label>
+          <input
+            type="file"
+            name="src"
+            onChange={handleChange}
+            accept="image/*"
+            className="icon-editor-input-file"
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label className="icon-editor-label">ID de Implementação:</label>
+          <input
+            type="text"
+            name="id_implementacao"
+            value={formData.id_implementacao}
+            onChange={handleChange}
+            placeholder="Digite o ID de implementação"
+            className="icon-editor-input"
+            required
+          />
+        </div>
+
+        <button type="submit" className="icon-editor-button-atualizar">
+          {isNewIcon ? 'Salvar' : 'Atualizar'}
+        </button>
+        {!isNewIcon && (
+          <button
+            type="button"
+            className="icon-editor-button-deletar"
+            onClick={handleDelete}
+            id='botao-deletar'
+          >
+            Deletar
+          </button>
+        )}
+        <Link to="/" className="voltar-mosaic">Voltar</Link>
       </form>
     </div>
   );

@@ -118,11 +118,6 @@ const Grid = () => {
   };
   useEffect(() => {
     fetchIconsAndMosaics();
-    const positionRow = getCookie('position_row');
-    const positionCol = getCookie('position_col');
-    if (positionRow && positionCol) {
-      fetchMosaicByPosition(positionRow, positionCol);
-    }
   }, []);
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -210,10 +205,9 @@ const Grid = () => {
     document.cookie = `position_row=${row}; path=/; max-age=${60 * 60 * 24 * 7}`;
     document.cookie = `position_col=${col}; path=/; max-age=${60 * 60 * 24 * 7}`;
     const positionText = `Linha ${row}, Coluna ${col}`;
-    if (navigator.clipboard && navigator.clipboard.writeText) {
+    if (navigator.clipboard ) {
       navigator.clipboard.writeText(positionText)
         .then(() => {
-          console.log('Texto copiado para a área de transferência!');
           fetchMosaicByPosition(row, col);
           navigate('/TLM-Producao/MosaicEditor');
         })
@@ -244,7 +238,6 @@ const Grid = () => {
         addAlert('Posição do mosaico atualizada com sucesso no banco de dados!', 'success');
       } else {
         console.error('Erro ao atualizar posição do mosaico no banco de dados');
-        addAlert('Erro ao atualizar posição do mosaico no banco de dados', 'error');
       }
     } catch (error) {
       console.error('Erro ao enviar atualização da posição do mosaico:', error);
@@ -318,6 +311,7 @@ const Grid = () => {
         <span>❌</span> {/* Ícone de X */}
       </div>
       <div className={`button-container ${isMenuVisible ? 'visible' : 'hidden'}`}>
+        <h4>Modo de edição</h4>
         <button id="teste" className="editar-mosaico" onClick={() => setIsPositionSelectorActive(!isPositionSelectorActive)}>
           {isPositionSelectorActive ? 'Desativar Seleção de Posição' : 'Selecionar Posição'}
         </button>
