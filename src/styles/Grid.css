@@ -5,6 +5,9 @@
   position: relative;
   height: 100vh;
   width: 100vw;
+  overflow: hidden;
+  transform: translate(calc(-100% * var(--offset-x)), calc(-100% * var(--offset-y)));
+  transition: transform 0.5s ease;
 }
 
 .grid-container::before {
@@ -324,4 +327,41 @@
   border-radius: 25px;
   transition: background-color 0.3s ease;
   cursor: pointer;
+}
+#teste4 {
+  background: #202959;
+  border: none;
+  color: #ffffff;
+  font-size: 14px;
+  width: 110%;
+  height: 40px;
+  line-height: 40px;
+  padding: 0;
+  margin-left: -5px;
+  border-radius: 25px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+.position-inputs {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.position-inputs input {
+  width: 50px;
+  padding: 5px;
+}
+
+.position-inputs button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.selected-square {
+  border: 2px solid red; /* Mude para o estilo desejado */
+}
+.current-position {
+  margin-top: 0px;
+  font-size: 14px;
+  font-weight: bold;
 }

@@ -21,10 +21,50 @@ const Grid = () => {
   const [textModalTitle, setTextModalTitle] = useState(''); // Adicionado para o título do modal
   const [isMenuVisible, setIsMenuVisible] = useState(false); // Controle de visibilidade do menu
   const [reposicionando, setReposicionando] = useState(false);
+  const [newPositionX, setNewPositionX] = useState(''); // Armazena a posição X
+  const [newPositionY, setNewPositionY] = useState(''); // Armazena a posição Y
+
+  const [isNewPositionActive, setIsNewPositionActive] = useState(false); // Controle de visibilidade das caixinhas
+  const [xValue, setXValue] = useState(1); // Valor inicial para X
+  const [yValue, setYValue] = useState(1); // Valor inicial para Y
+  // dois novos estados para acompanhar o deslocamento da matriz:
+  const [offsetX, setOffsetX] = useState(0);
+  const [offsetY, setOffsetY] = useState(0);
+  //funções que alteram o deslocamento com base na entrada:
+  const handleMatrixMovement = () => {
+    setOffsetX(xValue - 1); // Ajuste baseado na posição inicial 1
+    setOffsetY(yValue - 1);
+  };
+  const [confirmedPosition, setConfirmedPosition] = useState({ x: xValue, y: yValue });
+  const handlePositionConfirmation = () => {
+    setConfirmedPosition({ x: xValue, y: yValue });
+    handleNewPosition();
+    handleMatrixMovement();
+  };
   const navigate = useNavigate();
   const { addAlert } = useAlertas();
   const toggleMenuVisibility = () => {
     setIsMenuVisible(!isMenuVisible); // Alterna entre mostrar e esconder
+  };
+  const handleXChange = (e) => {
+    const value = Math.max(1, Math.min(cols, Number(e.target.value))); // Limita entre 1 e 'cols'
+    setXValue(value);
+  };
+
+  const handleYChange = (e) => {
+    const value = Math.max(1, Math.min(rows, Number(e.target.value))); // Limita entre 1 e 'rows'
+    setYValue(value);
+  };
+  const handleNewPosition = () => {
+    if (newPositionX && newPositionY) {
+      const row = parseInt(newPositionY, 10);
+      const col = parseInt(newPositionX, 10);
+      if (row > 0 && row <= rows && col > 0 && col <= cols) {
+        handlePositionSelect(row, col);
+      } else {
+        addAlert('Posição inválida! Insira valores dentro do grid.', 'error');
+      }
+    }
   };
   const fetchIconsAndMosaics = async () => {
     try {
@@ -205,7 +245,7 @@ const Grid = () => {
     document.cookie = `position_row=${row}; path=/; max-age=${60 * 60 * 24 * 7}`;
     document.cookie = `position_col=${col}; path=/; max-age=${60 * 60 * 24 * 7}`;
     const positionText = `Linha ${row}, Coluna ${col}`;
-    if (navigator.clipboard ) {
+    if (navigator.clipboard) {
       navigator.clipboard.writeText(positionText)
         .then(() => {
           fetchMosaicByPosition(row, col);
@@ -287,15 +327,22 @@ const Grid = () => {
   };
   const squares = Array.from({ length: rows }, (_, row) =>
     Array.from({ length: cols }, (_, col) => {
-      const id = `square-${col + 1}-${row + 1}`;
-      const iconInSquare = displayIcons.find(icon => icon.posicao_linha === row + 1 && icon.posicao_coluna === col + 1);
+      const adjustedRow = row + 1 + offsetY;
+      const adjustedCol = col + 1 + offsetX;
+      const id = `square-${adjustedCol}-${adjustedRow}`;
+      const isSelected = xValue === adjustedCol && yValue === adjustedRow;
+
+      const iconInSquare = displayIcons.find(
+        (icon) => icon.posicao_linha === adjustedRow && icon.posicao_coluna === adjustedCol
+      );
+
       return (
         <div
           key={id}
           id={id}
-          className="square"
-          onMouseOver={() => handleMouseOver(row + 1, col + 1)}
-          onClick={() => handlePositionSelect(row + 1, col + 1)} // Passa a posição diretamente
+          className={`square ${isSelected ? "selected-square" : ""}`}
+          onMouseOver={() => handleMouseOver(adjustedRow, adjustedCol)}
+          onClick={() => handlePositionSelect(adjustedRow, adjustedCol)}
         >
           {iconInSquare ? renderIcon(iconInSquare) : null}
         </div>
@@ -306,8 +353,8 @@ const Grid = () => {
     <div className="grid-container">
       <div className="menu-icon" onClick={toggleMenuVisibility}>
         <span>✏️</span> {/* Ícone de interrogação */}
-        </div>
-        <div className="menu-icon2"onClick={handleLogout}x>
+      </div>
+      <div className="menu-icon2" onClick={handleLogout} x>
         <span>❌</span> {/* Ícone de X */}
       </div>
       <div className={`button-container ${isMenuVisible ? 'visible' : 'hidden'}`}>
@@ -330,6 +377,44 @@ const Grid = () => {
         <Link to="/TLM-Producao/Editor">
           <button id="teste3" className="icon-editor-button">Editor de Icones</button>
         </Link>
+        <button
+          id="teste4"
+          onClick={() => setIsNewPositionActive(!isNewPositionActive)}
+        >
+          {isNewPositionActive ? 'Cancelar' : 'Nova Posição'}
+        </button>
+
+        {isNewPositionActive && (
+          <div className="position-inputs">
+            <label>
+              X:
+              <input
+                type="number"
+                min="1"
+                max={cols}
+                value={xValue}
+                onChange={handleXChange}
+                placeholder="Posição X"
+              />
+            </label>
+            <label>
+              Y:
+              <input
+                type="number"
+                min="1"
+                max={rows}
+                value={yValue}
+                onChange={handleYChange}
+                placeholder="Posição Y"
+              />
+            </label>
+            <button onClick={() => { handleNewPosition(); handleMatrixMovement(); handlePositionConfirmation() }}>Ir para Posição</button>
+            {/* Exibição da posição atual */}
+            <div className="current-position">
+              <p>Posição atual: X = {confirmedPosition.x}, Y = {confirmedPosition.y}</p>
+            </div>
+          </div>
+        )}
       </div>
       {squares}
       {/* Div que você pediu para colocar */}
