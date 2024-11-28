@@ -46,15 +46,35 @@ const Grid = () => {
   const toggleMenuVisibility = () => {
     setIsMenuVisible(!isMenuVisible); // Alterna entre mostrar e esconder
   };
-  const handleXChange = (e) => {
-    const value = Math.max(1, Math.min(cols, Number(e.target.value))); // Limita entre 1 e 'cols'
-    setXValue(value);
-  };
+  const [maxX, setMaxX] = useState(0);
+  const [maxY, setMaxY] = useState(0);
+// Atualize maxX e maxY com base nos dados da API
+useEffect(() => {
+  if (idImplem) {
+    fetch(`https://link.tlm.net.br/api/implementations/${idImplem}`)
+      .then(response => response.json())
+      .then(data => {
+        const halfCols = Math.floor(data.numero_colunas / 2);
+        const halfRows = Math.floor(data.numero_linhas / 2);
 
-  const handleYChange = (e) => {
-    const value = Math.max(1, Math.min(rows, Number(e.target.value))); // Limita entre 1 e 'rows'
-    setYValue(value);
-  };
+        setMaxX(halfCols); // Maximo de X vai de -halfCols a halfCols
+        setMaxY(halfRows);  // Maximo de Y vai de -halfRows a halfRows
+      })
+      .catch(error => {
+        console.error('Erro ao buscar dados da API:', error);
+      });
+  }
+}, [idImplem]);
+
+const handleXChange = (e) => {
+  const value = Math.max(-maxX, Math.min(maxX, Number(e.target.value))); // Limita entre -maxX e maxX
+  setXValue(value);
+};
+
+const handleYChange = (e) => {
+  const value = Math.max(-maxY, Math.min(maxY, Number(e.target.value))); // Limita entre -maxY e maxY
+  setYValue(value);
+};
   const handleNewPosition = () => {
     if (newPositionX && newPositionY) {
       const row = parseInt(newPositionY, 10);
@@ -390,8 +410,8 @@ const Grid = () => {
               X:
               <input
                 type="number"
-                min="1"
-                max={cols}
+                min={-maxX}
+                max={maxX}
                 value={xValue}
                 onChange={handleXChange}
                 placeholder="Posição X"
@@ -401,8 +421,8 @@ const Grid = () => {
               Y:
               <input
                 type="number"
-                min="1"
-                max={rows}
+                min={-maxY}
+                max={maxY}
                 value={yValue}
                 onChange={handleYChange}
                 placeholder="Posição Y"
