@@ -24,6 +24,37 @@ const Grid = () => {
   const [newPositionX, setNewPositionX] = useState(''); // Armazena a posição X
   const [newPositionY, setNewPositionY] = useState(''); // Armazena a posição Y
 
+  const [isIconMenuOpen, setIsIconMenuOpen] = useState(false); // Controle de visibilidade
+  const [availableIcons, setAvailableIcons] = useState([]); // Ícones disponíveis
+  const fetchAvailableIcons = async () => {
+    try {
+      // Fazer a requisição para obter os ícones
+      const response = await fetch('https://link.tlm.net.br/api/icons');
+      const iconsData = await response.json();
+  
+      // Processar cada ícone para criar URLs Blob
+      const processedIcons = iconsData.map(icon => {
+        if (icon.src && icon.src.data) {
+          const imgBlob = new Blob([new Uint8Array(icon.src.data)], { type: 'image/png' });
+          const imgUrl = URL.createObjectURL(imgBlob);
+          return { ...icon, src: imgUrl };
+        }
+        return null;
+      });
+  
+      // Atualizar o estado com os ícones processados
+      setAvailableIcons(processedIcons.filter(icon => icon !== null));
+    } catch (error) {
+      console.error('Erro ao buscar ícones:', error);
+    }
+  };
+
+  const handleIconSelection = (icon) => {
+    console.log(`Ícone selecionado: ID: ${icon.icon_id}, Descrição: ${icon.descricao}`);
+    // Adicionar lógica de inserção no grid ou manipulação conforme necessário
+    setIsIconMenuOpen(false);
+  };
+
   const [isNewPositionActive, setIsNewPositionActive] = useState(false); // Controle de visibilidade das caixinhas
   const [xValue, setXValue] = useState(1); // Valor inicial para X
   const [yValue, setYValue] = useState(1); // Valor inicial para Y
@@ -48,33 +79,33 @@ const Grid = () => {
   };
   const [maxX, setMaxX] = useState(0);
   const [maxY, setMaxY] = useState(0);
-// Atualize maxX e maxY com base nos dados da API
-useEffect(() => {
-  if (idImplem) {
-    fetch(`https://link.tlm.net.br/api/implementations/${idImplem}`)
-      .then(response => response.json())
-      .then(data => {
-        const halfCols = Math.floor(data.numero_colunas / 2);
-        const halfRows = Math.floor(data.numero_linhas / 2);
+  // Atualize maxX e maxY com base nos dados da API
+  useEffect(() => {
+    if (idImplem) {
+      fetch(`https://link.tlm.net.br/api/implementations/${idImplem}`)
+        .then(response => response.json())
+        .then(data => {
+          const halfCols = Math.floor(data.numero_colunas / 2);
+          const halfRows = Math.floor(data.numero_linhas / 2);
 
-        setMaxX(halfCols); // Maximo de X vai de -halfCols a halfCols
-        setMaxY(halfRows);  // Maximo de Y vai de -halfRows a halfRows
-      })
-      .catch(error => {
-        console.error('Erro ao buscar dados da API:', error);
-      });
-  }
-}, [idImplem]);
+          setMaxX(halfCols); // Maximo de X vai de -halfCols a halfCols
+          setMaxY(halfRows);  // Maximo de Y vai de -halfRows a halfRows
+        })
+        .catch(error => {
+          console.error('Erro ao buscar dados da API:', error);
+        });
+    }
+  }, [idImplem]);
 
-const handleXChange = (e) => {
-  const value = Math.max(-maxX, Math.min(maxX, Number(e.target.value))); // Limita entre -maxX e maxX
-  setXValue(value);
-};
+  const handleXChange = (e) => {
+    const value = Math.max(-maxX, Math.min(maxX, Number(e.target.value))); // Limita entre -maxX e maxX
+    setXValue(value);
+  };
 
-const handleYChange = (e) => {
-  const value = Math.max(-maxY, Math.min(maxY, Number(e.target.value))); // Limita entre -maxY e maxY
-  setYValue(value);
-};
+  const handleYChange = (e) => {
+    const value = Math.max(-maxY, Math.min(maxY, Number(e.target.value))); // Limita entre -maxY e maxY
+    setYValue(value);
+  };
   const handleNewPosition = () => {
     if (newPositionX && newPositionY) {
       const row = parseInt(newPositionY, 10);
@@ -432,6 +463,26 @@ const handleYChange = (e) => {
             {/* Exibição da posição atual */}
             <div className="current-position">
               <p>Posição atual: X = {confirmedPosition.x}, Y = {confirmedPosition.y}</p>
+            </div>
+          </div>
+        )}
+        <button onClick={() => {
+          fetchAvailableIcons(); // Carregar ícones ao abrir o menu
+          setIsIconMenuOpen(!isIconMenuOpen);
+        }}>
+          {isIconMenuOpen ? 'Fechar Menu de Ícones' : 'Abrir Menu de Ícones'}
+        </button>
+        {isIconMenuOpen && (
+          <div className="icon-menu">
+            <h3>Escolha um Ícone</h3>
+            <div className="icon-list">
+              {availableIcons.map((icon) => (
+                <div key={icon.icon_id} className="icon-item" onClick={() => handleIconSelection(icon)}>
+                  <img src={icon.src} alt={icon.titulo} className="menu-icon-image" />
+                  <p>ID: {icon.icon_id}</p>
+                  <p>Descrição: {icon.descricao}</p>
+                </div>
+              ))}
             </div>
           </div>
         )}

@@ -365,3 +365,42 @@
   font-size: 14px;
   font-weight: bold;
 }
+.icon-menu {
+  position: fixed;
+  top: 0px;
+  right: 200px;
+  width: 458px;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  overflow-y: auto;
+  border-radius: 8px;
+}
+
+.icon-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.icon-item {
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 120px;
+  transition: transform 0.2s;
+}
+.icon-item:hover {
+  transform: scale(1.05);
+}
+.menu-icon-image{
+  width: 60px;
+  height: 60px;
+}
+.icon-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
