@@ -409,7 +409,7 @@ const Grid = () => {
         <span>❌</span> {/* Ícone de X */}
       </div>
       <div className={`button-container ${isMenuVisible ? 'visible' : 'hidden'}`}>
-        <h4>Modo de edição</h4>
+        <h4>Modo de Edição</h4>
         <button id="teste" className="editar-mosaico" onClick={() => setIsPositionSelectorActive(!isPositionSelectorActive)}>
           {isPositionSelectorActive ? 'Desativar Seleção de Posição' : 'Selecionar Posição'}
         </button>
@@ -466,24 +466,25 @@ const Grid = () => {
             </div>
           </div>
         )}
-        <button onClick={() => {
+        <button id="teste3" onClick={() => {
           fetchAvailableIcons(); // Carregar ícones ao abrir o menu
           setIsIconMenuOpen(!isIconMenuOpen);
         }}>
-          {isIconMenuOpen ? 'Fechar Menu de Ícones' : 'Abrir Menu de Ícones'}
+          {isIconMenuOpen ? 'Fechar visualização de Ícones' : 'Visualizar Ícones'}
         </button>
         {isIconMenuOpen && (
           <div className="icon-menu">
-            <h3>Escolha um Ícone</h3>
+            <h3>Icones Gerais</h3>
             <div className="icon-list">
               {availableIcons.map((icon) => (
                 <div key={icon.icon_id} className="icon-item" onClick={() => handleIconSelection(icon)}>
-                  <img src={icon.src} alt={icon.titulo} className="menu-icon-image" />
                   <p>ID: {icon.icon_id}</p>
-                  <p>Descrição: {icon.descricao}</p>
+                  <img src={icon.src} alt={icon.titulo} className="menu-icon-image" />
+                  <p> {icon.descricao}</p>
                 </div>
               ))}
             </div>
+            <h3>Icones Pessoais</h3>
           </div>
         )}
       </div>

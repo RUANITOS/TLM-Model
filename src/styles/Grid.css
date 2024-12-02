@@ -46,12 +46,13 @@
   /* Centraliza horizontalmente */
   transform: translateX(-50%);
   /* Ajusta para centralizar */
+  
 }
 
 .icon {
   width: 80px;
   /* Largura fixa do ícone */
-  height: auto;
+  height: 80px;
   /* Mantém a proporção da imagem */
   cursor: pointer;
   transition: transform 0.3s ease;
@@ -197,6 +198,7 @@
   border-radius: 25px;
   transition: background-color 0.3s ease;
   cursor: pointer;
+  opacity: 0.7;
 }
 
 #teste2 {
@@ -212,6 +214,7 @@
   border-radius: 25px;
   transition: background-color 0.3s ease;
   cursor: pointer;
+  opacity: 0.7;
 }
 
 #teste3 {
@@ -227,6 +230,7 @@
   border-radius: 25px;
   transition: background-color 0.3s ease;
   cursor: pointer;
+  opacity: 0.7;
 }
 
 .editar-mosaico {
@@ -257,11 +261,14 @@
 
 .button-container.visible {
   opacity: 1;
+  background-color: rgba(255, 255, 255, 0.2); /* Fundo opaco */
   transform: translateY(0);
   pointer-events: auto;
   /* Permite cliques quando visível */
   cursor: pointer;
   position: fixed;
+  border: #202959;
+  border-style: solid;
 }
 
 .button-container.hidden {
@@ -327,6 +334,7 @@
   border-radius: 25px;
   transition: background-color 0.3s ease;
   cursor: pointer;
+  opacity: 0.7;
 }
 #teste4 {
   background: #202959;
@@ -341,6 +349,7 @@
   border-radius: 25px;
   transition: background-color 0.3s ease;
   cursor: pointer;
+  opacity: 0.7;
 }
 .position-inputs {
   display: flex;
@@ -368,11 +377,13 @@
 .icon-menu {
   position: fixed;
   top: 0px;
-  right: 200px;
+  right: 105%;
   width: 458px;
   height: 100%;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.8); /* Fundo opaco */
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  border: #202959;
+  border-style: solid;
   padding: 16px;
   overflow-y: auto;
   border-radius: 8px;
