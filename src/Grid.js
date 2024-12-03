@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAlertas } from './contexts/AlertasContext'; // Importa o contexto de alertas
-
+import axios from 'axios';
 import './styles/Grid.css';
 
 const Grid = () => {
@@ -28,12 +28,24 @@ const Grid = () => {
   const [availableIcons, setAvailableIcons] = useState([]); // Ícones disponíveis
   const fetchAvailableIcons = async () => {
     try {
-      // Fazer a requisição para obter os ícones
-      const response = await fetch('https://link.tlm.net.br/api/icons');
-      const iconsData = await response.json();
-  
-      // Processar cada ícone para criar URLs Blob
-      const processedIcons = iconsData.map(icon => {
+      // Buscar Ícones Gerais (id_implem = 0)
+      const responseGerais = await fetch('https://link.tlm.net.br/api/icons/implementation/0');
+      const iconsGeraisData = await responseGerais.json();
+      // Processar Ícones Gerais
+      const processedGerais = iconsGeraisData.map(icon => {
+        if (icon.src && icon.src.data) {
+          const imgBlob = new Blob([new Uint8Array(icon.src.data)], { type: 'image/png' });
+          const imgUrl = URL.createObjectURL(imgBlob);
+
+          return { ...icon, src: imgUrl };
+        }
+        return null;
+      });
+      // Buscar Ícones Pessoais (baseado no id_implem do usuário)
+      const responsePessoais = await fetch(`https://link.tlm.net.br/api/icons/implementation/${idImplem}`);
+      const iconsPessoaisData = await responsePessoais.json();
+      // Processar Ícones Pessoais
+      const processedPessoais = iconsPessoaisData.map(icon => {
         if (icon.src && icon.src.data) {
           const imgBlob = new Blob([new Uint8Array(icon.src.data)], { type: 'image/png' });
           const imgUrl = URL.createObjectURL(imgBlob);
@@ -41,9 +53,11 @@ const Grid = () => {
         }
         return null;
       });
-  
-      // Atualizar o estado com os ícones processados
-      setAvailableIcons(processedIcons.filter(icon => icon !== null));
+      // Combinar ícones gerais e pessoais e atualizar o estado
+      setAvailableIcons([
+        ...processedGerais.filter(icon => icon !== null),
+        ...processedPessoais.filter(icon => icon !== null)
+      ]);
     } catch (error) {
       console.error('Erro ao buscar ícones:', error);
     }
@@ -473,20 +487,34 @@ const Grid = () => {
           {isIconMenuOpen ? 'Fechar visualização de Ícones' : 'Visualizar Ícones'}
         </button>
         {isIconMenuOpen && (
-          <div className="icon-menu">
-            <h3>Icones Gerais</h3>
-            <div className="icon-list">
-              {availableIcons.map((icon) => (
-                <div key={icon.icon_id} className="icon-item" onClick={() => handleIconSelection(icon)}>
-                  <p>ID: {icon.icon_id}</p>
-                  <img src={icon.src} alt={icon.titulo} className="menu-icon-image" />
-                  <p> {icon.descricao}</p>
-                </div>
-              ))}
-            </div>
-            <h3>Icones Pessoais</h3>
+  <div className="icon-menu">
+    <h4>Ícones Gerais</h4>
+    <div className="icon-list">
+      {availableIcons
+        .filter(icon => parseInt(icon.id_implementacao, 10) === 0) // Filtra ícones gerais corretamente
+        .map(icon => (
+          <div key={icon.icon_id} className="icon-item" onClick={() => handleIconSelection(icon)}>
+            <p>ID: {icon.icon_id}</p>
+            <img src={icon.src} alt={icon.titulo} className="menu-icon-image" />
+            <p>{icon.descricao}</p>
           </div>
-        )}
+        ))}
+    </div>
+    
+    <h4>Ícones da Implementação</h4>
+    <div className="icon-list">
+      {availableIcons
+        .filter(icon => parseInt(icon.id_implementacao, 10) !== 0) // Garante que apenas ícones pessoais sejam exibidos
+        .map(icon => (
+          <div key={icon.icon_id} className="icon-item" onClick={() => handleIconSelection(icon)}>
+            <p>ID: {icon.icon_id}</p>
+            <img src={icon.src} alt={icon.titulo} className="menu-icon-image" />
+            <p>{icon.descricao}</p>
+          </div>
+        ))}
+    </div>
+  </div>
+)}
       </div>
       {squares}
       {/* Div que você pediu para colocar */}
