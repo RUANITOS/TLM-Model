@@ -8,11 +8,13 @@ const Login = ({ onLogin }) => {
   const [implementation, setImplementation] = useState('0'); // Estado para a implementação selecionada
   const [implementations, setImplementations] = useState([]); // Estado para a lista de implementações
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // Estado para controle de carregamento
   const navigate = useNavigate();
 
   // Fetch para buscar implementações do backend
   useEffect(() => {
     const fetchImplementations = async () => {
+      setIsLoading(true); // Inicia o carregamento
       try {
         const response = await fetch('https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/implementations/namesandids/3');
         const data = await response.json();
@@ -24,6 +26,8 @@ const Login = ({ onLogin }) => {
         }
       } catch (error) {
         console.error('Erro ao buscar implementações:', error);
+      } finally {
+        setIsLoading(false); // Finaliza o carregamento
       }
     };
 
@@ -60,7 +64,6 @@ const Login = ({ onLogin }) => {
       <img className="logosss" src={process.env.PUBLIC_URL + '/assets/logonova.png'} alt="Logo" />
       <form onSubmit={handleLogin} className="main-div">
         <h2 className="panel h2">Identificação do usuário</h2>
-        <p className="panel p">Insira seu Usuário e senha</p>
         <div className="input-group">
           <input
             className="form-control"
@@ -83,17 +86,21 @@ const Login = ({ onLogin }) => {
         </div>
         <div className="implementacao">
           <label className="panel">Implementação</label>
-          <select
-            className="select-imp"
-            value={implementation}
-            onChange={(e) => setImplementation(e.target.value)}
-          >
-            {implementations.map((imp) => (
-              <option key={imp.id_implem} value={imp.id_implem}>
-                {imp.nome_implementacao}
-              </option>
-            ))}
-          </select>
+          {isLoading ? (
+            <p className='loading'>Carregando implementações...</p> // Exibe a mensagem de carregamento
+          ) : (
+            <select
+              className="select-imp"
+              value={implementation}
+              onChange={(e) => setImplementation(e.target.value)}
+            >
+              {implementations.map((imp) => (
+                <option key={imp.id_implem} value={imp.id_implem}>
+                  {imp.nome_implementacao}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
         {error && <p className="error">{error}</p>} 
         <button type="submit" className="login-button">
