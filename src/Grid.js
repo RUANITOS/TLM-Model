@@ -137,49 +137,55 @@ const Grid = () => {
     }
   };
   const fetchIconsAndMosaics = async () => {
-    setIsLoading(true); // Inicia o carregamento
+    setIsLoading(true); // Inicia o carregamento dos dados
+  
     try {
       // Obter mosaicos
       const mosaicsResponse = await fetch('https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/mosaics');
       const mosaicsData = await mosaicsResponse.json();
-      
+  
       // Filtrar mosaicos pelo id_implem
       const filteredMosaics = mosaicsData.filter(mosaic => mosaic.id_implem === idImplem);
-      
-      // Contabilizar o número total de requisições
-      const totalRequests = filteredMosaics.length;
-      let completedRequests = 0; // Contador de requisições concluídas
   
       // Obter ícones correspondentes
       const combinedData = await Promise.all(filteredMosaics.map(async (mosaic) => {
         const iconResponse = await fetch(`https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/icons/${mosaic.id_icone}`);
         const iconData = await iconResponse.json();
-        
+  
+        // Verifica se o ícone tem imagem
         if (iconData.src && iconData.src.data) {
           const imgBlob = new Blob([new Uint8Array(iconData.src.data)], { type: 'image/png' });
           const imgUrl = URL.createObjectURL(imgBlob);
-          
-          // Incrementar a quantidade de requisições concluídas
-          completedRequests++;
   
-          // Verificar se todas as requisições foram concluídas
-          if (completedRequests === totalRequests) {
-            setIsLoading(false); // Quando todas as requisições de ícones forem concluídas, desativar o carregamento
-          }
-  
-          return { ...mosaic, src: imgUrl };
+          return { ...mosaic, src: imgUrl, isImageLoaded: false }; // Adiciona a flag isImageLoaded
         }
-        return null;
+        return null; // Se não tiver imagem, retorna null
       }));
   
-      // Atualizar estado com mosaicos filtrados e ícones associados
+      // Filtra os dados nulos e atualiza o estado de ícones
       setDisplayIcons(combinedData.filter(item => item !== null));
-  
     } catch (error) {
       console.error('Erro ao buscar ícones e mosaicos:', error);
-      setIsLoading(false); // Garantir que o carregamento seja finalizado em caso de erro
+    } finally {
+      setIsLoading(false); // Finaliza o carregamento dos dados
     }
   };
+    
+    // Função chamada para verificar o carregamento das imagens
+    const handleImageLoad = (id) => {
+      // Atualiza o estado de cada ícone quando sua imagem é carregada
+      setDisplayIcons((prevIcons) =>
+        prevIcons.map((icon) =>
+          icon.id === id ? { ...icon, isImageLoaded: true } : icon
+        )
+      );
+    
+      // Verifica se todas as imagens foram carregadas
+      if (displayIcons.every(icon => icon.isImageLoaded)) {
+        setLoadingImages(false); // Todas as imagens foram carregadas
+      }
+    };
+
   useEffect(() => {
     // Obter id_implem do cookie ou localStorage
     const storedIdImplem = getCookie('id_implem');
@@ -394,41 +400,45 @@ const Grid = () => {
     if (isLoading) {
       return <div className="loading">Carregando...</div>; // Exibe a mensagem de carregamento enquanto os dados estão sendo carregados
     }
-  const renderIcon = (icon) => (
-    <div
-      className="icon-container"
-      onMouseEnter={() => setHoveredIconData({ id: icon.id, titulo_celula: icon.titulo_celula })} // Exibe os dados ao passar o mouse
-      onMouseLeave={() => setHoveredIconData(null)} // Limpa os dados ao sair com o mouse
-    >
-      {icon.conteudo_efetivo === 0 ? ( // Verifica se o ícone deve ser um iframe
-        <img
-          src={icon.src} // Usa o ícone associado ao mosaico
-          alt={icon.titulo_celula}
-          className="icon"
-          onClick={reposicionando ? null : () => handleIconClick(icon.origem_conteudo, '', 0)} // Desativa o clique em reposicionamento
-        />
-      ) : icon.conteudo_efetivo === 2 ? ( // Verifica se o ícone é de texto
-        <img
-          src={icon.src} // Exibe o ícone normalmente
-          alt={icon.titulo_celula}
-          className="icon"
-          onClick={reposicionando ? null : () => handleIconClick(icon.origem_conteudo, icon.descricao_completa, 2)} // Passa descricao_completa para o conteúdo de texto
-        />
-      ) : (
-        <img
-          src={icon.src}
-          alt={icon.titulo_celula}
-          className="icon"
-        />
-      )}
-      {hoveredIconData && hoveredIconData.id === icon.id && (
-        <div className="hover-text">
-          <span>ID: {hoveredIconData.id} | </span>
-          <span>{hoveredIconData.titulo_celula}</span>
-        </div>
-      )}
-    </div>
-  );
+    const renderIcon = (icon) => (
+      <div
+        className="icon-container"
+        onMouseEnter={() => setHoveredIconData({ id: icon.id, titulo_celula: icon.titulo_celula })} // Exibe os dados ao passar o mouse
+        onMouseLeave={() => setHoveredIconData(null)} // Limpa os dados ao sair com o mouse
+      >
+        {icon.conteudo_efetivo === 0 ? ( // Verifica se o ícone deve ser um iframe
+          <img
+            src={icon.src} // Usa o ícone associado ao mosaico
+            alt={icon.titulo_celula}
+            className="icon"
+            onClick={reposicionando ? null : () => handleIconClick(icon.origem_conteudo, '', 0)} // Desativa o clique em reposicionamento
+            onLoad={() => handleImageLoad(icon.id)} // Dispara a função de carregamento da imagem
+          />
+        ) : icon.conteudo_efetivo === 2 ? ( // Verifica se o ícone é de texto
+          <img
+            src={icon.src} // Exibe o ícone normalmente
+            alt={icon.titulo_celula}
+            className="icon"
+            onClick={reposicionando ? null : () => handleIconClick(icon.origem_conteudo, icon.descricao_completa, 2)} // Passa descricao_completa para o conteúdo de texto
+            onLoad={() => handleImageLoad(icon.id)} // Chama handleImageLoad quando a imagem é carregada
+          />
+        ) : (
+          <img
+            src={icon.src}
+            alt={icon.titulo_celula}
+            className="icon"
+            onLoad={() => handleImageLoad(icon.id)} // Dispara a função de carregamento da imagem
+          />
+        )}
+        {hoveredIconData && hoveredIconData.id === icon.id && (
+          <div className="hover-text">
+            <span>ID: {hoveredIconData.id} | </span>
+            <span>{hoveredIconData.titulo_celula}</span>
+          </div>
+        )}
+      </div>
+    );
+
   const handleLogout = () => {
     // Limpa o lastLogin do localStorage
     localStorage.removeItem("lastLogin");
