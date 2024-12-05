@@ -8,7 +8,7 @@ const Header = () => {
   // Função para buscar a imagem do logo com icon_id "logo"
   const fetchLogoImage = async () => {
     try {
-      const response = await fetch('https://link.tlm.net.br/api/icons/1', {
+      const response = await fetch('https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/icons/1', {
       });
       const { src, mimetype } = await response.json();
       const blob = new Blob([Uint8Array.from(src.data)], { type: mimetype });

@@ -14,7 +14,7 @@ const Login = ({ onLogin }) => {
   useEffect(() => {
     const fetchImplementations = async () => {
       try {
-        const response = await fetch('https://link.tlm.net.br/api/implementations/namesandids/3');
+        const response = await fetch('https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/implementations/namesandids/3');
         const data = await response.json();
 
         if (response.ok) {
@@ -35,7 +35,7 @@ const Login = ({ onLogin }) => {
     setError(''); // Reseta o estado de erro
   
     try {
-      const response = await fetch('https://link.tlm.net.br/api/users/login', {
+      const response = await fetch('https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),

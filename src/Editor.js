@@ -20,7 +20,7 @@ const IconEditor = () => {
 
   const fetchIconById = async (id) => {
     try {
-      const response = await fetch(`https://link.tlm.net.br/api/icons/${id}`);
+      const response = await fetch(`https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/icons/${id}`);
       if (response.ok) {
         const { src, descricao, id_implementacao, dt_criacao, dt_modificacao } = await response.json();
 
@@ -49,7 +49,7 @@ const IconEditor = () => {
   };
   const handleDelete = async () => {
     try {
-      const response = await fetch(`https://link.tlm.net.br/api/icons/delete/${formData.id}`, {
+      const response = await fetch(`https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/icons/delete/${formData.id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -95,7 +95,7 @@ const IconEditor = () => {
     }
 
     try {
-      const url = `https://link.tlm.net.br/api/icons/${isNewIcon ? 'add' : 'modify'}`;
+      const url = `https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/icons/${isNewIcon ? 'add' : 'modify'}`;
       const method = isNewIcon ? 'POST' : 'PUT';
 
       const response = await fetch(url, {
