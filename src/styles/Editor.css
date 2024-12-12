@@ -287,3 +287,39 @@ body {
   cursor: not-allowed; /* Cursor indicando que o campo não é interativo */
   border: 1px solid #ccc; /* Mantém a borda consistente */
 }
+.icon-menu2 {
+  position: fixed;
+  right: 50px;
+  top: 25%;
+  width: 458px;
+  height: 50%;
+  background-color: rgba(255, 255, 255, 0.8); /* Fundo opaco */
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  border: #202959;
+  border-style: solid;
+  padding: 16px;
+  overflow-y: auto;
+  border-radius: 8px;
+}
+
+.icon-list2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.icon-item2 {
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 54px;
+  height: 7%;
+  transition: transform 0.2s;
+}
+.icon-item2 p {
+font-size: small;
+padding-top: 0px;
+}
+.icon-item2:hover {
+  transform: scale(1.05);
+}

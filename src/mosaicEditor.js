@@ -19,12 +19,68 @@ function MosaicForm() {
   const [iconIds, setIconIds] = useState([]);
   const [action, setAction] = useState('add');
   const { addAlert } = useAlertas();
+  const [isIconMenuOpen, setIconMenuOpen] = useState(false);
+  const [availableIcons, setAvailableIcons] = useState([]);
+  const idImplem = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('id_implem='))
+    ?.split('=')[1];
+  const fetchAvailableIcons = async () => {
+    try {
+      // Buscar Ícones Gerais (id_implem = 0)
+      const responseGerais = await fetch(
+        'https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/icons/implementation/0'
+      );
+      const iconsGeraisData = await responseGerais.json();
+
+      // Processar Ícones Gerais
+      const processedGerais = iconsGeraisData.map(icon => {
+        if (icon.src && icon.src.data) {
+          const imgBlob = new Blob([new Uint8Array(icon.src.data)], { type: 'image/png' });
+          const imgUrl = URL.createObjectURL(imgBlob);
+          return { ...icon, src: imgUrl };
+        }
+        return null;
+      });
+
+      // Buscar Ícones Pessoais (baseado no id_implem do usuário)
+      const responsePessoais = await fetch(
+        `https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/icons/implementation/${idImplem}`
+      );
+      const iconsPessoaisData = await responsePessoais.json();
+
+      // Processar Ícones Pessoais
+      const processedPessoais = iconsPessoaisData.map(icon => {
+        if (icon.src && icon.src.data) {
+          const imgBlob = new Blob([new Uint8Array(icon.src.data)], { type: 'image/png' });
+          const imgUrl = URL.createObjectURL(imgBlob);
+          return { ...icon, src: imgUrl };
+        }
+        return null;
+      });
+
+      // Combinar ícones gerais e pessoais e atualizar o estado
+      setAvailableIcons([
+        ...processedGerais.filter(icon => icon !== null),
+        ...processedPessoais.filter(icon => icon !== null),
+      ]);
+    } catch (error) {
+      console.error('Erro ao buscar ícones:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (isIconMenuOpen) {
+      fetchAvailableIcons();
+    }
+  }, [isIconMenuOpen]);
+
   const [loading, setLoading] = useState(true);
   const [imagePreview, setImagePreview] = useState(null);
   const getFromLocalStorage = (key) => {
     return localStorage.getItem(key) ? localStorage.getItem(key) : '';
   };
-//função auxiliar para buscarmos o cookie
+  //função auxiliar para buscarmos o cookie
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -39,56 +95,56 @@ function MosaicForm() {
     }
   }, []);
 
-    useEffect(() => {
-      if (!loading) {
-        const id_mosaico = getFromLocalStorage('id')||'';
-        const positionRow = getCookie('position_row'); // Lê o valor do cookie para linha
-        const positionCol = getCookie('position_col'); // Lê o valor do cookie para coluna
-        const tituloCelula = getFromLocalStorage('titulo_celula');
-        const idIcone = getFromLocalStorage('id_icone');
-        const descricaoCompleta = getFromLocalStorage('descricao_completa');
-        const descricaoResumida = getFromLocalStorage('descricao_resumida');
-        const conteudoEfetivo = getFromLocalStorage('conteudo_efetivo');
-        const origemConteudo = getFromLocalStorage('origem_conteudo');
-    
-        // Verifica se a mensagem de erro está no localStorage
-        const errorMessage = getFromLocalStorage('message');
-        if (errorMessage === 'Mosaico não encontrado para a posição fornecida') {
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            posicao_linha: positionRow || '', // Popula a linha com o valor do cookie
-            posicao_coluna: positionCol || '', // Popula a coluna com o valor do cookie
-            titulo_celula: '',
-            id_icone: '',
-            descricao_completa: '',
-            descricao_resumida: '',
-            conteudo_efetivo: '',
-            origem_conteudo: '',
-          }));
-        } else {
-          setFormData({
-            posicao_linha: positionRow || '',
-            posicao_coluna: positionCol || '',
-            titulo_celula: tituloCelula || '',
-            id_icone: idIcone || '',
-            descricao_completa: descricaoCompleta || '',
-            descricao_resumida: descricaoResumida || '',
-            conteudo_efetivo: conteudoEfetivo || '',
-            origem_conteudo: origemConteudo || '',
-          });
-        }
-    
-        const mosaicData = getCookie('mosaic_data');
-        if (mosaicData) {
-          const parsedData = JSON.parse(mosaicData);
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            ...parsedData,
-          }));
-        }
+  useEffect(() => {
+    if (!loading) {
+      const id_mosaico = getFromLocalStorage('id') || '';
+      const positionRow = getCookie('position_row'); // Lê o valor do cookie para linha
+      const positionCol = getCookie('position_col'); // Lê o valor do cookie para coluna
+      const tituloCelula = getFromLocalStorage('titulo_celula');
+      const idIcone = getFromLocalStorage('id_icone');
+      const descricaoCompleta = getFromLocalStorage('descricao_completa');
+      const descricaoResumida = getFromLocalStorage('descricao_resumida');
+      const conteudoEfetivo = getFromLocalStorage('conteudo_efetivo');
+      const origemConteudo = getFromLocalStorage('origem_conteudo');
+
+      // Verifica se a mensagem de erro está no localStorage
+      const errorMessage = getFromLocalStorage('message');
+      if (errorMessage === 'Mosaico não encontrado para a posição fornecida') {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          posicao_linha: positionRow || '', // Popula a linha com o valor do cookie
+          posicao_coluna: positionCol || '', // Popula a coluna com o valor do cookie
+          titulo_celula: '',
+          id_icone: '',
+          descricao_completa: '',
+          descricao_resumida: '',
+          conteudo_efetivo: '',
+          origem_conteudo: '',
+        }));
+      } else {
+        setFormData({
+          posicao_linha: positionRow || '',
+          posicao_coluna: positionCol || '',
+          titulo_celula: tituloCelula || '',
+          id_icone: idIcone || '',
+          descricao_completa: descricaoCompleta || '',
+          descricao_resumida: descricaoResumida || '',
+          conteudo_efetivo: conteudoEfetivo || '',
+          origem_conteudo: origemConteudo || '',
+        });
       }
-    }, [loading]);
-    
+
+      const mosaicData = getCookie('mosaic_data');
+      if (mosaicData) {
+        const parsedData = JSON.parse(mosaicData);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          ...parsedData,
+        }));
+      }
+    }
+  }, [loading]);
+
 
   useEffect(() => {
     setLoading(false); // Definindo que a página carregou completamente
@@ -109,7 +165,7 @@ function MosaicForm() {
     if (!id) return; // Não faz fetch se o ID estiver vazio
     try {
       const response = await fetch(`https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/icons/${id}`, {
-        
+
       });
       if (response.ok) {
         const { src } = await response.json();
@@ -132,7 +188,7 @@ function MosaicForm() {
   const fetchIconById = async (id) => {
     try {
       const response = await fetch(`https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/icons/${id}`, {
-        
+
       });
       if (response.ok) {
         const { src, } = await response.json();
@@ -168,10 +224,10 @@ function MosaicForm() {
         addAlert('Erro: id_implem não encontrado nos cookies.', 'error');
         return;
       }
-  
+
       // Atualizar formData com id_implem
       const updatedFormData = { ...formData, id_implem: idImplem };
-  
+
       const response = await fetch('https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/mosaics/add', {
         method: 'POST',
         headers: {
@@ -179,7 +235,7 @@ function MosaicForm() {
         },
         body: JSON.stringify(updatedFormData),
       });
-  
+
       if (response.ok) {
         addAlert('Mosaico adicionado com sucesso!', 'success');
         console.log(updatedFormData)
@@ -205,10 +261,10 @@ function MosaicForm() {
         addAlert('Erro: id_implem não encontrado nos cookies.', 'error');
         return;
       }
-  
+
       // Atualizar formData com id_implem
       const updatedFormData = { ...formData, id_implem: idImplem };
-  
+
       const response = await fetch(`https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/mosaics/modify/${mosaicId}`, {
         method: 'PUT',
         headers: {
@@ -216,7 +272,7 @@ function MosaicForm() {
         },
         body: JSON.stringify(updatedFormData),
       });
-  
+
       if (response.ok) {
         addAlert('Mosaico modificado com sucesso!', 'success');
       } else {
@@ -283,8 +339,8 @@ function MosaicForm() {
                 value={mosaicId || ''}
                 onChange={(e) => setMosaicId(e.target.value)}
                 className="icon-editor-input"
-                placeholder="Digite o ID do mosaico a ser alterado"
-                required
+                placeholder="ID do mosaico a ser alterado"
+                readOnly
               />
             </div>
             <div className="form-group">
@@ -322,17 +378,68 @@ function MosaicForm() {
             </div>
             <div className="form-group">
               <label className="icon-editor-label">ID Ícone:</label>
-              <input
-                type="number"
-                name="id_icone"
-                value={formData.id_icone}
-                onChange={(e) => {
-                  handleChange(e);
-                  fetchIconById(e.target.value); // Chama a função para buscar o ícone
-                }}
-                className="icon-editor-input"
-                required
-              />
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <input
+                  type="number"
+                  name="id_icone"
+                  value={formData.id_icone}
+                  onChange={(e) => {
+                    handleChange(e);
+                    fetchIconById(e.target.value); // Chama a função para buscar o ícone
+                  }}
+                  className="icon-editor-input"
+                  required
+                />
+                <button
+                  type="button"
+                  className="choose-icon-button"
+                  onClick={() => setIconMenuOpen(true)} // Abre o menu de seleção
+                >
+                  Escolher Ícone
+                </button>
+              </div>
+
+              {isIconMenuOpen && (
+                <div className="icon-menu2">
+                  <h4>Ícones Gerais</h4>
+                  <div className="icon-list2">
+                    {availableIcons
+                      .filter(icon => parseInt(icon.id_implementacao, 10) === 0) // Filtra ícones gerais
+                      .map(icon => (
+                        <div
+                          key={icon.icon_id}
+                          className="icon-item2"
+                          onClick={() => {
+                            setFormData((prev) => ({ ...prev, id_icone: icon.icon_id })); // Atualiza o ID do ícone no formulário
+                            setIconMenuOpen(false); // Fecha o menu
+                          }}
+                        >
+                          <p>{icon.icon_id}</p>
+                          <img src={icon.src} alt={icon.titulo} className="menu-icon-image" />
+                        </div>
+                      ))}
+                  </div>
+
+                  <h4>Ícones Pessoais</h4>
+                  <div className="icon-list2">
+                    {availableIcons
+                      .filter(icon => parseInt(icon.id_implementacao, 10) === parseInt(idImplem, 10)) // Filtra ícones pessoais
+                      .map(icon => (
+                        <div
+                          key={icon.icon_id}
+                          className="icon-item2"
+                          onClick={() => {
+                            setFormData((prev) => ({ ...prev, id_icone: icon.icon_id })); // Atualiza o ID do ícone no formulário
+                            setIconMenuOpen(false); // Fecha o menu
+                          }}
+                        >
+                          <p>{icon.icon_id}</p>
+                          <img src={icon.src} alt={icon.titulo} className="menu-icon-image" />
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
             </div>
             {imagePreview && (
               <div className="view-icon-mosaic2">
@@ -368,7 +475,7 @@ function MosaicForm() {
                 value={formData.conteudo_efetivo}
                 onChange={handleChange}
                 className="icon-editor-input"
-                style={{ height: '20.6px', width:'318.6px' }}
+                style={{ height: '20.6px', width: '318.6px' }}
                 required
               >
                 <option value="0">URL</option>
@@ -389,8 +496,8 @@ function MosaicForm() {
               />
             </div>
 
-            <button onClick={handleSubmit}id='botao-salvar' className="icon-editor-button">Adicionar</button>
-            <button onClick={handleUpdate}id='botao-modificar' className="icon-editor-button-atualizar">Modificar</button>
+            <button onClick={handleSubmit} id='botao-salvar' className="icon-editor-button">Adicionar</button>
+            <button onClick={handleUpdate} id='botao-modificar' className="icon-editor-button-atualizar">Modificar</button>
             <button onClick={handleDelete} id='botao-deletar' className="icon-editor-button-deletar">Deletar</button>
           </>
         )}

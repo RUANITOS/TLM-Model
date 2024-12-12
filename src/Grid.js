@@ -67,30 +67,30 @@ const Grid = () => {
 
   const handleIconSelection = async (icon) => {
     console.log(`Ícone selecionado: ID: ${icon.icon_id}, Descrição: ${icon.descricao}`);
-    
+
     // URL da API
     const url = `https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/icons/${icon.icon_id}`;
-  
+
     try {
       // Fazendo a chamada para a API
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`Erro ao buscar dados do ícone: ${response.statusText}`);
       }
-  
+
       const iconData = await response.json();
 
       // Salvando os dados do ícone no localStorage
       localStorage.setItem('selectedIcon', JSON.stringify(iconData));
-  
-  
+
+
       // Redirecionando para o Editor
       navigate('/TLM-Producao/Editor');
     } catch (error) {
       console.error('Erro ao selecionar o ícone:', error);
       // Você pode adicionar lógica adicional para lidar com o erro, como mostrar um alerta
     }
-  
+
     // Fechando o menu de ícones
     setIsIconMenuOpen(false);
   };
@@ -536,24 +536,44 @@ const Grid = () => {
         {isIconMenuOpen && (
           <div className="icon-menu">
             <h4>Ícones Gerais</h4>
+            <br></br>
             <div className="icon-list">
               {availableIcons
                 .filter(icon => parseInt(icon.id_implementacao, 10) === 0) // Filtra ícones gerais corretamente
                 .map(icon => (
                   <div key={icon.icon_id} className="icon-item" onClick={() => handleIconSelection(icon)}>
-                    <p>{icon.icon_id}</p>
+                    <p className="icon-idd">{icon.icon_id}</p>
                     <img src={icon.src} alt={icon.titulo} className="menu-icon-image" />
                   </div>
                 ))}
             </div>
 
             <h4>Ícones da Implementação</h4>
+            <br></br>
             <div className="icon-list">
+              {/* Card "Criar Ícone" */}
+              <div
+                className="icon-item create-icon-item"
+                onClick={() => {
+                  const idImplem = document.cookie
+                    .split('; ')
+                    .find(row => row.startsWith('id_implem='))
+                    ?.split('=')[1];
+
+                  localStorage.setItem('selectedIcon', JSON.stringify({ id_implementacao: idImplem }));
+                  window.location.href = '/TLM-Producao/Editor';
+                }}
+              >
+                <p className="icon-idd">Criar Ícone</p>
+                <div className="create-icon-placeholder">+</div>
+              </div>
+
+              {/* Lista de ícones */}
               {availableIcons
                 .filter(icon => parseInt(icon.id_implementacao, 10) !== 0) // Garante que apenas ícones pessoais sejam exibidos
                 .map(icon => (
                   <div key={icon.icon_id} className="icon-item" onClick={() => handleIconSelection(icon)}>
-                    <p>{icon.icon_id}</p>
+                    <p className="icon-idd">{icon.icon_id}</p>
                     <img src={icon.src} alt={icon.titulo} className="menu-icon-image" />
                   </div>
                 ))}

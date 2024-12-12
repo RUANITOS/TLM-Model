@@ -61,9 +61,20 @@ const IconEditor = () => {
         setFormData({ id, descricao, id_implementacao, src: null });
         setIsNewIcon(false); // ID encontrado
       } else if (response.status === 404) {
-        setIsNewIcon(true); // ID não encontrado
+        // Se não encontrado, preenche id_implementacao com o valor dos cookies
+        const idImplem = document.cookie
+          .split('; ')
+          .find(row => row.startsWith('id_implem='))
+          ?.split('=')[1];
+
+        setFormData({
+          id,
+          descricao: '',
+          id_implementacao: idImplem || '',
+          src: null,
+        });
+        setIsNewIcon(true);
         setImagePreview(null);
-        setFormData({ id, descricao: '', id_implementacao: '', src: null });
         setCreationDate(null);
         setModificationDate(null);
       } else {
@@ -149,15 +160,15 @@ const IconEditor = () => {
       <Header />
       <h2 className="icon-editor-title">Editor de Ícones</h2>
       <form className="icon-editor-form" onSubmit={handleSubmit}>
-        
-      <div className="form-group">
+
+        <div className="form-group">
           <label className="icon-editor-label">ID de Implementação:</label>
           <input
             type="text"
             name="id_implementacao"
             value={formData.id_implementacao}
             onChange={handleChange}
-            placeholder="Digite o ID de implementação"
+            placeholder={formData.id_implementacao}
             className="icon-editor-input"
             readOnly
           />
