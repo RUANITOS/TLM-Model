@@ -18,6 +18,32 @@ const IconEditor = () => {
   const [isNewIcon, setIsNewIcon] = useState(false); // Para determinar se o ID não existe no banco
   const { addAlert } = useAlertas();
 
+  useEffect(() => {
+    // Carregar os dados do ícone do localStorage
+    const selectedIcon = localStorage.getItem('selectedIcon');
+    if (selectedIcon) {
+      const iconData = JSON.parse(selectedIcon);
+
+      // Configurando os valores iniciais
+      setFormData({
+        id: iconData.icon_id || '',
+        src: null, // A imagem será carregada separadamente
+        descricao: iconData.descricao || '',
+        id_implementacao: iconData.id_implementacao || '',
+      });
+
+      // Configurando as datas, se existirem
+      setCreationDate(iconData.dt_criacao || null);
+      setModificationDate(iconData.dt_modificacao || null);
+
+      // Gerar o preview da imagem, se os dados existirem
+      if (iconData.src && Array.isArray(iconData.src.data) && iconData.src.type) {
+        const blob = new Blob([Uint8Array.from(iconData.src.data)], { type: iconData.src.type });
+        const imageUrl = URL.createObjectURL(blob);
+        setImagePreview(imageUrl);
+      }
+    }
+  }, []);
   const fetchIconById = async (id) => {
     try {
       const response = await fetch(`https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/icons/${id}`);
@@ -47,6 +73,7 @@ const IconEditor = () => {
       console.error('Erro ao conectar com o backend:', error);
     }
   };
+
   const handleDelete = async () => {
     try {
       const response = await fetch(`https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/icons/delete/${formData.id}`, {
@@ -122,6 +149,19 @@ const IconEditor = () => {
       <Header />
       <h2 className="icon-editor-title">Editor de Ícones</h2>
       <form className="icon-editor-form" onSubmit={handleSubmit}>
+        
+      <div className="form-group">
+          <label className="icon-editor-label">ID de Implementação:</label>
+          <input
+            type="text"
+            name="id_implementacao"
+            value={formData.id_implementacao}
+            onChange={handleChange}
+            placeholder="Digite o ID de implementação"
+            className="icon-editor-input"
+            readOnly
+          />
+        </div>
         <div className="form-group">
           <label className="icon-editor-label">ID do Ícone:</label>
           <input
@@ -133,15 +173,16 @@ const IconEditor = () => {
               setFormData((prev) => ({ ...prev, id: newId }));
               if (newId.length > 0) fetchIconById(newId);
             }}
+
             placeholder="Digite o ID do ícone"
             className="icon-editor-input"
             required
           />
         </div>
 
-        {imagePreview && !isNewIcon && (
+        {imagePreview && (
           <div className="view-icon">
-            <label className="icon-editor-label-imagem">Imagem Preview:</label>
+            <label className="icon-editor-label-imagem"></label>
             <img src={imagePreview} alt="Imagem preview" className="icon-editor-img-preview" />
           </div>
         )}
@@ -191,22 +232,9 @@ const IconEditor = () => {
             onChange={handleChange}
             accept="image/*"
             className="icon-editor-input-file"
-            required
           />
         </div>
 
-        <div className="form-group">
-          <label className="icon-editor-label">ID de Implementação:</label>
-          <input
-            type="text"
-            name="id_implementacao"
-            value={formData.id_implementacao}
-            onChange={handleChange}
-            placeholder="Digite o ID de implementação"
-            className="icon-editor-input"
-            required
-          />
-        </div>
 
         <button type="submit" className="icon-editor-button-atualizar">
           {isNewIcon ? 'Salvar' : 'Atualizar'}
@@ -216,7 +244,7 @@ const IconEditor = () => {
             type="button"
             className="icon-editor-button-deletar"
             onClick={handleDelete}
-            id='botao-deletar'
+            id="botao-deletar"
           >
             Deletar
           </button>

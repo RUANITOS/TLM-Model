@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAlertas } from './contexts/AlertasContext'; // Importa o contexto de alertas
+import Cookies from 'js-cookie';
 import axios from 'axios';
 import './styles/Grid.css';
 
@@ -28,7 +29,6 @@ const Grid = () => {
   const [isIconMenuOpen, setIsIconMenuOpen] = useState(false); // Controle de visibilidade
   const [availableIcons, setAvailableIcons] = useState([]); // Ícones disponíveis
   const fetchAvailableIcons = async () => {
-    setIsLoading(true); // Inicia o carregamento
     try {
       // Buscar Ícones Gerais (id_implem = 0)
       const responseGerais = await fetch('https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/icons/implementation/0');
@@ -62,14 +62,36 @@ const Grid = () => {
       ]);
     } catch (error) {
       console.error('Erro ao buscar ícones:', error);
-    }finally {
-      setIsLoading(false); // Finaliza o carregamento
     }
   };
 
-  const handleIconSelection = (icon) => {
+  const handleIconSelection = async (icon) => {
     console.log(`Ícone selecionado: ID: ${icon.icon_id}, Descrição: ${icon.descricao}`);
-    // Adicionar lógica de inserção no grid ou manipulação conforme necessário
+    
+    // URL da API
+    const url = `https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/icons/${icon.icon_id}`;
+  
+    try {
+      // Fazendo a chamada para a API
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar dados do ícone: ${response.statusText}`);
+      }
+  
+      const iconData = await response.json();
+
+      // Salvando os dados do ícone no localStorage
+      localStorage.setItem('selectedIcon', JSON.stringify(iconData));
+  
+  
+      // Redirecionando para o Editor
+      navigate('/TLM-Producao/Editor');
+    } catch (error) {
+      console.error('Erro ao selecionar o ícone:', error);
+      // Você pode adicionar lógica adicional para lidar com o erro, como mostrar um alerta
+    }
+  
+    // Fechando o menu de ícones
     setIsIconMenuOpen(false);
   };
 
@@ -100,7 +122,7 @@ const Grid = () => {
   // Atualize maxX e maxY com base nos dados da API
   useEffect(() => {
     if (idImplem) {
-      
+
       fetch(`https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/implementations/${idImplem}`)
         .then(response => response.json())
         .then(data => {
@@ -138,30 +160,30 @@ const Grid = () => {
   };
   const fetchIconsAndMosaics = async () => {
     setIsLoading(true); // Inicia o carregamento dos dados
-  
+
     try {
       // Obter mosaicos
       const mosaicsResponse = await fetch('https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/mosaics');
       const mosaicsData = await mosaicsResponse.json();
-  
+
       // Filtrar mosaicos pelo id_implem
       const filteredMosaics = mosaicsData.filter(mosaic => mosaic.id_implem === idImplem);
-  
+
       // Obter ícones correspondentes
       const combinedData = await Promise.all(filteredMosaics.map(async (mosaic) => {
         const iconResponse = await fetch(`https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/icons/${mosaic.id_icone}`);
         const iconData = await iconResponse.json();
-  
+
         // Verifica se o ícone tem imagem
         if (iconData.src && iconData.src.data) {
           const imgBlob = new Blob([new Uint8Array(iconData.src.data)], { type: 'image/png' });
           const imgUrl = URL.createObjectURL(imgBlob);
-  
+
           return { ...mosaic, src: imgUrl, isImageLoaded: false }; // Adiciona a flag isImageLoaded
         }
         return null; // Se não tiver imagem, retorna null
       }));
-  
+
       // Filtra os dados nulos e atualiza o estado de ícones
       setDisplayIcons(combinedData.filter(item => item !== null));
     } catch (error) {
@@ -170,21 +192,21 @@ const Grid = () => {
       setIsLoading(false); // Finaliza o carregamento dos dados
     }
   };
-    
-    // Função chamada para verificar o carregamento das imagens
-    const handleImageLoad = (id) => {
-      // Atualiza o estado de cada ícone quando sua imagem é carregada
-      setDisplayIcons((prevIcons) =>
-        prevIcons.map((icon) =>
-          icon.id === id ? { ...icon, isImageLoaded: true } : icon
-        )
-      );
-    
-      // Verifica se todas as imagens foram carregadas
-      if (displayIcons.every(icon => icon.isImageLoaded)) {
-        setLoadingImages(false); // Todas as imagens foram carregadas
-      }
-    };
+
+  // Função chamada para verificar o carregamento das imagens
+  const handleImageLoad = (id) => {
+    // Atualiza o estado de cada ícone quando sua imagem é carregada
+    setDisplayIcons((prevIcons) =>
+      prevIcons.map((icon) =>
+        icon.id === id ? { ...icon, isImageLoaded: true } : icon
+      )
+    );
+
+    // Verifica se todas as imagens foram carregadas
+    if (displayIcons.every(icon => icon.isImageLoaded)) {
+      setLoadingImages(false); // Todas as imagens foram carregadas
+    }
+  };
 
   useEffect(() => {
     // Obter id_implem do cookie ou localStorage
@@ -232,7 +254,7 @@ const Grid = () => {
     } catch (error) {
       console.error('Erro ao buscar dados do mosaico por posição:', error);
       addAlert('Erro ao buscar dados do mosaico', 'error')
-    }    finally {
+    } finally {
       setIsLoading(false); // Finaliza o carregamento
     }
   };
@@ -396,48 +418,48 @@ const Grid = () => {
       addAlert('Erro ao enviar atualização da posição do mosaico', 'error');
     }
   };
-    // Condicionalmente renderizando a tela de "Carregando..." ou a grid com os ícones
-    if (isLoading) {
-      return <div className="loading">Carregando...</div>; // Exibe a mensagem de carregamento enquanto os dados estão sendo carregados
-    }
-    const renderIcon = (icon) => (
-      <div
-        className="icon-container"
-        onMouseEnter={() => setHoveredIconData({ id: icon.id, titulo_celula: icon.titulo_celula })} // Exibe os dados ao passar o mouse
-        onMouseLeave={() => setHoveredIconData(null)} // Limpa os dados ao sair com o mouse
-      >
-        {icon.conteudo_efetivo === 0 ? ( // Verifica se o ícone deve ser um iframe
-          <img
-            src={icon.src} // Usa o ícone associado ao mosaico
-            alt={icon.titulo_celula}
-            className="icon"
-            onClick={reposicionando ? null : () => handleIconClick(icon.origem_conteudo, '', 0)} // Desativa o clique em reposicionamento
-            onLoad={() => handleImageLoad(icon.id)} // Dispara a função de carregamento da imagem
-          />
-        ) : icon.conteudo_efetivo === 2 ? ( // Verifica se o ícone é de texto
-          <img
-            src={icon.src} // Exibe o ícone normalmente
-            alt={icon.titulo_celula}
-            className="icon"
-            onClick={reposicionando ? null : () => handleIconClick(icon.origem_conteudo, icon.descricao_completa, 2)} // Passa descricao_completa para o conteúdo de texto
-            onLoad={() => handleImageLoad(icon.id)} // Chama handleImageLoad quando a imagem é carregada
-          />
-        ) : (
-          <img
-            src={icon.src}
-            alt={icon.titulo_celula}
-            className="icon"
-            onLoad={() => handleImageLoad(icon.id)} // Dispara a função de carregamento da imagem
-          />
-        )}
-        {hoveredIconData && hoveredIconData.id === icon.id && (
-          <div className="hover-text">
-            <span>ID: {hoveredIconData.id} | </span>
-            <span>{hoveredIconData.titulo_celula}</span>
-          </div>
-        )}
-      </div>
-    );
+  // Condicionalmente renderizando a tela de "Carregando..." ou a grid com os ícones
+  if (isLoading) {
+    return <div className="loading">Carregando...</div>; // Exibe a mensagem de carregamento enquanto os dados estão sendo carregados
+  }
+  const renderIcon = (icon) => (
+    <div
+      className="icon-container"
+      onMouseEnter={() => setHoveredIconData({ id: icon.id, titulo_celula: icon.titulo_celula })} // Exibe os dados ao passar o mouse
+      onMouseLeave={() => setHoveredIconData(null)} // Limpa os dados ao sair com o mouse
+    >
+      {icon.conteudo_efetivo === 0 ? ( // Verifica se o ícone deve ser um iframe
+        <img
+          src={icon.src} // Usa o ícone associado ao mosaico
+          alt={icon.titulo_celula}
+          className="icon"
+          onClick={reposicionando ? null : () => handleIconClick(icon.origem_conteudo, '', 0)} // Desativa o clique em reposicionamento
+          onLoad={() => handleImageLoad(icon.id)} // Dispara a função de carregamento da imagem
+        />
+      ) : icon.conteudo_efetivo === 2 ? ( // Verifica se o ícone é de texto
+        <img
+          src={icon.src} // Exibe o ícone normalmente
+          alt={icon.titulo_celula}
+          className="icon"
+          onClick={reposicionando ? null : () => handleIconClick(icon.origem_conteudo, icon.descricao_completa, 2)} // Passa descricao_completa para o conteúdo de texto
+          onLoad={() => handleImageLoad(icon.id)} // Chama handleImageLoad quando a imagem é carregada
+        />
+      ) : (
+        <img
+          src={icon.src}
+          alt={icon.titulo_celula}
+          className="icon"
+          onLoad={() => handleImageLoad(icon.id)} // Dispara a função de carregamento da imagem
+        />
+      )}
+      {hoveredIconData && hoveredIconData.id === icon.id && (
+        <div className="hover-text">
+          <span>ID: {hoveredIconData.id} | </span>
+          <span>{hoveredIconData.titulo_celula}</span>
+        </div>
+      )}
+    </div>
+  );
 
   const handleLogout = () => {
     // Limpa o lastLogin do localStorage
@@ -471,34 +493,35 @@ const Grid = () => {
   ).flat();
   return (
     <div className="grid-container">
-      <div className="menu-icon" onClick={toggleMenuVisibility}>
-        <span>✏️</span> {/* Ícone de interrogação */}
-      </div>
-      <div className="menu-icon2" onClick={handleLogout} x>
-        <span>❌</span> {/* Ícone de X */}
+      <div className="icon-box">
+        <div className="icon-buttons">
+          <div className="menu-icon2" onClick={handleLogout}>
+            <span>❌</span> {/* Ícone de logout */}
+          </div>
+          <div className="menu-icon" onClick={toggleMenuVisibility}>
+            <span>✏️</span> {/* Ícone de edição */}
+          </div>
+
+        </div>
+        <a>{idImplem}</a>
+        <a>{nomeImplem}</a> {/* Nome da implementação abaixo dos ícones */}
+
       </div>
       <div className={`button-container ${isMenuVisible ? 'visible' : 'hidden'}`}>
         <h4>Atualização de Mosaico</h4>
-        <a> {nomeImplem}</a>
 
         <div className="grid-menu">
           <button className="menu-button" onClick={() => setIsPositionSelectorActive(!isPositionSelectorActive)}>
-            {isPositionSelectorActive ? 'Cancelar' : 'Definir Posição'}
+            {isPositionSelectorActive ? 'Cancelar' : 'Manutenção de Tessela'}
           </button>
           <button className="menu-button" onClick={() => {
             setIsDataFetchActive(!isDataFetchActive);
             setReposicionando((prev) => !prev);
           }}>
-            {isDataFetchActive ? 'Cancelar' : 'Redefinir Posição'}
+            {isDataFetchActive ? 'Cancelar' : 'Reposicionar Tessela'}
           </button>
-          <Link to="/TLM-Producao/MosaicEditor">
-            <button className="menu-button">Editor de Tessela</button>
-          </Link>
-          <Link to="/TLM-Producao/Editor">
-            <button className="menu-button">Atualizar Ícones</button>
-          </Link>
           <button className="menu-button" onClick={() => setIsNewPositionActive(!isNewPositionActive)}>
-            {isNewPositionActive ? 'Cancelar' : 'Definir Reposicionar'}
+            {isNewPositionActive ? 'Cancelar' : 'Alterar Visualização'}
           </button>
 
 
@@ -518,9 +541,8 @@ const Grid = () => {
                 .filter(icon => parseInt(icon.id_implementacao, 10) === 0) // Filtra ícones gerais corretamente
                 .map(icon => (
                   <div key={icon.icon_id} className="icon-item" onClick={() => handleIconSelection(icon)}>
-                    <p>ID: {icon.icon_id}</p>
+                    <p>{icon.icon_id}</p>
                     <img src={icon.src} alt={icon.titulo} className="menu-icon-image" />
-                    <p>{icon.descricao}</p>
                   </div>
                 ))}
             </div>
@@ -531,9 +553,8 @@ const Grid = () => {
                 .filter(icon => parseInt(icon.id_implementacao, 10) !== 0) // Garante que apenas ícones pessoais sejam exibidos
                 .map(icon => (
                   <div key={icon.icon_id} className="icon-item" onClick={() => handleIconSelection(icon)}>
-                    <p>ID: {icon.icon_id}</p>
+                    <p>{icon.icon_id}</p>
                     <img src={icon.src} alt={icon.titulo} className="menu-icon-image" />
-                    <p>{icon.descricao}</p>
                   </div>
                 ))}
             </div>

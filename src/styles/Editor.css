@@ -281,3 +281,9 @@ body {
   margin-right: -195px;
   margin-top: -68px;
 }
+.icon-editor-input[readonly] {
+  background-color: #e0e0e0; /* Cor de fundo escurecida */
+  color: #6d6d6d; /* Cor do texto para combinar com o fundo */
+  cursor: not-allowed; /* Cursor indicando que o campo não é interativo */
+  border: 1px solid #ccc; /* Mantém a borda consistente */
+}
