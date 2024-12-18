@@ -37,16 +37,16 @@ const Login = ({ onLogin }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(''); // Reseta o estado de erro
-  
+
     try {
       const response = await fetch('https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.status === 200) {
         onLogin(data.user); // Executa a ação de login bem-sucedido
         document.cookie = `id_implem=${implementation}; path=/;`;
@@ -102,11 +102,12 @@ const Login = ({ onLogin }) => {
             </select>
           )}
         </div>
-        {error && <p className="error">{error}</p>} 
+        {error && <p className="error">{error}</p>}
         <button type="submit" className="login-button">
           Entrar
         </button>
       </form>
+      <a>Versão BETA - 0.4</a>
     </div>
   );
 };

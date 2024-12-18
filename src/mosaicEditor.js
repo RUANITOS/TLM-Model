@@ -320,6 +320,14 @@ function MosaicForm() {
       }, 1000);
     }
   }, [isInitialLoad]);
+
+  const [tituloCelula, setTituloCelula] = useState("");
+  const handleTituloChange = (e) => {
+    if (e.target.value.length <= 30) {
+      setTituloCelula(e.target.value); // Atualiza o estado com o novo valor
+    }
+  };
+
   return (
     <div className="icon-editor-container">
       <Header />
@@ -340,6 +348,7 @@ function MosaicForm() {
                 onChange={(e) => setMosaicId(e.target.value)}
                 className="icon-editor-input"
                 placeholder="ID do mosaico a ser alterado"
+                name='ID do Mosaico'
                 readOnly
               />
             </div>
@@ -371,14 +380,21 @@ function MosaicForm() {
                 type="text"
                 name="titulo_celula"
                 value={formData.titulo_celula}
-                onChange={handleChange}
+                onChange={(e) => {
+                  handleChange(e); // Chama o primeiro manipulador
+                  handleTituloChange(e); // Chama o segundo manipulador
+                }}
                 className="icon-editor-input"
                 required
               />
+              <div className="char-counter">
+                {formData.titulo_celula.length}/30
+              </div>
             </div>
             <div className="form-group">
-              <label className="icon-editor-label">ID Ícone:</label>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+
+              <div >
+                <label className="icon-editor-label">ID Ícone:</label>
                 <input
                   type="number"
                   name="id_icone"
@@ -450,23 +466,31 @@ function MosaicForm() {
 
             <div className="form-group">
               <label className="icon-editor-label">Descrição Completa:</label>
-              <textarea
+              <input
+                type="text"
                 name="descricao_completa"
                 value={formData.descricao_completa}
                 onChange={handleChange}
                 className="icon-editor-input"
                 required
               />
+              <div className="char-counter">
+                {formData.descricao_completa.length}/30
+              </div>
             </div>
             <div className="form-group">
               <label className="icon-editor-label">Descrição Resumida:</label>
-              <textarea
+              <input
+                type="text"
                 name="descricao_resumida"
                 value={formData.descricao_resumida}
                 onChange={handleChange}
                 className="icon-editor-input"
                 required
               />
+              <div className="char-counter">
+                {formData.descricao_resumida.length}/10
+              </div>
             </div>
             <div className="form-group">
               Tipo de conteudo:
@@ -488,6 +512,7 @@ function MosaicForm() {
             <div className="form-group">
               <label className="icon-editor-label">Conteúdo:</label>
               <textarea
+              
                 name="origem_conteudo"
                 value={formData.origem_conteudo}
                 onChange={handleChange}

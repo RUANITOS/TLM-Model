@@ -495,20 +495,20 @@ const Grid = () => {
     <div className="grid-container">
       <div className="icon-box">
         <div className="icon-buttons">
-          <div className="menu-icon2" onClick={handleLogout}>
-            <span>❌</span> {/* Ícone de logout */}
-          </div>
+
           <div className="menu-icon" onClick={toggleMenuVisibility}>
             <span>✏️</span> {/* Ícone de edição */}
           </div>
-
+          <div className="menu-icon2" onClick={handleLogout}>
+            <span>❌</span> {/* Ícone de logout */}
+          </div>
         </div>
         <a>{idImplem}</a>
         <a>{nomeImplem}</a> {/* Nome da implementação abaixo dos ícones */}
 
       </div>
       <div className={`button-container ${isMenuVisible ? 'visible' : 'hidden'}`}>
-        <h4>Atualização de Mosaico</h4>
+        <h4> Mosaico TLM Manager</h4>
 
         <div className="grid-menu">
           <button className="menu-button" onClick={() => setIsPositionSelectorActive(!isPositionSelectorActive)}>
@@ -532,7 +532,7 @@ const Grid = () => {
             {isIconMenuOpen ? 'Cancelar' : 'Visualizar Ícones'}
           </button>
         </div>
-
+        <a>Versão BETA - 0.4</a>
         {isIconMenuOpen && (
           <div className="icon-menu">
             <h4>Ícones Gerais</h4>
@@ -548,20 +548,52 @@ const Grid = () => {
                 ))}
             </div>
 
-            <h4>Ícones da Implementação</h4>
+            <h4>Ícones Exclusivos</h4>
             <br></br>
             <div className="icon-list">
               {/* Card "Criar Ícone" */}
               <div
                 className="icon-item create-icon-item"
-                onClick={() => {
+                onClick={async () => {
                   const idImplem = document.cookie
                     .split('; ')
                     .find(row => row.startsWith('id_implem='))
                     ?.split('=')[1];
 
-                  localStorage.setItem('selectedIcon', JSON.stringify({ id_implementacao: idImplem }));
-                  window.location.href = '/TLM-Producao/Editor';
+                  if (!idImplem) {
+                    console.error('ID de implementação não encontrado nos cookies.');
+                    return;
+                  }
+
+                  try {
+                    // Faz a requisição para obter todos os ícones
+                    const response = await fetch('https://apimosaic-c3aba7a2acfnh6fd.canadacentral-01.azurewebsites.net/api/icons');
+                    if (response.ok) {
+                      const icons = await response.json();
+
+                      // Filtrar os IDs da implementação logada
+                      const existingIds = icons
+                        .map(icon => parseInt(icon.icon_id, 10));
+
+                      // Encontrar o menor ID disponível (não usado)
+                      let newId = 1;
+                      while (existingIds.includes(newId)) {
+                        newId++;
+                      }
+
+                      // Salvar no localStorage com o novo ID e marcar como novo
+                      localStorage.setItem(
+                        'selectedIcon',
+                        JSON.stringify({ id_implementacao: idImplem, icon_id: newId, isNewIcon: true })
+                      );
+                      // Redirecionar para o editor
+                      window.location.href = '/TLM-Producao/Editor';
+                    } else {
+                      console.error('Erro ao buscar ícones:', response.statusText);
+                    }
+                  } catch (error) {
+                    console.error('Erro ao conectar com o backend:', error);
+                  }
                 }}
               >
                 <p className="icon-idd">Criar Ícone</p>

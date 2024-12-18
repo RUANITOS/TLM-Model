@@ -42,6 +42,8 @@ const IconEditor = () => {
         const imageUrl = URL.createObjectURL(blob);
         setImagePreview(imageUrl);
       }
+       // Definir o estado isNewIcon
+    setIsNewIcon(iconData.isNewIcon || false); // Definindo corretamente o estado
     }
   }, []);
   const fetchIconById = async (id) => {
@@ -95,10 +97,11 @@ const IconEditor = () => {
       if (response.ok) {
         addAlert('Ícone deletado com sucesso!', 'success');
         setImagePreview(null);
-        setFormData({ id: '', src: null, descricao: '', id_implementacao: '' });
+        setFormData({ id: '', src: null, descricao: '' });
         setCreationDate(null);
         setModificationDate(null);
-        setIsNewIcon(false);
+        setIsNewIcon(true); // Indicar que agora estamos criando um novo ícone
+        document.querySelector('input[type="file"][name="src"]').value = '';
       } else {
         const error = await response.text();
         console.error('Erro ao deletar o ícone:', error);
@@ -144,8 +147,9 @@ const IconEditor = () => {
       if (response.ok) {
         addAlert(`Ícone ${isNewIcon ? 'adicionado' : 'modificado'} com sucesso!`, 'success');
         setImagePreview(null);
-        setFormData({ id: '', src: null, descricao: '', id_implementacao: '' });
+        setFormData({ id: '', src: null, descricao: '' });
         setIsNewIcon(false);
+        document.querySelector('input[type="file"][name="src"]').value = '';
       } else {
         const error = await response.text();
         console.error('Erro ao enviar os dados:', error);
